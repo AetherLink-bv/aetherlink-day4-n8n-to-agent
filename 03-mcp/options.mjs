@@ -15,7 +15,7 @@ const customerContext = path.join(path.dirname(lessonDirectory), 'docs', 'custom
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
@@ -51,7 +51,7 @@ export function buildResolveOptions({ backend = 'sdk' } = {}) {
   const questionTool = backend === 'claude-code' ? [] : ['AskUserQuestion'];
   return {
     ...options,
-    settingSources: backend === 'claude-code' ? ['project'] : [],
+    settingSources: backend === 'claude-code' ? ['project', 'user'] : [],
     agents: assignmentAgents,
     tools: ['Agent', ...questionTool],
     allowedTools: [
