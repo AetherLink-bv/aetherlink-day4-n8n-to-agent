@@ -1,7 +1,7 @@
 # Customer Support Triage
 
 <!-- STEP 1: this file is the agent's system message (n8n: AI Agent → System Message).
-     Replace each TODO with the text from FACILITATOR.md / SOLO.md, Step 1. -->
+     Replace each TODO with the text from SOLO.md, Step 1 (Build 2). -->
 
 ## Purpose
 TODO (Step 1): who the agent is and what it does with each customer message.
