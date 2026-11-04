@@ -946,7 +946,7 @@ claude -p "Find and fix the bug in utils.js. Explain the change." --allowedTools
 
 **Check:** explain which message is a tool use and which is the final result.
 
-**Catch up:** `git switch step-4`.
+**Catch up:** `git stash -u`, then `git switch step-4`.
 
 **Discuss:** what prompt or tool would make this agent useful for your own work?
 
