@@ -597,78 +597,123 @@ only asks for the missing facts.
 
 ## Step 3 · Read-only customer and transaction MCP tools
 
-**Goal:** `risk-agent` looks up transaction facts and `customer-context-agent` looks up customer
-facts through read-only tools. Neither agent reads a data file itself. n8n then: the Customer
-Context Agent with `Get row(s) in Data table` over the Data Table imported from
-`customer_context.csv` (Maarten's slides 10–11). SDK now: two stdio MCP servers in
-`options.mcpServers`.
+**Goal:** your team gets two lookup desks: customers and transactions. They can look things up, but
+not change them. The agent takes facts from a desk, not from its imagination. n8n then: the
+Customer Context Agent with `Get row(s) in Data table` over the Data Table imported from
+`customer_context.csv`. SDK now: two stdio MCP servers in `options.mcpServers`.
 
-Data paths: `docs/transactions.xlsx → get_transaction → risk-agent`; and
-`docs/customer_context.csv → get_customer → customer-context-agent`.
+**Done when:** the trace shows both lookups, and you have written down three more labels.
 
 ### How the loop works here
 
-Two stdio MCP servers expose narrow read-only lookups: `get_transaction` and `list_transactions`
-for transactions, and `get_customer` for customer context. A person reviews each reply draft before
-it is sent; the MCP servers do not change records.
+MCP is the lookup desk. The agent asks the desk for facts; the desk reads the customer list
+(`docs/customer_context.csv`) or the transactions spreadsheet (`docs/transactions.xlsx`) and hands
+over only what was asked for. `customer-context-agent` calls `get_customer`; `risk-agent` calls
+`get_transaction` (and may use `list_transactions`). Neither agent reads a data file itself, and the
+desks never change a record. A person reviews each reply draft before it is sent.
 
-### Demo (facilitator) → Your turn
+### Demo (facilitator)
 
-**Goal:** verify each MCP server without making a model call, then follow the data path.
+1. Test the desks: `npm run smoke:mcp`. Tests both desks without the AI.
+2. A real run: `npm run lesson3 -- MSG-08`. Look for: `get_customer` and `get_transaction`.
+3. Where did the facts come from? In the draft, the `External data` section lists what each desk
+   handed over.
 
-**Facilitator demo:** run `npm run smoke:mcp`. Point out
-`MCP servers OK — read-only lookups; no model was called.`
-and show the dry-run command's MCP configuration. A real trace labels calls `[tool_use]`.
+### Your turn · Step 3
 
-**Your turn:** check out the Step 3 starter files, install both dependency sets, and run the smoke test.
+1. Get the Step 3 files. The last three lines install the payment desk and take you back to the
+   package folder. You don't need to start the desks yourself: the SDK starts each one when it is needed.
 
-**Get the server:**
+   ```sh
+   git checkout origin/step-3 -- 03-mcp .mcp.json .claude lib package.json test/step3.test.mjs
+   npm ci
+   cd 03-mcp/transaction-mcp
+   npm ci
+   cd ../..
+   ```
 
-```sh
-git checkout origin/step-3 -- 03-mcp .mcp.json .claude lib package.json test/step3.test.mjs
-npm ci
-cd 03-mcp/transaction-mcp
-npm ci
-cd ../..
-npm run smoke:mcp
-```
+2. Test the desks. Last line: `MCP servers OK — read-only lookups; no model was called.`
 
-The nested install is for the server's own dependencies. It does not start the servers: the SDK
-starts each on demand over stdio. Do not start them yourself. The smoke test calls the tools on
-their own (no model) and ends with
-`MCP servers OK — read-only lookups; no model was called.`
+   ```sh
+   npm run smoke:mcp
+   ```
 
-**Read the read-only tools in `03-mcp/transaction-mcp/server.js`:**
+3. Run three messages. Write each label down (on paper or in a notes file): you enter them in
+   `labels.json` in Step 4. The label is under `Result` in the draft, for example
+   `03-mcp/claude-project/output/MSG-08.md`.
+
+   ```sh
+   npm run lesson3 -- MSG-08
+   npm run lesson3 -- MSG-07
+   npm run lesson3 -- MSG-09
+   ```
+
+4. Find the lookups. In the trace: `get_customer` and `get_transaction`. In the draft: the
+   `External data` section.
+
+5. Stuck? This gives you the finished version.
+
+   ```sh
+   git stash -u
+   git switch step-3
+   ```
+
+**Done when:** both lookups are in the trace, `External data` is in the draft, and three more labels
+are written down.
+
+**Check your screen:** after `npm run smoke:mcp` you see only lookup tools (`get_customer`,
+`get_transaction` and `list_transactions`), no tools that change anything, and the last line
+`MCP servers OK`. No model was called.
+
+**Discuss: where did the facts come from?** Which facts came from a lookup desk? Who reads the draft
+before it is sent?
+
+### Read along: what the Step 3 files contain
+
+The read-only tools in `03-mcp/transaction-mcp/server.js`:
 
 ```js
 const server = new McpServer({ name: 'transactions', version: '1.1.0' });
 
+const transactionId = z.string().regex(/^TX-\d{4}$/);
+const status = z.enum(STATUSES);
+const fraudFlag = z.enum(['Yes', 'No']);
+const readOnly = { readOnlyHint: true, openWorldHint: false };
+
+const readWorkbook = async () => {
+  const sheets = await readXlsxFile(workbookPath);
+  return rowsToTransactions(Array.isArray(sheets) && sheets[0]?.data ? sheets[0].data : sheets);
+};
+const ok = (value) => ({ content: [{ type: 'text', text: JSON.stringify(value) }] });
+const fail = (text) => ({ isError: true, content: [{ type: 'text', text }] });
+const notFound = (id) => fail(`No transaction ${id} in the data`);
+
+server.registerTool('list_transactions', {
+  description: 'List transactions, optionally filtered by status, customer name or fraud flag.',
+  inputSchema: {
+    status: status.optional(),
+    customer: z.string().min(1).optional(),
+    fraud_flag: fraudFlag.optional(),
+    limit: z.number().int().min(1).max(50).optional(),
+  },
+  annotations: { title: 'List transactions', ...readOnly },
+}, async ({ status: wanted, customer, fraud_flag, limit }) => (
+  ok(listTransactions(await readWorkbook(), { status: wanted, customer, fraudFlag: fraud_flag, limit }))
+));
+
 server.registerTool('get_transaction', {
   description: 'Look up one transaction by its transaction ID.',
-  inputSchema: { transaction_id: z.string().regex(/^TX-\d{4}$/) },
-  annotations: { title: 'Get transaction', readOnlyHint: true, openWorldHint: false },
+  inputSchema: { transaction_id: transactionId },
+  annotations: { title: 'Get transaction', ...readOnly },
 }, async ({ transaction_id }) => {
   const transaction = findTransaction(await readWorkbook(), transaction_id);
   return transaction ? ok(transaction) : notFound(transaction_id);
 });
 
-server.registerTool('list_transactions', {
-  description: 'List transactions with optional status, customer, or fraud filters.',
-  inputSchema: {
-    status: z.enum(['COMPLETED', 'DECLINED', 'PENDING', 'REFUNDED', 'FAILED', 'DUPLICATE']).optional(),
-    customer: z.string().min(1).optional(),
-    fraud_flag: z.enum(['Yes', 'No']).optional(),
-    limit: z.number().int().min(1).max(50).optional(),
-  },
-  annotations: { title: 'List transactions', readOnlyHint: true, openWorldHint: false },
-}, async ({ status: wanted, customer, fraud_flag, limit }) => (
-  ok(listTransactions(await readWorkbook(), { status: wanted, customer, fraudFlag: fraud_flag, limit }))
-));
-
 await server.connect(new StdioServerTransport());
 ```
 
-**The wiring in `03-mcp/options.mjs`:**
+The wiring in `03-mcp/options.mjs`:
 
 ```js
 import path from 'node:path';
@@ -690,8 +735,10 @@ export function buildOptions() {
     agents,
     tools: ['Agent', 'Write'],
     allowedTools: [
-      'Agent', 'Write',
-      'mcp__transactions__get_transaction', 'mcp__transactions__list_transactions',
+      'Agent',
+      'Write',
+      'mcp__transactions__get_transaction',
+      'mcp__transactions__list_transactions',
       'mcp__customers__get_customer',
     ],
     disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],
@@ -715,7 +762,7 @@ export function buildOptions() {
 }
 ```
 
-`.mcp.json` registers the same server for Claude Code:
+`.mcp.json` registers the same desks for Claude Code, when you start `claude` in the repository root:
 
 ```json
 {
@@ -734,23 +781,37 @@ export function buildOptions() {
 }
 ```
 
-**What changed in the prompt:** `.claude/agents/risk-agent.md` gets the transaction tool and the
-customer-context instruction:
+`.claude/agents/risk-agent.md` now has the transaction tool and the customer-context instruction:
 
 ```markdown
+---
+name: risk-agent
+description: Payment risk and escalation specialist. Reviews one customer-support ticket, assigns priority LOW, MEDIUM or HIGH using the project priority definitions and writes a short internal risk note.
 tools: mcp__transactions__get_transaction
-...
+---
+You are a payment risk and escalation specialist for a payment company's customer support.
+Review the ticket context and identify: customer risk, complaint risk, urgency, and whether escalation is needed.
+Classify the priority using these definitions:
+- LOW — General questions, requests for information, cosmetic issues, or situations with little/no immediate customer or financial impact.
+- MEDIUM — A real service or payment problem affecting one customer, but with no clear sign of fraud, security risk, major financial exposure, or widespread impact.
+- HIGH — Suspected fraud or security risk, unknown/unauthorised transactions, multiple affected transactions, substantial or time-critical financial impact, or evidence that many customers may be affected.
+Judge impact and risk, not tone: angry wording alone never raises the priority, and calm wording never lowers it.
 If the message contains a transaction ID (TX-####), call get_transaction first and base the analysis on the returned record: status, amount, issue details and fraud flag. Say which facts came from the transaction record. If the lookup returns nothing, say so and do not guess. If you have no get_transaction tool, list the transaction record as missing information.
 When the main agent passes customer context, use it in the risk note: an Enterprise or critical customer raises complaint risk and the urgency of follow-up. The priority still follows the definitions above: customer context alone never raises or lowers it.
-Use only the supplied message and get_transaction/get_customer results. Do not invent facts. If important information is missing, list it.
+Use only the supplied ticket context and get_transaction results. Do not invent facts. If important information is missing, list it.
+Return exactly:
+Priority: LOW | MEDIUM | HIGH
+Risk note: one or two sentences for the internal team: customer risk, complaint risk, urgency, escalate yes/no.
+Missing information: none, or a short list.
 ```
 
-Create `.claude/agents/customer-context-agent.md`:
+The new `.claude/agents/customer-context-agent.md`:
 
 ```markdown
 ---
 name: customer-context-agent
 description: Looks up the customer behind a ticket (CUST-###) with get_customer and returns the customer context: type, transaction volume, previous incidents and whether the customer is critical.
+tools: mcp__customers__get_customer
 ---
 You are the customer context specialist for a payment company's customer support.
 If the ticket has a customer ID (format CUST-###), call get_customer once and report what the record says. If the lookup returns nothing, say so and do not guess. If there is no customer ID, say so.
@@ -762,42 +823,42 @@ Previous incidents: number
 Critical customer: yes | no
 ```
 
-`03-mcp/claude-project/CLAUDE.md` adds these sections to the orchestrator prompt:
+The orchestrator prompt `03-mcp/claude-project/CLAUDE.md`:
 
 ```markdown
+# Customer Support Orchestrator
+
+## Purpose
+Coordinate specialised agents that process incoming customer-support messages.
+
 ## Workflow
-1. For a customer ID, call `customer-context-agent` and `get_customer`.
-2. Pass the message and customer context to `risk-agent`; it uses `get_transaction` when there is a transaction ID.
-3. Pass the original message, customer context and risk-agent result to `customer-reply-agent`.
-4. Create the human-review draft in `output/`.
+1. When the ticket has a Customer ID, delegate lookup to `customer-context-agent`.
+2. Delegate analysis to `risk-agent` with the message and customer context.
+3. Delegate the customer reply to `customer-reply-agent` with the message, customer context and risk-agent result.
+4. Create a Markdown file in `output/` with the final result.
 
-## Customer and transaction data
-- When a message contains a customer ID (format `CUST-###`), use `customer-context-agent` and `get_customer`.
+## Required output
+Fill the structured fields from the specialist agents' results: `priority`, `sentiment`,
+`recommended_action`, `summary`, `risk_note` and `customer_reply`.
+
+## Rules
+- Do not perform specialist analysis yourself when `risk-agent` is available.
+- Do not write the customer email yourself when `customer-reply-agent` is available.
+- Use only supplied/project information.
+- Do not search the web for customer or transaction information.
+- Do not invent facts.
+
+## Customer data
+- Never read `docs/customer_context.csv` yourself; customer data only arrives through `get_customer`.
+
+## Transaction data
 - When it contains a transaction ID (format `TX-####`), `risk-agent` uses `get_transaction`.
-- Never read customer or transaction files yourself; data only arrives through the tools.
-- In the final output, add `External data:` listing facts from `get_customer`, `get_transaction` and `list_transactions` (or `none`).
+- `risk-agent` may use `list_transactions` to find relevant transaction records.
+- Never read transaction files yourself; transaction data only arrives through the tool.
+- In the final output, add `External data:` listing facts from `get_transaction`, `list_transactions` and `get_customer` (or `none`).
 - The customer reply in `output/` is a draft for a person to review before sending.
-
+- Transaction records are read-only; never change them.
 ```
-
-**Run:**
-
-```sh
-npm run lesson3 -- MSG-08 --dry-run
-npm run lesson3 -- MSG-08
-npm run lesson3 -- MSG-07
-npm run lesson3 -- MSG-09
-```
-
-**Offline check:** `--dry-run` shows the configured MCP servers and tools; it does not call them or
-produce an `External data:` result.
-
-**Check:** in a logged-in Claude Code run, `risk-agent` looks up each TX ID with
-`mcp__transactions__get_transaction`. The live response's `External data:` line lists which facts
-came from the tool. The workbook stays in `docs/`, outside `claude-project`.
-
-The transaction workbook is exposed only through read-only MCP tools. The final reply remains a
-draft for a person to review before sending. Catch up: `git switch step-3`.
 
 ---
 
