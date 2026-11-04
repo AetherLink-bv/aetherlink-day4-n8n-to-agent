@@ -509,7 +509,9 @@ and show the dry-run command's MCP configuration. A real trace labels calls `[to
 ```sh
 git checkout origin/step-3 -- 03-mcp .mcp.json .claude lib package.json test/step3.test.mjs
 npm ci
-(cd 03-mcp/transaction-mcp && npm ci)
+cd 03-mcp/transaction-mcp
+npm ci
+cd ../..
 npm run smoke:mcp
 ```
 
