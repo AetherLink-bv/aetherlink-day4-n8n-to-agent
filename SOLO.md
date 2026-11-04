@@ -1004,22 +1004,60 @@ Give no agent `delete_transaction`.
 **Demo (facilitator).** Show the three Zod input schemas in `03-mcp/transaction-mcp/server.js`.
 Run one update. Show the JSON copy. Then run `npm run reset:mcp`.
 
-**Your turn:**
+**Your turn.** Start on `step-4` and run `npm run check:assignment`: each red line names one file
+and one change. Fix one line at a time.
 
 1. Add `add_transaction`, `update_transaction` and `delete_transaction` to
-   `03-mcp/transaction-mcp/server.js`. Use Zod input schemas.
+   `03-mcp/transaction-mcp/server.js`. Use Zod input schemas. Register them only when
+   `process.env.TRANSACTIONS_WRITES_ENABLED === '1'`, so the Step 3 lesson stays read-only.
 2. Use the starter `03-mcp/transaction-mcp/store.mjs` to load and save the JSON copy.
    Add it to `server.js` when you add write tools.
    Use the starter `03-mcp/transaction-mcp/reset.mjs`; `npm run reset:mcp` removes the copy and drafts.
 3. Create `03-mcp/claude-project/.claude/agents/transaction-agent.md` with `name: transaction-agent`.
    Give it exactly these tools: `get_transaction`, `update_transaction` and `add_transaction`.
-4. Add `transaction-agent` to the SDK `agents` option and the Claude Code agent files.
-   Keep write tools out of the orchestrator's `allowedTools`.
-5. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
-6. Treat the added sentence as the only customer claim, not a confirmed fact.
-7. Copy each status and existing detail exactly.
-8. Change status only when the ticket and tool results support a new status.
-   Otherwise, keep the current status exactly.
+4. In `03-mcp/options.mjs`, export `buildResolveOptions({ backend })`: the Step 3 options plus
+   `transaction-agent` in `agents` (same three tools). Keep write tools out of the orchestrator's
+   `allowedTools`, and give the transactions server `TRANSACTIONS_WRITES_ENABLED: '1'` in its `env`.
+5. Create `03-mcp/claude-project/.mcp.json` so interactive Claude Code in that folder gets the
+   desks with writes enabled:
+
+   ```json
+   {
+     "mcpServers": {
+       "transactions": {
+         "type": "stdio",
+         "command": "node",
+         "args": [
+           "../transaction-mcp/server.js"
+         ],
+         "env": {
+           "TRANSACTIONS_WRITES_ENABLED": "1"
+         }
+       },
+       "customers": {
+         "type": "stdio",
+         "command": "node",
+         "args": [
+           "../transaction-mcp/customers.js"
+         ]
+       }
+     }
+   }
+   ```
+
+6. Add these three rules to `03-mcp/claude-project/CLAUDE.md`, word for word (the check looks for them):
+
+   ```markdown
+   - Only `transaction-agent` changes transactions in the final assignment.
+   - Always look up a transaction before you write.
+   - A denied write is final. Do not retry it or ask another agent to write.
+   ```
+
+7. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
+8. Treat the added sentence as the only customer claim, not a confirmed fact.
+9. Copy each status and existing detail exactly.
+10. Change status only when the ticket and tool results support a new status.
+    Otherwise, keep the current status exactly.
 
 **Done when:** a smoke test adds, updates and deletes records in a new temporary store.
 Check that the workbook hash stays the same.
@@ -1053,14 +1091,57 @@ Run a large update. Deny it. Show that the agent stops.
 
 **Your turn:**
 
-1. Add `03-mcp/hooks/transaction-guard.mjs`.
-   Register it for write tools in both backends.
+1. Add `03-mcp/hooks/transaction-guard.mjs`. Export `createSdkHooks()` with a `PreToolUse` and a
+   `PostToolUse` callback, and let the file also run as a command (`pre` or `post`).
 2. Allow reads without a prompt.
    Check transaction IDs and statuses before writes.
 3. Allow updates below €100 without a prompt.
    Ask a person before larger updates, adds and deletes.
 4. Add one JSON line to `participant-output/audit.jsonl` after each write.
-5. Tell the orchestrator and `transaction-agent` to stop after a denial.
+5. Register the hook in both backends. SDK: add `hooks: createSdkHooks()` to `buildResolveOptions()`
+   for the SDK backends. Claude Code: create `03-mcp/claude-project/.claude/settings.json`:
+
+   ```json
+   {
+     "hooks": {
+       "PreToolUse": [
+         {
+           "matcher": "mcp__transactions__(add|update|delete)_transaction|mcp__drafts__save_reply_draft",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "node ../hooks/transaction-guard.mjs pre"
+             }
+           ]
+         }
+       ],
+       "PostToolUse": [
+         {
+           "matcher": "mcp__transactions__(add|update|delete)_transaction|mcp__drafts__save_reply_draft",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "node ../hooks/transaction-guard.mjs post"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+   The `mcp__drafts__save_reply_draft` part of the matcher is for Part 3; it does no harm before then.
+6. Tell the orchestrator and `transaction-agent` to stop after a denial (the third rule in Part 1).
+
+Check the core:
+
+```sh
+npm run check:assignment
+npm run hook:demo -- small
+npm run hook:demo -- large
+```
+
+Look for: `Core · Parts 1–2: passed`, `Decision: allow` and `Decision: ask`.
 
 **Done when:** the offline hook check covers all five table rows.
 Use this exact reason when a person denies a write:
@@ -1122,7 +1203,7 @@ Use interactive `claude --allowedTools AskUserQuestion` for the Claude Code prom
 The `claude -p` workflow excludes this tool and reports `ESCALATE`.
 Keep `AskUserQuestion` in SDK `tools`, but not in SDK `allowedTools`.
 
-**Demo (facilitator).** Run `npm run resolve -- MSG-07 --backend sdk` in a TTY.
+**Demo (facilitator).** Run `npm run resolve -- MSG-07 --backend sdk-login` in your own terminal (or `--backend sdk` with an API key).
 MSG-07 links CUST-007 to TX-1007, Vertex Commerce.
 The amount is €899. The status is FAILED.
 The note says "amount appears reserved."
@@ -1163,6 +1244,17 @@ Edit `resolve-ticket.md` to run it in interactive Claude Code.
 Edit `CLAUDE.md` to state the agent rules.
 Edit `check-assignment.mjs` to check the rules without a model.
 Use the starter `03-mcp/hook-demo.mjs` to send fixture JSON to the real hook.
+
+**Test it.** In your own terminal (not inside another tool), run:
+
+```sh
+npm run resolve -- MSG-07 --backend sdk-login
+```
+
+Answer `N` to `Approve update_transaction (TX-1007, amount 899)? [y/N]`: the barrier says no and the
+agent stops, without a retry or a draft. With the default backend (`claude-code`) nobody is asked: the
+barrier stops a change of €100 or more by itself and the run reports `denied`. Then run
+`npm run reset:mcp` to reset the working copy.
 
 **Done when:** the resolve dry run lists every step and branch.
 The SDK test checks a TTY answer and a no-TTY denial.
