@@ -329,24 +329,41 @@ Catch up: `git stash -u`, then `git switch step-1`.
 
 ## Step 2 · Orchestrator + subagents
 
-**Goal:** the main agent stops doing everything itself. It delegates the analysis to
-`risk-agent` and the reply to `customer-reply-agent`, and saves a draft for a person to review.
-n8n then: Risk Agent and Customer Reply Agent as tools of the AI Agent (Maarten's slides 7–9).
-SDK now: `options.agents` plus the `Agent` tool.
+**Goal:** your single agent becomes a team. The team lead (the orchestrator) calls the risk expert
+first, then the writer. One job per agent keeps every set of instructions short and clear.
+n8n then: Risk Agent and Customer Reply Agent as tools of the AI Agent. SDK now: `options.agents`
+plus the `Agent` tool.
+
+**Done when:** the trace shows risk first, then the reply, and you have tested a vague description.
 
 ### How the loop works here
 
-The orchestrator calls the risk agent first, passes its result to the reply agent, then writes
-the combined result. The structured schema limits the fields returned to the lesson.
+The orchestrator calls `risk-agent` first, passes its result to `customer-reply-agent`, then writes
+the combined result to a draft file. Each specialist is one Markdown file in `.claude/agents/`: the
+top (`name` and `description`) says who the agent is and when to use it, the text below is its work
+instructions. The description decides who gets the task, like a job advert. In this package
+`lib/agents.mjs` reads those files and gives them to the SDK; the tools each specialist may use are
+set in code. When you start `claude` in the repository root, Claude Code reads the same folder itself.
 
-### Demo (facilitator) → Your turn
+### Demo (facilitator)
 
-**Goal:** see specialist delegation and the order of the two subagents.
+1. Dress rehearsal: `npm run lesson2 -- MSG-05 --dry-run`. Shows the setup. No agents are called yet.
+2. A real run: `npm run lesson2 -- MSG-05`. Look for: first `Agent → risk-agent`, then
+   `Agent → customer-reply-agent`.
+3. The draft: open `02-subagents/claude-project/output/MSG-05.md`. A person reads it before anything
+   is sent.
 
-**Facilitator demo:** run `npm run lesson2 -- MSG-05 --dry-run`; then show a completed trace with
-`[tool_use] Agent → risk-agent` before `[tool_use] Agent → customer-reply-agent`.
+### Your turn · Step 2
 
-**Your turn:** build both agent prompts, the loader, schema and options below.
+#### 1. Get the Step 2 files
+
+**Option A:** build them yourself with Build 1 to 3 below. **Option B, if you are short on time:**
+copy them from the finished branch instead, then skip to step 2.
+
+```sh
+git checkout origin/step-2 -- .claude lib/agents.mjs 02-subagents package.json test/step2.test.mjs
+npm run verify
+```
 
 **Build 1 — the subagent prompts.** Create `.claude/agents/risk-agent.md`:
 
@@ -511,39 +528,70 @@ Fill the structured fields from the specialist agents' results: `priority`, `sen
 - Do not invent facts.
 ```
 
-Create the empty folder `02-subagents/claude-project/output/` and add
-`"lesson2": "node 02-subagents/agent.mjs"` after `"lesson1"` in `package.json`. Add the folder's
-`output/.gitkeep` so Git tracks it. Update `verify` to run `npm run lesson2 -- MSG-05 --dry-run`
-after the lesson 1 dry run and before the chat dry run, and copy the Step 2 test:
+Create the empty folder `02-subagents/claude-project/output/` with an empty file `.gitkeep` in it,
+so Git tracks the folder. Then open `package.json` and make two changes in `"scripts"`:
+
+1. Add this line directly under the `"lesson1"` line:
+
+   ```json
+       "lesson2": "node 02-subagents/agent.mjs",
+   ```
+
+2. Replace the whole `"verify"` line with:
+
+   ```json
+       "verify": "npm test && npm run lesson1 -- MSG-01 --dry-run && npm run lesson2 -- MSG-05 --dry-run && npm run chat -- --dry-run"
+   ```
+
+Copy the Step 2 test and run the tests. Look for: `fail 0`.
 
 ```sh
 git checkout origin/step-2 -- test/step2.test.mjs
+npm run verify
 ```
 
-Shortcut: `git checkout origin/step-2 -- .claude lib/agents.mjs 02-subagents package.json test/step2.test.mjs`
-copies all Step 2 files.
-
-**Run:**
+#### 2. Run the team on two messages
 
 ```sh
-npm run lesson2 -- MSG-05 --dry-run
 npm run lesson2 -- MSG-05
 npm run lesson2 -- MSG-10
 ```
 
-**Offline check:** `--dry-run` shows setup only; it does not call agents, create a draft, or produce
-the MSG-10 missing-information result. Use a logged-in Claude Code run or `docs/sample-trace.md`
-(clearly labelled sample) for those results.
+Look for: `Agent → risk-agent`, then `Agent → customer-reply-agent`. MSG-10 is missing information,
+so the team asks for it. No `Agent →` lines? Then the team lead did the work itself: run it again.
+`--dry-run` shows the setup only; it does not call agents or create a draft.
 
-**Check:** in a live run, the trace shows `Agent → risk-agent` before `Agent → customer-reply-agent`.
-Open `02-subagents/claude-project/output/MSG-05.md` only after a live run. For `MSG-10`, the live
-run or labelled sample shows the analyst listing the missing information. No `Agent →` lines? The
-orchestrator did the work itself: run again and discuss why.
+#### 3. Read the draft
 
-**The description test.** Replace the `description:` of `.claude/agents/risk-agent.md` with
-something vague (`Helps with things.`) and rerun `MSG-05`. Does the orchestrator still delegate?
-Restore it with `git checkout origin/step-2 -- .claude/agents/risk-agent.md`. Yesterday the same
-thing happened in n8n when the Risk Agent's Description was empty. Catch up: `git switch step-2`.
+Open `02-subagents/claude-project/output/MSG-05.md`. Would you send this? A person decides. The draft
+only asks for the missing facts; it does not make anything up.
+
+#### 4. The description test
+
+In `.claude/agents/risk-agent.md`, change the description to `Helps with things.` and run MSG-05
+again. Does the risk expert still run? It does not always change the result. The point is that
+nothing guarantees it any more. Yesterday the same thing happened in n8n when the Risk Agent's
+Description was empty.
+
+```sh
+npm run lesson2 -- MSG-05
+```
+
+#### 5. Put it back
+
+```sh
+git checkout origin/step-2 -- .claude/agents/risk-agent.md
+```
+
+Stuck? `git stash -u`, then `git switch step-2` gives you the finished version.
+
+**Done when:** the trace shows risk first, then the reply; you have read the draft and tested a vague
+description.
+
+**Check your screen:** two `Agent` lines, first `risk-agent`, then `customer-reply-agent`. The draft
+only asks for the missing facts.
+
+**Discuss: who did what?** Which agent runs first, and why? Where is yesterday's n8n Description now?
 
 ---
 
