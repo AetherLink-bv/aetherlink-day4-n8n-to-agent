@@ -95,7 +95,8 @@ test('failed result events print diagnostics and throw', async () => {
       },
     }), /Agent run failed \(error_api\): request rejected/);
     assert.equal(childOptions.env.ANTHROPIC_API_KEY, undefined);
-    assert.equal(childOptions.env.PATH, process.env.PATH);
+    const pathKey = Object.keys(childOptions.env).find((key) => key.toUpperCase() === 'PATH');
+    assert.equal(childOptions.env[pathKey], process.env.PATH);
     assert.match(diagnostics.join('\n'), /request rejected/);
     assert.match(failedResultMessage(event), /request rejected/);
     assert.throws(() => assertSuccessfulResult(event), /request rejected/);

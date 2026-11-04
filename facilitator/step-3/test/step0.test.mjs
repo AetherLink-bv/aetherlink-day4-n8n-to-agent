@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { parseMessages } from '../lib/messages.mjs';
 import { route, routes } from '../lib/switch.mjs';
+import { assertOptionsBuilt } from '../lib/run.mjs';
 
 const run = (...args) => spawnSync(process.execPath, args, { encoding: 'utf8', env: { ...process.env, ANTHROPIC_API_KEY: '' } });
 
@@ -55,4 +56,9 @@ test('Step 0: chat dry run works offline, without an API key', () => {
   assert.match(result.stdout, /Claude Code equivalent: claude -p/);
   assert.match(result.stdout, /Chat lesson 1 options:/);
   assert.match(result.stdout, /dry run — no model call, not model evidence/);
+});
+
+test('Step 0: a live run refuses empty options instead of running an unconfigured agent', () => {
+  assert.throws(() => assertOptionsBuilt({}), /Step 1 is not built yet/);
+  assert.doesNotThrow(() => assertOptionsBuilt({ cwd: 'claude-project', tools: [] }));
 });

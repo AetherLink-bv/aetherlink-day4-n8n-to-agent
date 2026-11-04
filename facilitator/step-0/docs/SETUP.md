@@ -79,6 +79,7 @@ npm run verify
 ```
 
 The default backend is `claude-code`. It uses the Claude Code login on this machine. Use `--backend sdk` only when you want to use an API key.
+The Claude Code subprocess does not inherit `ANTHROPIC_API_KEY`; that key is for the `sdk` backend.
 
 ## Docker
 
@@ -96,7 +97,7 @@ To run a lesson with Claude Code, create a token on the host with `claude setup-
 docker run --rm -it -e CLAUDE_CODE_OAUTH_TOKEN w4 npm run lesson1 -- MSG-01
 ```
 
-You can also pass `ANTHROPIC_API_KEY` and select `--backend sdk`. The `sdk-login` backend is for your own local learning only. Anthropic's SDK documentation says third-party products may not offer claude.ai login for SDK agents without approval.
+Inside Docker, `ANTHROPIC_API_KEY` is for `--backend sdk`; `claude-code` uses `CLAUDE_CODE_OAUTH_TOKEN`. The `sdk-login` backend is for your own local learning only. Anthropic's SDK documentation says third-party products may not offer claude.ai login for SDK agents without approval.
 
 Do not mount `~/.claude` as the container login method. On macOS, Claude Code stores login credentials in the Keychain.
 
@@ -107,3 +108,24 @@ docker run --rm -it -v "$PWD:/workshop" -v w4-node-modules:/workshop/node_module
 ```
 
 In PowerShell, use `-v "${PWD}:/workshop"` instead of `-v "$PWD:/workshop"`.
+
+## Company login (Vertex AI, Bedrock)
+
+On a company laptop, Claude Code may run through Vertex AI or Amazon Bedrock instead of a claude.ai login.
+The lessons pick that up from the `env` block in `~/.claude/settings.json`. You do not need an API key or a
+`.env` file. The lessons copy only that block: your own `CLAUDE.md`, MCP servers and hooks stay out.
+
+Check it with `npm run doctor`. The `Login settings` line names the variables it found, never their values.
+
+If `claude` works in your terminal but a lesson says it is not logged in, your company sets the variables
+somewhere the lessons cannot see, for example in a script or alias that starts Claude Code. Set them in this
+terminal and run the lesson again. Your IT team has the region and project ID.
+
+```sh
+export CLAUDE_CODE_USE_VERTEX=1
+export CLOUD_ML_REGION=<region>
+export ANTHROPIC_VERTEX_PROJECT_ID=<project-id>
+```
+
+In PowerShell, use `$env:CLAUDE_CODE_USE_VERTEX = "1"`, `$env:CLOUD_ML_REGION = "<region>"` and
+`$env:ANTHROPIC_VERTEX_PROJECT_ID = "<project-id>"`. These last only for this terminal window.

@@ -379,31 +379,31 @@ Rows to records, `03-mcp/transaction-mcp/transactions.mjs` (first part; the rest
 Imports and setup:
 
 ```js
-{{lines:3:03-mcp/transaction-mcp/server.js:1-24}}
+{{lines:3:03-mcp/transaction-mcp/server.js:1-14}}
 ```
 
 Read the workbook (only the server touches the xlsx) and the result helpers:
 
 ```js
-{{lines:3:03-mcp/transaction-mcp/server.js:26-33}}
+{{lines:3:03-mcp/transaction-mcp/server.js:16-22}}
 ```
 
 The tool: name, description, input schema (the contract), annotations, handler:
 
 ```js
-{{lines:3:03-mcp/transaction-mcp/server.js:48-55}}
+{{lines:3:03-mcp/transaction-mcp/server.js:37-44}}
 ```
 
 `list_transactions` (cheap, read-only):
 
 ```js
-{{lines:3:03-mcp/transaction-mcp/server.js:35-46}}
+{{lines:3:03-mcp/transaction-mcp/server.js:24-35}}
 ```
 
 Connect over stdio:
 
 ```js
-{{lines:3:03-mcp/transaction-mcp/server.js:123-123}}
+{{lines:3:03-mcp/transaction-mcp/server.js:46-46}}
 ```
 
 Customer lookup, `03-mcp/transaction-mcp/customers.js`, reads the CSV (default

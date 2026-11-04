@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 remote="${REMOTE:-origin}"
-prefix="${CHAIN_PREFIX:-devin/1791900000-w4m-}"
+prefix="${CHAIN_PREFIX-}"
 for branch in main step-1 step-2 step-3 step-4; do
   git fetch -q "$remote" "+refs/heads/${prefix}${branch}:refs/remotes/${remote}/${prefix}${branch}"
 done

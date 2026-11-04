@@ -1786,6 +1786,72 @@ index e035d5a..fbdfc52 100644
    },
    "dependencies": {
      "@anthropic-ai/claude-agent-sdk": "0.3.281"
+diff --git a/test/solo-step2.test.mjs b/test/solo-step2.test.mjs
+deleted file mode 100644
+index f793201..0000000
+--- a/test/solo-step2.test.mjs
++++ /dev/null
+@@ -1,31 +0,0 @@
+-import assert from 'node:assert/strict';
+-import { readFileSync } from 'node:fs';
+-import { test } from 'node:test';
+-
+-// A participant builds Step 2 by copying SOLO.md (Option A). These checks fail when SOLO.md and the
+-// finished Step 2 files on this branch drift apart.
+-const solo = readFileSync('SOLO.md', 'utf8');
+-const section = solo.slice(solo.indexOf('## Step 2 ·'), solo.indexOf('## Step 3 ·'));
+-
+-test('SOLO Step 2: every file it tells you to create is the finished file', () => {
+-  const created = [...section.matchAll(/Create `([^`]+)`[^\n]*:\n\n```\w*\n([\s\S]*?)```/g)];
+-  assert.deepEqual(created.map(([, file]) => file), [
+-    '.claude/agents/risk-agent.md',
+-    '.claude/agents/customer-reply-agent.md',
+-    'lib/agents.mjs',
+-    '02-subagents/agents.mjs',
+-    '02-subagents/ticket-schema.mjs',
+-    '02-subagents/options.mjs',
+-    '02-subagents/agent.mjs',
+-    '02-subagents/claude-project/CLAUDE.md',
+-  ]);
+-  for (const [, file, body] of created) {
+-    assert.equal(body, readFileSync(file, 'utf8'), file);
+-  }
+-});
+-
+-test('SOLO Step 2: the package.json lines are the finished scripts', () => {
+-  const lines = [...section.matchAll(/```json\n\s*("[^"]+": "[^\n]*"),?\n\s*```/g)].map(([, line]) => JSON.parse(`{${line}}`));
+-  const { scripts } = JSON.parse(readFileSync('package.json', 'utf8'));
+-  assert.deepEqual(lines, [{ lesson2: scripts.lesson2 }, { verify: scripts.verify }]);
+-});
+diff --git a/test/solo-step3.test.mjs b/test/solo-step3.test.mjs
+new file mode 100644
+index 0000000..c0da03d
+--- /dev/null
++++ b/test/solo-step3.test.mjs
+@@ -0,0 +1,23 @@
++import assert from 'node:assert/strict';
++import { readFileSync } from 'node:fs';
++import { test } from 'node:test';
++
++// SOLO.md Step 3 shows the Step 3 files to read along. These checks fail when the text in SOLO.md
++// no longer matches the files on this branch.
++const solo = readFileSync('SOLO.md', 'utf8');
++const section = solo.slice(solo.indexOf('### Read along: what the Step 3 files contain'), solo.indexOf('## Step 4 ·'));
++
++test('SOLO Step 3: every file it shows is the file on this branch', () => {
++  const shown = [...section.matchAll(/`([^`\s]+\.(?:js|mjs|md|json))`[^\n]*:\n\n```\w*\n([\s\S]*?)\n```/g)];
++  assert.deepEqual(shown.map(([, file]) => file), [
++    '03-mcp/transaction-mcp/server.js',
++    '03-mcp/options.mjs',
++    '.mcp.json',
++    '.claude/agents/risk-agent.md',
++    '.claude/agents/customer-context-agent.md',
++    '03-mcp/claude-project/CLAUDE.md',
++  ]);
++  for (const [, file, body] of shown) {
++    assert.ok(readFileSync(file, 'utf8').includes(body), `${file} no longer matches SOLO.md Step 3`);
++  }
++});
 diff --git a/test/step3.test.mjs b/test/step3.test.mjs
 new file mode 100644
 index 0000000..335a278

@@ -138,7 +138,7 @@ index 0000000..ee27dcd
 +  additionalProperties: false,
 +};
 diff --git a/README.md b/README.md
-index 973db8e..4be62e6 100644
+index a5d5173..27c3351 100644
 --- a/README.md
 +++ b/README.md
 @@ -97,7 +97,8 @@ lib/chat.mjs                     interactive chat with optional session memory
@@ -197,6 +197,43 @@ index 133faf2..e035d5a 100644
    },
    "dependencies": {
      "@anthropic-ai/claude-agent-sdk": "0.3.281"
+diff --git a/test/solo-step2.test.mjs b/test/solo-step2.test.mjs
+new file mode 100644
+index 0000000..f793201
+--- /dev/null
++++ b/test/solo-step2.test.mjs
+@@ -0,0 +1,31 @@
++import assert from 'node:assert/strict';
++import { readFileSync } from 'node:fs';
++import { test } from 'node:test';
++
++// A participant builds Step 2 by copying SOLO.md (Option A). These checks fail when SOLO.md and the
++// finished Step 2 files on this branch drift apart.
++const solo = readFileSync('SOLO.md', 'utf8');
++const section = solo.slice(solo.indexOf('## Step 2 ·'), solo.indexOf('## Step 3 ·'));
++
++test('SOLO Step 2: every file it tells you to create is the finished file', () => {
++  const created = [...section.matchAll(/Create `([^`]+)`[^\n]*:\n\n```\w*\n([\s\S]*?)```/g)];
++  assert.deepEqual(created.map(([, file]) => file), [
++    '.claude/agents/risk-agent.md',
++    '.claude/agents/customer-reply-agent.md',
++    'lib/agents.mjs',
++    '02-subagents/agents.mjs',
++    '02-subagents/ticket-schema.mjs',
++    '02-subagents/options.mjs',
++    '02-subagents/agent.mjs',
++    '02-subagents/claude-project/CLAUDE.md',
++  ]);
++  for (const [, file, body] of created) {
++    assert.equal(body, readFileSync(file, 'utf8'), file);
++  }
++});
++
++test('SOLO Step 2: the package.json lines are the finished scripts', () => {
++  const lines = [...section.matchAll(/```json\n\s*("[^"]+": "[^\n]*"),?\n\s*```/g)].map(([, line]) => JSON.parse(`{${line}}`));
++  const { scripts } = JSON.parse(readFileSync('package.json', 'utf8'));
++  assert.deepEqual(lines, [{ lesson2: scripts.lesson2 }, { verify: scripts.verify }]);
++});
 diff --git a/test/step2.test.mjs b/test/step2.test.mjs
 new file mode 100644
 index 0000000..f815900

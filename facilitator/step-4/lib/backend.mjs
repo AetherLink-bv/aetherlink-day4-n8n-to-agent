@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { accessSync, constants, existsSync } from 'node:fs';
 import path from 'node:path';
+import { withUserSettingsEnv } from './user-settings-env.mjs';
 
 export const MIN_CLAUDE_CODE_VERSION = '2.1.205';
 export const BACKENDS = ['claude-code', 'sdk', 'sdk-login'];
@@ -101,8 +102,9 @@ export function toClaudeArgs(prompt, options = {}) {
     args.push('--agents', JSON.stringify(valuesForAgents(options.agents)));
   }
   if (options.mcpServers) {
-    args.push('--mcp-config', JSON.stringify({ mcpServers: options.mcpServers }), '--strict-mcp-config');
+    args.push('--mcp-config', JSON.stringify({ mcpServers: options.mcpServers }));
   }
+  args.push('--strict-mcp-config');
   if (options.outputFormat?.type === 'json_schema') {
     args.push('--json-schema', JSON.stringify(options.outputFormat.schema));
   }
@@ -141,7 +143,7 @@ export function assertSuccessfulResult(event) {
 
 export async function runClaudeCode({ command, prompt, options, onEvent, spawnImpl = spawn }) {
   const args = toClaudeArgs(prompt, options);
-  const env = { ...process.env };
+  const env = withUserSettingsEnv(process.env);
   delete env.ANTHROPIC_API_KEY;
   const child = spawnImpl(command, args, {
     cwd: options.cwd,
