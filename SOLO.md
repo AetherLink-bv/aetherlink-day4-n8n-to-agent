@@ -116,7 +116,7 @@ until Step 1. The line `Claude Code equivalent` shows what happens under the hoo
 **Look around:** `docs/customer-messages.md` (MSG-01 to MSG-10), `docs/transactions.xlsx`,
 `docs/customer_context.csv` (the file Maarten's Data Table was imported from),
 `docs/n8n-flow-diagram.html` (open it in your browser, next to your own n8n flow from
-yesterday), `lib/run.mjs` (the `query()` loop), and `01-single-agent/options.mjs` with its
+last session), `lib/run.mjs` (the `query()` loop), and `01-single-agent/options.mjs` with its
 `// STEP 1` TODOs.
 
 n8n then: Execute workflow or the Chat Message trigger started one run. SDK now:
@@ -402,7 +402,7 @@ Start with `Subject:` and end with `Draft — needs human approval before sendin
 Do not mention the internal risk note or the priority.
 ```
 
-This is the Claude Code subagent format, and it is exactly the split from yesterday's Risk Agent
+This is the Claude Code subagent format, and it is exactly the split from last session's Risk Agent
 settings: the frontmatter `description` is n8n's **Description** (it tells the orchestrator when
 to delegate), the body is n8n's **System Message** (the subagent's own prompt).
 
@@ -570,7 +570,7 @@ only asks for the missing facts; it does not make anything up.
 
 In `.claude/agents/risk-agent.md`, change the description to `Helps with things.` and run MSG-05
 again. Does the risk expert still run? It does not always change the result. The point is that
-nothing guarantees it any more. Yesterday the same thing happened in n8n when the Risk Agent's
+nothing guarantees it any more. Last session the same thing happened in n8n when the Risk Agent's
 Description was empty.
 
 ```sh
@@ -591,7 +591,7 @@ description.
 **Check your screen:** two `Agent` lines, first `risk-agent`, then `customer-reply-agent`. The draft
 only asks for the missing facts.
 
-**Discuss: who did what?** Which agent runs first, and why? Where is yesterday's n8n Description now?
+**Discuss: who did what?** Which agent runs first, and why? Where is last session's n8n Description now?
 
 ---
 
@@ -857,7 +857,7 @@ Catch up: `git switch step-4` (or `solution`).
 
 ## Stretch · Assignment: chat in, chat out
 
-Yesterday's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
+Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
 message comes back. Same assignment, in code:
 
 ```sh
@@ -879,8 +879,8 @@ available from a chat.
 1. Paste one customer message with a `TX-####` ID from `docs/customer-messages.md` and ask for the
    priority, the analysis and a reply draft.
 2. Watch the trace: which subagent ran, which MCP tool was called?
-3. Ask a follow-up in the same chat. Now the session is the memory, like Simple Memory yesterday.
-4. Explore, like "look at other nodes" yesterday: add a `SKILL.md` or a `PreToolUse` hook. What
+3. Ask a follow-up in the same chat. Now the session is the memory, like Simple Memory last session.
+4. Explore, like "look at other nodes" last session: add a `SKILL.md` or a `PreToolUse` hook. What
    would you change in `CLAUDE.md`?
 
 More stretch:
