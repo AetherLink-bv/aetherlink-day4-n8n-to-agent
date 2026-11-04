@@ -23,8 +23,8 @@ Open a new PowerShell window, log in once, and check the tools:
 claude
 node --version
 claude --version
-git clone https://github.com/RyanLisse/aetherlink-day5-n8n-to-agent.git
-cd aetherlink-day5-n8n-to-agent
+git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+cd aetherlink-day4-n8n-to-agent
 npm ci
 npm run doctor
 npm run verify
@@ -53,8 +53,8 @@ curl -fsSL https://claude.ai/install.sh | bash
 claude
 node --version
 claude --version
-git clone https://github.com/RyanLisse/aetherlink-day5-n8n-to-agent.git
-cd aetherlink-day5-n8n-to-agent
+git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+cd aetherlink-day4-n8n-to-agent
 npm ci
 npm run doctor
 npm run verify
@@ -71,8 +71,8 @@ curl -fsSL https://claude.ai/install.sh | bash
 claude
 node --version
 claude --version
-git clone https://github.com/RyanLisse/aetherlink-day5-n8n-to-agent.git
-cd aetherlink-day5-n8n-to-agent
+git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+cd aetherlink-day4-n8n-to-agent
 npm ci
 npm run doctor
 npm run verify

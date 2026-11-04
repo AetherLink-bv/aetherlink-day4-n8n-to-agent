@@ -82,8 +82,8 @@ npm run chat -- --dry-run
 
 ```sh
 node --version
-git clone https://github.com/RyanLisse/aetherlink-day5-n8n-to-agent.git
-cd aetherlink-day5-n8n-to-agent
+git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+cd aetherlink-day4-n8n-to-agent
 npm ci
 npm run verify
 npm run lesson1 -- MSG-01 --dry-run
