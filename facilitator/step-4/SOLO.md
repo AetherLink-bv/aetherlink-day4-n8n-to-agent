@@ -88,7 +88,7 @@ the options (still `{}`), a Claude Code equivalent, and `dry run — no model ca
 **Look around:** `docs/customer-messages.md` (MSG-01 to MSG-10), `docs/transactions.xlsx`,
 `docs/customer_context.csv` (the file Maarten's Data Table was imported from),
 `docs/n8n-flow-diagram.html` (open it in your browser, next to your own n8n flow from
-yesterday), `lib/run.mjs` (the `query()` loop), and `01-single-agent/options.mjs` with its
+last session), `lib/run.mjs` (the `query()` loop), and `01-single-agent/options.mjs` with its
 `// STEP 1` TODOs.
 
 n8n then: Execute workflow or the Chat Message trigger started one run. SDK now:
@@ -200,7 +200,7 @@ Copy the matching test from the finished branch so the hand-built verify covers 
 git checkout origin/step-1 -- test/step1.test.mjs
 ```
 
-**Build 4 — memory.** Yesterday Simple Memory remembered your favourite colour inside one chat.
+**Build 4 — memory.** Last session Simple Memory remembered your favourite colour inside one chat.
 Here the session is the memory: inside one `query()` the agent remembers every turn. Try:
 
 ```sh
@@ -315,7 +315,7 @@ Start with `Subject:` and end with `Draft — needs human approval before sendin
 Do not mention the internal risk note or the priority.
 ```
 
-This is the Claude Code subagent format, and it is exactly the split from yesterday's Risk Agent
+This is the Claude Code subagent format, and it is exactly the split from last session's Risk Agent
 settings: the frontmatter `description` is n8n's **Description** (it tells the orchestrator when
 to delegate), the body is n8n's **System Message** (the subagent's own prompt).
 
@@ -472,7 +472,7 @@ orchestrator did the work itself: run again and discuss why.
 
 **The description test.** Replace the `description:` of `.claude/agents/risk-agent.md` with
 something vague (`Helps with things.`) and rerun `MSG-05`. Does the orchestrator still delegate?
-Restore it with `git checkout origin/step-2 -- .claude/agents/risk-agent.md`. Yesterday the same
+Restore it with `git checkout origin/step-2 -- .claude/agents/risk-agent.md`. Last session the same
 thing happened in n8n when the Risk Agent's Description was empty. Catch up: `git switch step-2`.
 
 ---
@@ -749,7 +749,7 @@ Catch up: `git switch step-4` (or `solution`).
 
 **Goal:** build a small code-fixing agent and identify where its prompt, tools and result handling live.
 
-**n8n then / SDK now:** yesterday you connected nodes; here you compose a prompt, allowed tools and a query loop.
+**n8n then / SDK now:** last session you connected nodes; here you compose a prompt, allowed tools and a query loop.
 
 **How the loop works here:** the SDK yields assistant messages, tool uses and a final result. The allowed-tools list limits what the model can do; the permission mode controls edits.
 
@@ -773,7 +773,7 @@ claude -p "Find and fix the bug in utils.js. Explain the change." --allowedTools
 
 ## Stretch · Assignment: chat in, chat out
 
-Yesterday's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
+Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
 message comes back. Same assignment, in code:
 
 ```sh
@@ -795,8 +795,8 @@ available from a chat.
 1. Paste one customer message with a `TX-####` ID from `docs/customer-messages.md` and ask for the
    priority, the analysis and a reply draft.
 2. Watch the trace: which subagent ran, which MCP tool was called?
-3. Ask a follow-up in the same chat. Now the session is the memory, like Simple Memory yesterday.
-4. Explore, like "look at other nodes" yesterday: add a `SKILL.md` or a `PreToolUse` hook. What
+3. Ask a follow-up in the same chat. Now the session is the memory, like Simple Memory last session.
+4. Explore, like "look at other nodes" last session: add a `SKILL.md` or a `PreToolUse` hook. What
    would you change in `CLAUDE.md`?
 
 More stretch:
