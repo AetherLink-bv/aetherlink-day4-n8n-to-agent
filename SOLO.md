@@ -864,63 +864,65 @@ Fill the structured fields from the specialist agents' results: `priority`, `sen
 
 ## Step 4 · Acceptance table and `npm run check`
 
-**Goal:** check labels from your runs.
+**Goal:** compare your labels with the answer key, and record the evidence. Code where it must be
+exact (the check, the Switch), the agent where it may think (the label and the reason), and a person
+at the end (the draft and this table).
+
+**Done when:** `npm run check` shows your result, and the acceptance table is saved.
 
 ### How the check works
 
 The checker compares your labels with the answer key.
 It does not call a model.
 
-### Demo (facilitator)
+### Your turn · Step 4
 
-Run `npm run check` once.
-On a fresh clone, the command creates an empty `labels.json`.
-Fill it with labels from your own runs.
-Run `npm run check` a second time.
+1. Get the checker and run it once. The first run creates an empty file, `labels.json`. That is not
+   an error.
 
-Show one `correct` or `revise` line and the lesson totals.
+   ```sh
+   git checkout origin/step-4 -- check.mjs answer-key.json labels.template.json package.json
+   npm run check
+   ```
 
-### Your turn
+2. Fill in your labels. Open `labels.json` and enter `low`, `medium` or `high` for MSG-01 to MSG-09,
+   based on your own runs (Step 1 and Step 3). Save.
 
-Copy the Step 4 checker.
-Run it once to create `labels.json`.
-Fill it with labels from your own runs.
-Run `npm run check` a second time.
+3. Check them.
 
-```sh
-git checkout origin/step-4 -- check.mjs answer-key.json labels.template.json package.json
-npm run check
-```
+   ```sh
+   npm run check
+   ```
 
-The first run in a fresh clone creates an empty `labels.json`.
-It does not contain model results.
-Enter `low`, `medium` or `high` for each message that you ran.
-Leave the other labels empty.
-Run `npm run check` a second time:
+   For each message you see `correct` or `revise`, then the lesson totals, for example:
 
-```text
-MSG-01 correct
-MSG-02 revise
-Lesson 1 (MSG-01 to MSG-06): 5/6 REVISE
-Lesson 3 (MSG-01 to MSG-09): 5/9 REVISE
-```
+   ```text
+   MSG-01 correct
+   MSG-02 revise
+   Lesson 1 (MSG-01 to MSG-06): 5/6 REVISE
+   Lesson 3 (MSG-01 to MSG-09): 8/9 REVISE
+   ```
 
-(Example output only.) The check passes when Lesson 1 is 6/6 and no filled-in label is wrong;
-Lesson 3 passes at 9/9. `MSG-10` is not graded. `revise` means: reread the priority definitions and
-the trace. Do not change a label just to pass.
+   (Example output only.) Lesson 1 passes at 6/6, Lesson 3 at 9/9. `MSG-10` is not graded. `revise`
+   means: reread the priority definitions and the trace. Do not change a label just to pass.
 
-**Acceptance table** — copy and fill in:
+4. Fill in the acceptance table. For each message: the label, the facts from the desks, and whether a
+   person has read the draft.
 
-| Message | Agent label | Customer context (`get_customer`) | Transaction facts (`get_transaction`) | Draft reviewed by a person? |
-| --- | --- | --- | --- | --- |
-| MSG-01 | | | none | |
-| MSG-05 | | | none | |
-| MSG-07 | | | | |
-| MSG-08 | | | | |
-| MSG-09 | | | | |
+   | Message | Agent label | Customer context (`get_customer`) | Transaction facts (`get_transaction`) | Draft reviewed by a person? |
+   | --- | --- | --- | --- | --- |
+   | MSG-01 | | | none | |
+   | MSG-05 | | | none | |
+   | MSG-07 | | | | |
+   | MSG-08 | | | | |
+   | MSG-09 | | | | |
 
-Save the completed acceptance table in `participant-output/` or your squad's `intent.md`.
-Catch up: `git switch step-4` (or `solution`).
+5. Save it. Create the folder `participant-output/` in the package folder and save the table there as
+   `participant-output/acceptance-table.md`. Git ignores this folder, so your notes stay on your laptop.
+   Stuck? `git stash -u`, then `git switch step-4`.
+
+**Check your screen:** the first run of `npm run check` created `labels.json`. That is not an error.
+Fill in low, medium or high for each message, then run `npm run check` again.
 
 ---
 
