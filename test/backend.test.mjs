@@ -13,7 +13,7 @@ test('backend selection follows argument, environment, key, then Claude Code def
 
 test('toClaudeArgs maps lesson options to Claude Code flags', () => {
   const args = toClaudeArgs('Customer message', {
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     maxTurns: 3,
     model: 'sonnet',
     tools: [],
@@ -33,7 +33,7 @@ test('toClaudeArgs maps lesson options to Claude Code flags', () => {
   assert.deepEqual(args.slice(0, 5), ['-p', 'Customer message', '--output-format', 'stream-json', '--verbose']);
   assert.ok(args.includes('--tools') && args[args.indexOf('--tools') + 1] === '');
   assert.ok(args.includes('--append-system-prompt') && args.includes('Keep answers short.'));
-  assert.ok(args.includes('--setting-sources') && args.includes('project'));
+  assert.equal(args[args.indexOf('--setting-sources') + 1], 'project,user');
   assert.ok(args.includes('--max-turns') && args.includes('3'));
   assert.ok(args.includes('--allowedTools') && args.includes('Agent,mcp__customers__get_customer'));
   assert.ok(args.includes('--disallowedTools') && args.includes('Bash'));

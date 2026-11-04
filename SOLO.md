@@ -131,7 +131,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     tools: [],
     disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],
@@ -140,8 +140,10 @@ export function buildOptions() {
 }
 ```
 
-The system prompt is the built-in `claude_code` preset; `settingSources: ['project']` adds
-`claude-project/CLAUDE.md` on top of it. `maxTurns` is n8n's "Max Iterations".
+The system prompt is the built-in `claude_code` preset; `settingSources: ['project', 'user']` adds
+`claude-project/CLAUDE.md` on top of it, plus your own Claude Code user settings in `~/.claude`, which hold
+your login. Your own `~/.claude/CLAUDE.md` and MCP servers come along too, so an answer can differ a little
+from your neighbour's. `maxTurns` is n8n's "Max Iterations".
 
 **Build 2 — the prompt.** Replace `01-single-agent/claude-project/CLAUDE.md` with:
 
@@ -392,7 +394,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
@@ -566,7 +568,7 @@ const customerContext = path.join(path.dirname(lessonDirectory), 'docs', 'custom
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
