@@ -44,7 +44,8 @@ Every `--dry-run` works offline and shows the Claude Code equivalent.
 
 ## Step 0 · Setup, dry run, smoke test
 
-**Goal:** the project installs and a dry run shows what would be sent to the model.
+**Goal:** your laptop is ready, and a dry run shows what the agent would receive. The AI does nothing yet.
+Slides: "Demo · Step 0" and "Your turn · Step 0".
 
 ### How the loop works here
 
@@ -55,35 +56,62 @@ and result events. A chat session resumes its `sessionId` on the next turn; a le
 fresh session for one ticket. Read the [illustrative sample trace](docs/sample-trace.md); it is
 hand-written and is not model evidence.
 
-### Demo (facilitator) → Your turn
-
-**Goal:** see the offline route before changing code.
-
-**Facilitator demo:**
+### Demo (facilitator)
 
 ```sh
-npm run doctor
-npm run lesson1 -- MSG-01 --dry-run
-```
-
-Point out the prompt, options, Claude Code equivalent, and the dry-run disclaimer.
-
-**Your turn:** install the dependencies and run the same dry run below.
-
-```sh
-node --version          # v22 or newer
-git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
-cd aetherlink-day4-n8n-to-agent
 npm ci
 npm run doctor
 npm run verify
 npm run lesson1 -- MSG-01 --dry-run
-npm run chat -- --dry-run
 ```
 
-**Check:** `npm run verify` reports `# fail 0`. The dry run prints the customer ID and message,
-the options (still `{}`), a Claude Code equivalent, and `dry run — no model call, not model evidence`.
-`npm run chat -- --dry-run` prints the options and exits without authentication.
+Point out `meets minimum` after `doctor`, `fail 0` after `verify`, and `backend: claude-code` in the
+dry run: it uses your Claude Code login. The `{}` in the dry run is the agent's settings, still empty
+until Step 1. The line `Claude Code equivalent` shows what happens under the hood; you never type it.
+
+### Your turn · Step 0
+
+1. Open a terminal and go to your Documents folder. Windows: PowerShell. Mac: Terminal.
+
+   ```sh
+   cd ~/Documents
+   ```
+
+2. Download the package. This gives you your own copy.
+
+   ```sh
+   git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+   ```
+
+3. Go into the folder and install the parts. This takes about a minute. Lines that start with
+   `npm warn` are fine. A line that starts with `npm error` means something went wrong: ask for help.
+
+   ```sh
+   cd aetherlink-day4-n8n-to-agent
+   npm ci
+   ```
+
+4. Run the health check and the tests. Look for: `meets minimum` and `fail 0`.
+
+   ```sh
+   npm run doctor
+   npm run verify
+   ```
+
+5. Do a dress rehearsal. The last line reads `dry run — no model call`. That is correct: the AI does
+   nothing yet. Keep `--dry-run` until you have built Step 1: without it, the package stops and says
+   `Step 1 is not built yet`.
+
+   ```sh
+   npm run lesson1 -- MSG-01 --dry-run
+   ```
+
+**Done when:** `npm run verify` shows `fail 0`, and the dry run ends with `dry run — no model call`.
+`npm run verify` also runs the chat dry run, so there is no separate step for that.
+
+**Company laptop (Vertex AI or Bedrock):** you do not need an API key or a `.env` file. The
+`Login settings` line of `npm run doctor` shows what the package found. See
+[Set up Workshop 4](docs/SETUP.md), Company login.
 
 **Look around:** `docs/customer-messages.md` (MSG-01 to MSG-10), `docs/transactions.xlsx`,
 `docs/customer_context.csv` (the file Maarten's Data Table was imported from),
@@ -102,25 +130,32 @@ instructions and optional API-key use with the `sdk` backend.
 
 ## Step 1 · One agent + system prompt + Priority Parser
 
-**Goal:** one agent classifies a customer message as LOW, MEDIUM or HIGH, guided by project
-instructions. n8n then: the AI Agent node with a System Message, before any sub agent (Maarten's
-slide 4). SDK now: `query()` with options, and the system message lives in `CLAUDE.md`.
+**Goal:** one agent with work instructions (`CLAUDE.md`) and a form with two fields: priority and
+reason. A fixed form makes the answer predictable, so the code can sort it. n8n then: the AI Agent
+node with a System Message and the Priority Parser. SDK now: `query()` with options; the system
+message lives in `CLAUDE.md` and the parser is a JSON schema.
+
+**Done when:** you have written down six labels and tested the tone trap.
 
 ### How the loop works here
 
 `buildOptions()` loads the project instructions, tools and JSON schema; the result event prints
-the parsed priority and the Switch route.
+the parsed priority and the Switch route. The AI gives the label. The code picks the tray.
 
-### Demo (facilitator) → Your turn
+### Demo (facilitator)
 
-**Goal:** compare the offline command with the completed structured result.
+1. Dress rehearsal: `npm run lesson1 -- MSG-01 --dry-run`. Look for `outputFormat`: that is the form.
+2. A real run: `npm run lesson1 -- MSG-01`. Look for `Structured output`, and `Switch → low`.
+3. Memory: `npm run chat`. Give it a colour, then ask for it back. Then try again with `--no-memory`.
 
-**Facilitator demo:** run `npm run lesson1 -- MSG-01 --dry-run`, then show a completed run or the
-illustrative trace in `docs/sample-trace.md`. Point out `Structured output:` and `Switch → low`.
+No internet or no login? Show [docs/sample-trace.md](docs/sample-trace.md) and say clearly that it
+is a sample.
 
-**Your turn:** build the options, prompt and schema below; then use the dry-run and chat commands.
+### Your turn · Step 1a: build the agent
 
-**Build 1 — the options.** Replace the entire `01-single-agent/options.mjs` file:
+Copy the code below; there is no need to type it.
+
+**Build 1 — the settings.** Replace the entire `01-single-agent/options.mjs` file:
 
 ```js
 import path from 'node:path';
@@ -143,7 +178,7 @@ export function buildOptions() {
 The system prompt is the built-in `claude_code` preset; `settingSources: ['project']` adds
 `claude-project/CLAUDE.md` on top of it. `maxTurns` is n8n's "Max Iterations".
 
-**Build 2 — the prompt.** Replace `01-single-agent/claude-project/CLAUDE.md` with:
+**Build 2 — the work instructions.** Replace `01-single-agent/claude-project/CLAUDE.md` with:
 
 ```markdown
 # Customer Support Triage
@@ -169,7 +204,7 @@ Return the priority (`low`, `medium` or `high`) and a reason of one or two sente
 The SDK turns this into JSON (the Priority Parser).
 ```
 
-**Build 3 — the Priority Parser.** Create `01-single-agent/priority-schema.mjs`:
+**Build 3 — the form.** Create `01-single-agent/priority-schema.mjs`:
 
 ```js
 export const prioritySchema = {
@@ -183,77 +218,112 @@ export const prioritySchema = {
 };
 ```
 
-Import it from `./priority-schema.mjs` and add this property to `buildOptions()`:
+Then open `01-single-agent/options.mjs` again and make two changes. People often forget the second one.
 
-```js
-outputFormat: { type: 'json_schema', schema: prioritySchema },
-```
+1. Add this import line at the very top of the file:
 
-The structured output parser needs an extra turn, so leave `maxTurns: 3`. A live result trace prints
-the parsed JSON and a `Switch → low → AUTO_REPLY (Self-service support)` route.
-After building Step 1, offline inspect `01-single-agent/priority-schema.mjs`, the dry-run
-`outputFormat`, and `lib/switch.mjs`. The JSON result and `Switch →` line require a logged-in Claude
-Code run or `docs/sample-trace.md` labelled as a sample.
-Copy the matching test from the finished branch so the hand-built verify covers this step:
+   ```js
+   import { prioritySchema } from './priority-schema.mjs';
+   ```
+
+2. Add this line inside `buildOptions()`, directly under `maxTurns: 3,`:
+
+   ```js
+       outputFormat: { type: 'json_schema', schema: prioritySchema },
+   ```
+
+The structured output parser needs an extra turn, so leave `maxTurns: 3`.
+
+**Test it.** Copy the Step 1 test from the finished branch and run the tests:
 
 ```sh
 git checkout origin/step-1 -- test/step1.test.mjs
+npm run verify
 ```
 
-**Build 4 — memory.** Yesterday Simple Memory remembered your favourite colour inside one chat.
-Here the session is the memory: inside one `query()` the agent remembers every turn. Try:
+Look for: `fail 0`. Does verify fail on the schema? Then the import line or the `outputFormat` line is
+missing in `options.mjs`. Stuck? `git stash -u`, then `git switch step-1` gives you the finished version.
 
-```sh
-npm run chat
-you> My favorite color is red
-you> What is my favorite color?
-you> exit
-npm run chat -- --no-memory
-you> My favorite color is red
-you> What is my favorite color?
-you> exit
-```
+### Your turn · Step 1b: look inside and test memory
+
+1. Do a dress rehearsal. You see the settings the agent receives. Find `outputFormat`: that is the form.
+
+   ```sh
+   npm run lesson1 -- MSG-01 --dry-run
+   ```
+
+2. Open `01-single-agent/priority-schema.mjs` and `lib/switch.mjs`. The schema defines what the answer
+   looks like. The Switch picks the route: the code decides, not the model.
+
+3. Start the chat and give it something to remember. Type `My favourite colour is red`. Then ask
+   `What is my favourite colour?`. Type `exit` to stop.
+
+   ```sh
+   npm run chat
+   ```
+
+4. Do it again, without memory. Ask the same question. This time it does not know: every message is a
+   new conversation.
+
+   ```sh
+   npm run chat -- --no-memory
+   ```
+
+**Done when:** you can point at the schema and the Switch, and say why only the first chat remembered red.
 
 The default chat resumes the previous `sessionId`; `--no-memory` starts a new query each turn.
 Every `npm run lesson1` is a fresh session on purpose (one ticket = one case).
 Free-form chat is the default; use `npm run chat -- --lesson 1 --structured` to keep the lesson schema.
+The chat follows `CLAUDE.md` too, so even "My favourite colour is red" can get a priority.
 
-**Run:**
+### Your turn · Step 1c: six messages and the tone trap
 
-```sh
-npm run lesson1 -- MSG-01 --dry-run
-npm run chat -- --lesson 1 --dry-run
-npm run lesson1 -- MSG-01
-npm run lesson1 -- MSG-02
-npm run lesson1 -- MSG-03
-npm run lesson1 -- MSG-04
-npm run lesson1 -- MSG-05
-npm run lesson1 -- MSG-06
-```
+1. Label six messages, one by one. Then run MSG-02 to MSG-06. Write each label down (low, medium or
+   high) on paper or in a notes file: you enter them in Step 4.
 
-Write down the label for each message. You need them in Step 4.
+   ```sh
+   npm run lesson1 -- MSG-01
+   ```
 
-**The tone trap.** Cut the whole `## Priority definitions` section out of
-`01-single-agent/claude-project/CLAUDE.md` and save. Rerun:
+2. Remove the rules for high, medium and low. In `01-single-agent/claude-project/CLAUDE.md`, select
+   everything from the line `## Priority definitions` up to the next line that starts with `##`. Cut it
+   (Ctrl+X) and save (Ctrl+S).
 
-```sh
-npm run lesson1 -- MSG-01
-npm run lesson1 -- MSG-06
-```
+3. Run two messages again. For MSG-01 and MSG-06, write down: the same label as before, or a different one?
 
-Compare with your first results, then paste the section back. (Lost it? Run
-`git checkout origin/step-1 -- 01-single-agent/claude-project/CLAUDE.md`.)
+   ```sh
+   npm run lesson1 -- MSG-01
+   npm run lesson1 -- MSG-06
+   ```
+
+4. Put the rules back. Paste the section back in the same place (Ctrl+V) and save. Lost it? Run:
+
+   ```sh
+   git checkout origin/step-1 -- 01-single-agent/claude-project/CLAUDE.md
+   ```
+
+5. Check that it still works. Look for: `fail 0`.
+
+   ```sh
+   npm run verify
+   ```
+
+**Done when:** six labels are written down, the tone trap is compared, `CLAUDE.md` is restored, and `fail 0`.
 
 **What changed in the prompt:** without the definitions the model judges by tone, so a loud
-message can look urgent and a calm one harmless. The definitions plus the line
+message can look urgent and a calm one harmless. A strong model often still gets MSG-01 and MSG-06
+right, but now nothing in the file guarantees it. The definitions plus the line
 `Judge impact and risk, not tone: angry wording alone never raises the priority, and calm
 wording never lowers it.` make impact the rule.
 
-**Check:** six runs done, the tone-trap comparison noted, `CLAUDE.md` restored,
-`npm run verify` still green. Catch up: `git switch step-1`.
+**Check your screen:** after a real run you see `Structured output` (the completed form: priority
+and reason) and a `Switch →` line, for example `Switch → low → AUTO_REPLY`. The code picked the tray,
+not the AI. The reason text is different on every run.
 
-**Discuss:** what does the main agent know? Instructions come from `CLAUDE.md`; the customer
-message is data, not an instruction. Share your screen: one run, and where you got stuck.
+**Discuss: who decides what?** Which values can priority have? Who picks the route: the AI or the
+code? What changes with `--no-memory`?
+
+Catch up: `git stash -u`, then `git switch step-1`.
 
 ---
 
