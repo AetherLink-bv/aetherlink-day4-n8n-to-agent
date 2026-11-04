@@ -72,8 +72,8 @@ Point out the prompt, options, Claude Code equivalent, and the dry-run disclaime
 
 ```sh
 node --version          # v22 or newer
-git clone https://github.com/RyanLisse/aetherlink-day5-n8n-to-agent.git
-cd aetherlink-day5-n8n-to-agent
+git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+cd aetherlink-day4-n8n-to-agent
 npm ci
 npm run doctor
 npm run verify
@@ -775,14 +775,14 @@ Yesterday's assignment: the ticket goes in via the Chat Input, through the whole
 message comes back. Same assignment, in code:
 
 ```sh
-cd aetherlink-day5-n8n-to-agent
+cd aetherlink-day4-n8n-to-agent
 npm run chat -- --lesson 3
 ```
 
 Or use Claude Code:
 
 ```sh
-cd aetherlink-day5-n8n-to-agent
+cd aetherlink-day4-n8n-to-agent
 claude
 ```
 
