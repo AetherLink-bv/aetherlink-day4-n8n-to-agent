@@ -166,7 +166,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     tools: [],
     disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],
@@ -175,8 +175,14 @@ export function buildOptions() {
 }
 ```
 
-The system prompt is the built-in `claude_code` preset; `settingSources: ['project']` adds
-`claude-project/CLAUDE.md` on top of it. `maxTurns` is n8n's "Max Iterations".
+The system prompt is the built-in `claude_code` preset. `settingSources` adds two layers on top of it.
+`'project'` loads `claude-project/CLAUDE.md`, the work instructions of this agent. `'user'` loads your
+own Claude Code setup from `~/.claude`: your `settings.json` (with its `env` block and permissions), your
+personal `CLAUDE.md`, your hooks and your plugins. The agent now starts the same way as `claude` in your terminal.
+MCP servers and claude.ai connectors from your account stay off, because the package passes a strict MCP
+config. Two things to watch. If your personal `CLAUDE.md` asks for a tone or a format, the agent can follow
+it in this lesson too. A large personal setup is sent with every run, so each run costs more.
+`maxTurns` is n8n's "Max Iterations".
 
 **Build 2 — the work instructions.** Replace `01-single-agent/claude-project/CLAUDE.md` with:
 
@@ -480,7 +486,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
@@ -730,7 +736,7 @@ const customerContext = path.join(path.dirname(lessonDirectory), 'docs', 'custom
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
