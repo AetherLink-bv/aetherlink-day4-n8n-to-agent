@@ -120,7 +120,7 @@ nodes has a place in code:
 | --- | --- | --- |
 | Execute workflow / Chat Message trigger | `npm run lessonN -- MSG-0N` or `npm run chat`: input becomes the `prompt` of `query()` | 0 |
 | AI Agent node + OpenAI Chat Model | `query({ prompt, options })` in `lib/run.mjs` | 1 |
-| System Message | `CLAUDE.md`, loaded by `settingSources: ['project']` | 1 |
+| System Message | `CLAUDE.md`, loaded by the `'project'` entry of `settingSources: ['project', 'user']` | 1 |
 | Max Iterations | `maxTurns` | 1 |
 | Simple Memory | `npm run chat` resumes each turn with `resume: sessionId`; `--no-memory` starts each turn fresh | 0 |
 | Priority Parser (structured output) | `outputFormat: { type: 'json_schema', schema }` | 1 |
