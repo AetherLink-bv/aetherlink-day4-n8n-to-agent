@@ -215,7 +215,7 @@ index 8dbd263..9deedd2 100644
    and `docs/n8n-flow-diagram.html`. Only the MCP server reads the workbook.
  - Run `npm run verify` before you push.
 diff --git a/README.md b/README.md
-index 4be62e6..aaf4bc2 100644
+index 27c3351..c4e3b5c 100644
 --- a/README.md
 +++ b/README.md
 @@ -83,6 +83,13 @@ See what a step adds: `git diff origin/main origin/step-1`,
@@ -382,63 +382,10 @@ index 4be62e6..aaf4bc2 100644
  
  ## Earlier version
 diff --git a/SOLO.md b/SOLO.md
-index 1e8ada7..cb18117 100644
+index 3adbf95..06e3049 100644
 --- a/SOLO.md
 +++ b/SOLO.md
-@@ -683,31 +683,39 @@ draft for a person to review before sending. Catch up: `git switch step-3`.
- 
- ## Step 4 · Acceptance table and `npm run check`
- 
--**Goal:** check your labels and record the evidence.
-+**Goal:** check labels from your runs.
- 
--### How the loop works here
-+### How the check works
- 
--The offline checker compares your entered labels with the answer key; it does not call a model.
-+The checker compares your labels with the answer key.
-+It does not call a model.
- 
--### Demo (facilitator) → Your turn
-+### Demo (facilitator)
-+
-+Run `npm run check` once.
-+On a fresh clone, the command creates an empty `labels.json`.
-+Fill it with labels from your own runs.
-+Run `npm run check` a second time.
- 
--**Goal:** see how completed labels are checked without treating example output as model evidence.
-+Show one `correct` or `revise` line and the lesson totals.
- 
--**Facilitator demo:** run `npm run check` with a prepared `labels.json` filled using labels from
--your own runs, then show the `correct` or `revise` lines plus the Lesson totals. A fresh clone only
--creates the empty file on its first check.
-+### Your turn
- 
--**Your turn:** copy the Step 4 checker, run it once to create `labels.json`, fill it with labels from
--your own runs, then run `npm run check` a second time.
-+Copy the Step 4 checker.
-+Run it once to create `labels.json`.
-+Fill it with labels from your own runs.
-+Run `npm run check` a second time.
- 
- ```sh
- git checkout origin/step-4 -- check.mjs answer-key.json labels.template.json package.json
- npm run check
- ```
- 
--The first run in a fresh clone creates an empty `labels.json`; it does not contain model results.
--Fill in `low`, `medium` or `high` from your own runs for each message you ran, leave the rest empty,
--and run `npm run check` a second time:
-+The first run in a fresh clone creates an empty `labels.json`.
-+It does not contain model results.
-+Enter `low`, `medium` or `high` for each message that you ran.
-+Leave the other labels empty.
-+Run `npm run check` a second time:
- 
- ```text
- MSG-01 correct
-@@ -735,6 +743,32 @@ Catch up: `git switch step-4` (or `solution`).
+@@ -926,6 +926,32 @@ Fill in low, medium or high for each message, then run `npm run check` again.
  
  ---
  
@@ -446,7 +393,7 @@ index 1e8ada7..cb18117 100644
 +
 +**Goal:** build a small code-fixing agent and identify where its prompt, tools and result handling live.
 +
-+**n8n then / SDK now:** yesterday you connected nodes; here you compose a prompt, allowed tools and a query loop.
++**n8n then / SDK now:** last session you connected nodes; here you compose a prompt, allowed tools and a query loop.
 +
 +**How the loop works here:** the SDK yields assistant messages, tool uses and a final result. The allowed-tools list limits what the model can do; the permission mode controls edits.
 +
@@ -462,7 +409,7 @@ index 1e8ada7..cb18117 100644
 +
 +**Check:** explain which message is a tool use and which is the final result.
 +
-+**Catch up:** `git switch step-4`.
++**Catch up:** `git stash -u`, then `git switch step-4`.
 +
 +**Discuss:** what prompt or tool would make this agent useful for your own work?
 +
@@ -470,8 +417,8 @@ index 1e8ada7..cb18117 100644
 +
  ## Stretch · Assignment: chat in, chat out
  
- Yesterday's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
-@@ -768,6 +802,177 @@ More stretch:
+ Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
+@@ -959,6 +985,291 @@ More stretch:
  - Run `MSG-07` to `MSG-09` with `lesson2` (no tool) and compare with `lesson3`.
  - Compare the customer and transaction facts returned by the read-only MCP tools.
  
@@ -494,21 +441,67 @@ index 1e8ada7..cb18117 100644
 +**Demo (facilitator).** Show the three Zod input schemas in `03-mcp/transaction-mcp/server.js`.
 +Run one update. Show the JSON copy. Then run `npm run reset:mcp`.
 +
-+**Your turn:**
++**Your turn.** Start on `step-4` and run `npm run check:assignment`: each red line names one file
++and one change. Fix one line at a time.
 +
 +1. Add `add_transaction`, `update_transaction` and `delete_transaction` to
-+   `03-mcp/transaction-mcp/server.js`. Use Zod input schemas.
++   `03-mcp/transaction-mcp/server.js`. Use Zod input schemas. Register them only when
++   `process.env.TRANSACTIONS_WRITES_ENABLED === '1'`, so the Step 3 lesson stays read-only.
 +2. Use the starter `03-mcp/transaction-mcp/store.mjs` to load and save the JSON copy.
 +   Add it to `server.js` when you add write tools.
 +   Use the starter `03-mcp/transaction-mcp/reset.mjs`; `npm run reset:mcp` removes the copy and drafts.
 +3. Create `03-mcp/claude-project/.claude/agents/transaction-agent.md` with `name: transaction-agent`.
 +   Give it exactly these tools: `get_transaction`, `update_transaction` and `add_transaction`.
-+4. Add `transaction-agent` to the SDK `agents` option and the Claude Code agent files.
-+   Keep write tools out of the orchestrator's `allowedTools`.
++4. In `03-mcp/options.mjs`, export `buildResolveOptions({ backend })`: the Step 3 options plus
++   `transaction-agent` in `agents` (same three tools). Keep write tools out of the orchestrator's
++   `allowedTools`, and give the transactions server `TRANSACTIONS_WRITES_ENABLED: '1'` in its `env`.
++5. Create `03-mcp/claude-project/.mcp.json` so interactive Claude Code in that folder gets the
++   desks with writes enabled:
++
++   ```json
++   {
++     "mcpServers": {
++       "transactions": {
++         "type": "stdio",
++         "command": "node",
++         "args": [
++           "../transaction-mcp/server.js"
++         ],
++         "env": {
++           "TRANSACTIONS_WRITES_ENABLED": "1"
++         }
++       },
++       "customers": {
++         "type": "stdio",
++         "command": "node",
++         "args": [
++           "../transaction-mcp/customers.js"
++         ]
++       }
++     }
++   }
++   ```
++
++6. Add these three rules to `03-mcp/claude-project/CLAUDE.md`, word for word (the check looks for them):
++
++   ```markdown
++   - Only `transaction-agent` changes transactions in the final assignment.
++   - Always look up a transaction before you write.
++   - A denied write is final. Do not retry it or ask another agent to write.
++   ```
++
++7. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
++8. Treat the added sentence as the only customer claim, not a confirmed fact.
++9. Copy each status and existing detail exactly.
++10. Change status only when the ticket and tool results support a new status.
++    Otherwise, keep the current status exactly.
 +
 +**Done when:** a smoke test adds, updates and deletes records in a new temporary store.
 +Check that the workbook hash stays the same.
 +Make `transaction-agent` look up a record before it writes.
++Check that it keeps existing `issue_details` and appends one claim with the label `MSG-0N (customer report):`.
++Change status only when the ticket and tool results support a new status.
++Otherwise, check that it keeps the current status exactly.
 +
 +### Part 2 · Add conditional approval hooks (core)
 +
@@ -535,14 +528,57 @@ index 1e8ada7..cb18117 100644
 +
 +**Your turn:**
 +
-+1. Add `03-mcp/hooks/transaction-guard.mjs`.
-+   Register it for write tools in both backends.
++1. Add `03-mcp/hooks/transaction-guard.mjs`. Export `createSdkHooks()` with a `PreToolUse` and a
++   `PostToolUse` callback, and let the file also run as a command (`pre` or `post`).
 +2. Allow reads without a prompt.
 +   Check transaction IDs and statuses before writes.
 +3. Allow updates below €100 without a prompt.
 +   Ask a person before larger updates, adds and deletes.
 +4. Add one JSON line to `participant-output/audit.jsonl` after each write.
-+5. Tell the orchestrator and `transaction-agent` to stop after a denial.
++5. Register the hook in both backends. SDK: add `hooks: createSdkHooks()` to `buildResolveOptions()`
++   for the SDK backends. Claude Code: create `03-mcp/claude-project/.claude/settings.json`:
++
++   ```json
++   {
++     "hooks": {
++       "PreToolUse": [
++         {
++           "matcher": "mcp__transactions__(add|update|delete)_transaction|mcp__drafts__save_reply_draft",
++           "hooks": [
++             {
++               "type": "command",
++               "command": "node ../hooks/transaction-guard.mjs pre"
++             }
++           ]
++         }
++       ],
++       "PostToolUse": [
++         {
++           "matcher": "mcp__transactions__(add|update|delete)_transaction|mcp__drafts__save_reply_draft",
++           "hooks": [
++             {
++               "type": "command",
++               "command": "node ../hooks/transaction-guard.mjs post"
++             }
++           ]
++         }
++       ]
++     }
++   }
++   ```
++
++   The `mcp__drafts__save_reply_draft` part of the matcher is for Part 3; it does no harm before then.
++6. Tell the orchestrator and `transaction-agent` to stop after a denial (the third rule in Part 1).
++
++Check the core:
++
++```sh
++npm run check:assignment
++npm run hook:demo -- small
++npm run hook:demo -- large
++```
++
++Look for: `Core · Parts 1–2: passed`, `Decision: allow` and `Decision: ask`.
 +
 +**Done when:** the offline hook check covers all five table rows.
 +Use this exact reason when a person denies a write:
@@ -558,7 +594,7 @@ index 1e8ada7..cb18117 100644
 +It returns `fraud_risk`, `signals` and `hold`.
 +Stop before a write when `hold` is true or risk is high.
 +
-+**Demo (facilitator).** Save a draft for `MSG-03`.
++**Demo (facilitator).** Save a draft for `MSG-07`.
 +Show the header and the saved path.
 +Ask `fraud-check-agent` to check a transaction.
 +Show its JSON result.
@@ -602,13 +638,25 @@ index 1e8ada7..cb18117 100644
 +Without a TTY, report `ESCALATE` and stop.
 +Use interactive `claude --allowedTools AskUserQuestion` for the Claude Code prompt.
 +The `claude -p` workflow excludes this tool and reports `ESCALATE`.
++Keep `AskUserQuestion` in SDK `tools`, but not in SDK `allowedTools`.
 +
-+**Demo (facilitator).** Run `npm run resolve -- MSG-03 --backend sdk`.
-+Use `TX-1003` as the supplied training target.
-+Change `PENDING` to `COMPLETED`.
-+Approve one run. Deny one run.
-+Do not claim that TX-1003 belongs to the customer in MSG-03.
-+Do not retry or ask another agent to write after a denial.
++**Demo (facilitator).** Run `npm run resolve -- MSG-07 --backend sdk-login` in your own terminal (or `--backend sdk` with an API key).
++MSG-07 links CUST-007 to TX-1007, Vertex Commerce.
++The amount is €899. The status is FAILED.
++The note says "amount appears reserved."
++Approve one run with `y`. Deny another run with `N`.
++After approval, check the labelled customer report in `issue_details`.
++Check that the status stays `FAILED`.
++Check that a denial stops without a retry, another agent, or a draft.
++Run MSG-08. TX-1014 has `Fraud Flag Yes`.
++Check that the workflow reports `ESCALATE` and makes no write.
++Run MSG-09. CUST-004 does not match TX-1018, which belongs to Juniper Hotels.
++Choose Escalate in the question. Check that the workflow makes no write.
++Run MSG-09 without a TTY. Check that the workflow reports `ESCALATE`.
++Run `npm run hook:demo -- small`.
++Use `large`, `add`, `delete`, or `read` for another case.
++The small fixture uses TX-1002 (€49.99). The large fixture uses TX-1007 (€899).
++No ticket fits a small update. Do not invent one.
 +
 +**Your turn:**
 +
@@ -616,14 +664,15 @@ index 1e8ada7..cb18117 100644
 +2. Return the person's answer through `updatedInput`.
 +3. Deny the question when no TTY can answer.
 +4. Give `AskUserQuestion` to the orchestrator only.
-+5. Add the fraud check and question rules to `CLAUDE.md`.
-+6. Add `npm run resolve -- MSG-0N [--backend sdk|claude-code] [--dry-run]`.
-+7. Add `.claude/commands/resolve-ticket.md` with the same workflow.
-+8. Call `fraud-check-agent` before a write.
-+9. Stop with `ESCALATE` when `hold` is true or risk is high.
-+10. Save the reply draft with `customer-reply-agent`.
-+11. Add tests for the question handler and the resolve dry run.
-+12. Extend `scripts/check-assignment.mjs` and its tests.
++5. Keep it in SDK `tools`, but not in SDK `allowedTools`.
++6. Add the fraud check and question rules to `CLAUDE.md`.
++7. Add `npm run resolve -- MSG-0N [--backend sdk|claude-code] [--dry-run]`.
++8. Add `.claude/commands/resolve-ticket.md` with the same workflow.
++9. Call `fraud-check-agent` before a write.
++10. Stop with `ESCALATE` when `hold` is true or risk is high.
++11. Save the reply draft with `customer-reply-agent`.
++12. Add tests for the question handler and the resolve dry run.
++13. Extend `scripts/check-assignment.mjs` and its tests.
 +
 +**Where and why.** Edit `ask-human.mjs` to handle SDK questions.
 +Edit `options.mjs` to give the tool to the orchestrator.
@@ -631,6 +680,18 @@ index 1e8ada7..cb18117 100644
 +Edit `resolve-ticket.md` to run it in interactive Claude Code.
 +Edit `CLAUDE.md` to state the agent rules.
 +Edit `check-assignment.mjs` to check the rules without a model.
++Use the starter `03-mcp/hook-demo.mjs` to send fixture JSON to the real hook.
++
++**Test it.** In your own terminal (not inside another tool), run:
++
++```sh
++npm run resolve -- MSG-07 --backend sdk-login
++```
++
++Answer `N` to `Approve update_transaction (TX-1007, amount 899)? [y/N]`: the barrier says no and the
++agent stops, without a retry or a draft. With the default backend (`claude-code`) nobody is asked: the
++barrier stops a change of €100 or more by itself and the run reports `denied`. Then run
++`npm run reset:mcp` to reset the working copy.
 +
 +**Done when:** the resolve dry run lists every step and branch.
 +The SDK test checks a TTY answer and a no-TTY denial.
@@ -1503,6 +1564,35 @@ index 0000000..b81e141
 +    rmSync(directory, { recursive: true, force: true });
 +  }
 +});
+diff --git a/test/solo-step3.test.mjs b/test/solo-step3.test.mjs
+deleted file mode 100644
+index c0da03d..0000000
+--- a/test/solo-step3.test.mjs
++++ /dev/null
+@@ -1,23 +0,0 @@
+-import assert from 'node:assert/strict';
+-import { readFileSync } from 'node:fs';
+-import { test } from 'node:test';
+-
+-// SOLO.md Step 3 shows the Step 3 files to read along. These checks fail when the text in SOLO.md
+-// no longer matches the files on this branch.
+-const solo = readFileSync('SOLO.md', 'utf8');
+-const section = solo.slice(solo.indexOf('### Read along: what the Step 3 files contain'), solo.indexOf('## Step 4 ·'));
+-
+-test('SOLO Step 3: every file it shows is the file on this branch', () => {
+-  const shown = [...section.matchAll(/`([^`\s]+\.(?:js|mjs|md|json))`[^\n]*:\n\n```\w*\n([\s\S]*?)\n```/g)];
+-  assert.deepEqual(shown.map(([, file]) => file), [
+-    '03-mcp/transaction-mcp/server.js',
+-    '03-mcp/options.mjs',
+-    '.mcp.json',
+-    '.claude/agents/risk-agent.md',
+-    '.claude/agents/customer-context-agent.md',
+-    '03-mcp/claude-project/CLAUDE.md',
+-  ]);
+-  for (const [, file, body] of shown) {
+-    assert.ok(readFileSync(file, 'utf8').includes(body), `${file} no longer matches SOLO.md Step 3`);
+-  }
+-});
 diff --git a/test/step4.test.mjs b/test/step4.test.mjs
 new file mode 100644
 index 0000000..ab9de2a

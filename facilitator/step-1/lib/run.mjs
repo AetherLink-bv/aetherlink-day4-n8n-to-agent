@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseMessages } from './messages.mjs';
 import { route } from './switch.mjs';
+import { withUserSettingsEnv } from './user-settings-env.mjs';
 import {
   backendLabel,
   assertSuccessfulResult,
@@ -17,7 +18,16 @@ import {
 const packageDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const messagesPath = path.join(packageDirectory, 'docs', 'customer-messages.md');
 
-export async function runLesson({ buildOptions, dryRunNote }) {
+export async function runLesson(lesson) {
+  try {
+    await runLessonUnsafe(lesson);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exitCode = 1;
+  }
+}
+
+async function runLessonUnsafe({ buildOptions, dryRunNote }) {
   let backendArgument;
   const args = [];
   const inputArgs = process.argv.slice(2);
@@ -55,6 +65,13 @@ export async function runLesson({ buildOptions, dryRunNote }) {
 
   const prompt = `Customer message ${message.id}\nCustomer: ${message.customer}\nSubject: ${message.subject}\n\n${message.message}`;
   await runQuery({ prompt, options: buildOptions(), dryRun, dryRunNote, backendArgument });
+}
+
+// On main the options are still {}: a live run would then get every tool and the participant's own Claude settings.
+export function assertOptionsBuilt(options) {
+  if (Object.keys(options ?? {}).length === 0) {
+    throw new Error('Step 1 is not built yet: the agent options are still {}. Do Build 1 to 3 in SOLO.md first, or add --dry-run.');
+  }
 }
 
 export function assertBackendAccess(backend) {
@@ -136,6 +153,16 @@ export async function runQuery({ prompt, options, dryRun, dryRunNote, backendArg
   return runWithBackend({ prompt, options, dryRun, dryRunNote, backendArgument });
 }
 
+// Only the lesson's own MCP servers: without this, every subagent also gets the claude.ai connectors
+// of the participant's account (Step 2 and the assignment cost dollars instead of cents).
+export function sdkQueryOptions(options, backend, env = process.env) {
+  const sdkOptions = { ...options, strictMcpConfig: true };
+  if (backend === 'sdk-login') {
+    sdkOptions.env = withUserSettingsEnv(env);
+  }
+  return sdkOptions;
+}
+
 export async function runWithBackend({ prompt, options, dryRun, dryRunNote, backendArgument }) {
   const backend = selectBackend({ argument: backendArgument });
   const claudeArgs = toClaudeArgs(prompt, options);
@@ -153,6 +180,7 @@ export async function runWithBackend({ prompt, options, dryRun, dryRunNote, back
   }
 
   const command = assertBackendAccess(backend);
+  assertOptionsBuilt(options);
 
   if (backend === 'claude-code') {
     return runClaudeCode({ command, prompt, options, onEvent: printEvent });
@@ -167,7 +195,7 @@ export async function runWithBackend({ prompt, options, dryRun, dryRunNote, back
     delete process.env.ANTHROPIC_API_KEY;
   }
   try {
-    for await (const event of query({ prompt, options })) {
+    for await (const event of query({ prompt, options: sdkQueryOptions(options, backend) })) {
       sessionId = event.session_id ?? sessionId;
       printEvent(event);
       assertSuccessfulResult(event);

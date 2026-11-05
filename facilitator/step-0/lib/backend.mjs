@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { accessSync, constants, existsSync } from 'node:fs';
 import path from 'node:path';
+import { withUserSettingsEnv } from './user-settings-env.mjs';
 
 export const MIN_CLAUDE_CODE_VERSION = '2.1.205';
 export const BACKENDS = ['claude-code', 'sdk', 'sdk-login'];
@@ -101,8 +102,9 @@ export function toClaudeArgs(prompt, options = {}) {
     args.push('--agents', JSON.stringify(valuesForAgents(options.agents)));
   }
   if (options.mcpServers) {
-    args.push('--mcp-config', JSON.stringify({ mcpServers: options.mcpServers }), '--strict-mcp-config');
+    args.push('--mcp-config', JSON.stringify({ mcpServers: options.mcpServers }));
   }
+  args.push('--strict-mcp-config');
   if (options.outputFormat?.type === 'json_schema') {
     args.push('--json-schema', JSON.stringify(options.outputFormat.schema));
   }
@@ -122,11 +124,30 @@ export function formatCommand(command, args) {
   }).join(' ');
 }
 
-export async function runClaudeCode({ command, prompt, options, onEvent }) {
+export function failedResultMessage(event) {
+  if (event.type !== 'result' || !(event.is_error === true || event.subtype?.startsWith('error'))) {
+    return null;
+  }
+
+  const details = event.errors ?? event.error ?? event.message;
+  const diagnostic = Array.isArray(details) ? details.join('; ') : details;
+  return `Agent run failed (${event.subtype ?? 'result error'}): ${diagnostic || 'No error details provided.'}`;
+}
+
+export function assertSuccessfulResult(event) {
+  const message = failedResultMessage(event);
+  if (message) {
+    throw new Error(message);
+  }
+}
+
+export async function runClaudeCode({ command, prompt, options, onEvent, spawnImpl = spawn }) {
   const args = toClaudeArgs(prompt, options);
-  const child = spawn(command, args, {
+  const env = withUserSettingsEnv(process.env);
+  delete env.ANTHROPIC_API_KEY;
+  const child = spawnImpl(command, args, {
     cwd: options.cwd,
-    env: process.env,
+    env,
     shell: false,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -152,6 +173,7 @@ export async function runClaudeCode({ command, prompt, options, onEvent }) {
     const event = JSON.parse(line);
     sessionId = event.session_id ?? event.sessionId ?? sessionId;
     onEvent(event);
+    assertSuccessfulResult(event);
     if (event.type === 'result') {
       result = event.structured_output ?? event.result ?? null;
     }
