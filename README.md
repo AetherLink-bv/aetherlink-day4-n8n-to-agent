@@ -281,5 +281,5 @@ A passing label check does not replace human review of a draft.
 ## Earlier version
 
 The previous version of this repo (a TypeScript n8n-parity triage agent with
-markdown memory and an HTML course) is kept on the branch
-`pre-restructure-2026-10-08`.
+markdown memory and an HTML course) is kept as the tag
+`archive/pre-restructure-2026-10-08` (`git checkout archive/pre-restructure-2026-10-08`).
