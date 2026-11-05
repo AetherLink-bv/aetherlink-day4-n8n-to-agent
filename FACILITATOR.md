@@ -377,7 +377,7 @@ export const prioritySchema = {
 **Build 1 — `01-single-agent/options.mjs`.** Type it in this order, explaining each line:
 
 1. `cwd` → the agent works in `claude-project/`.
-2. `settingSources: ['project']` → loads `claude-project/CLAUDE.md`.
+2. `settingSources: ['project', 'user']` → loads `claude-project/CLAUDE.md` and the participant's own `~/.claude` settings.
 3. `systemPrompt` preset → Claude Code's built-in system prompt; `CLAUDE.md` is added on top.
 4. `tools: []`, `disallowedTools` → this agent only reads and answers.
 5. `maxTurns: 3` and `outputFormat` → bounded turns and a validated priority result.
@@ -392,7 +392,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     tools: [],
     disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],
@@ -593,7 +593,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
@@ -939,7 +939,7 @@ const customerContext = path.join(path.dirname(lessonDirectory), 'docs', 'custom
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],

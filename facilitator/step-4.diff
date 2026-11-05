@@ -215,7 +215,7 @@ index 8dbd263..9deedd2 100644
    and `docs/n8n-flow-diagram.html`. Only the MCP server reads the workbook.
  - Run `npm run verify` before you push.
 diff --git a/README.md b/README.md
-index 27c3351..c4e3b5c 100644
+index c327832..e6638fc 100644
 --- a/README.md
 +++ b/README.md
 @@ -83,6 +83,13 @@ See what a step adds: `git diff origin/main origin/step-1`,
@@ -382,10 +382,10 @@ index 27c3351..c4e3b5c 100644
  
  ## Earlier version
 diff --git a/SOLO.md b/SOLO.md
-index 3adbf95..06e3049 100644
+index 4b8dbb2..e1390eb 100644
 --- a/SOLO.md
 +++ b/SOLO.md
-@@ -926,6 +926,32 @@ Fill in low, medium or high for each message, then run `npm run check` again.
+@@ -932,6 +932,32 @@ Fill in low, medium or high for each message, then run `npm run check` again.
  
  ---
  
@@ -418,7 +418,7 @@ index 3adbf95..06e3049 100644
  ## Stretch · Assignment: chat in, chat out
  
  Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
-@@ -959,6 +985,291 @@ More stretch:
+@@ -965,6 +991,291 @@ More stretch:
  - Run `MSG-07` to `MSG-09` with `lesson2` (no tool) and compare with `lesson3`.
  - Compare the customer and transaction facts returned by the read-only MCP tools.
  

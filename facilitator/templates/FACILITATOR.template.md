@@ -151,7 +151,7 @@ confirm that it imports `prioritySchema`.
 **Build 1 — `01-single-agent/options.mjs`.** Type it in this order, explaining each line:
 
 1. `cwd` → the agent works in `claude-project/`.
-2. `settingSources: ['project']` → loads `claude-project/CLAUDE.md`.
+2. `settingSources: ['project', 'user']` → loads `claude-project/CLAUDE.md` and the participant's own `~/.claude` settings.
 3. `systemPrompt` preset → Claude Code's built-in system prompt; `CLAUDE.md` is added on top.
 4. `tools: []`, `disallowedTools` → this agent only reads and answers.
 5. `maxTurns: 3` and `outputFormat` → bounded turns and a validated priority result.

@@ -2,10 +2,10 @@ import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import path from 'node:path';
 
-// The lessons load only project settings, so Claude Code would skip the env block in
-// ~/.claude/settings.json. Company logins (Vertex AI, Bedrock, a gateway or proxy) live there, so the
-// login-based backends copy the login variables from that block. Anything else in it, such as
-// CLAUDE_CODE_FORK_SUBAGENT, would change how the lesson behaves on one laptop, so it stays out.
+// Company logins (Vertex AI, Bedrock, a gateway or proxy) live in the env block of ~/.claude/settings.json.
+// The login-based backends copy only the login variables from that block into the child environment, so
+// the login also works for options without 'user' in settingSources. With 'user', Claude Code applies the
+// rest of the block itself.
 const loginPrefixes = [
   'CLAUDE_CODE_USE_',
   'CLAUDE_CODE_SKIP_',
