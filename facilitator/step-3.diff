@@ -127,7 +127,7 @@ new file mode 100644
 index 0000000..e69de29
 diff --git a/03-mcp/options.mjs b/03-mcp/options.mjs
 new file mode 100644
-index 0000000..8f291c3
+index 0000000..3284f34
 --- /dev/null
 +++ b/03-mcp/options.mjs
 @@ -0,0 +1,44 @@
@@ -145,7 +145,7 @@ index 0000000..8f291c3
 +export function buildOptions() {
 +  return {
 +    cwd: path.join(lessonDirectory, 'claude-project'),
-+    settingSources: ['project'],
++    settingSources: ['project', 'user'],
 +    systemPrompt: { type: 'preset', preset: 'claude_code' },
 +    agents,
 +    tools: ['Agent', 'Write'],

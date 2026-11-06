@@ -32,7 +32,7 @@ index 41c531d..9b40935 100644
 +Return the priority (`low`, `medium` or `high`) and a reason of one or two sentences.
 +The SDK turns this into JSON (the Priority Parser).
 diff --git a/01-single-agent/options.mjs b/01-single-agent/options.mjs
-index db8d56d..b847125 100644
+index 9ee15b4..b0d48fe 100644
 --- a/01-single-agent/options.mjs
 +++ b/01-single-agent/options.mjs
 @@ -1,19 +1,17 @@
@@ -46,13 +46,13 @@ index db8d56d..b847125 100644
  export function buildOptions() {
    return {
 -    // STEP 1: cwd → path.join(lessonDirectory, 'claude-project') so the agent works inside its own project folder.
--    // STEP 1: settingSources → ['project'] so query() loads claude-project/CLAUDE.md (the n8n "System Message").
+-    // STEP 1: settingSources → ['project', 'user'] so query() loads claude-project/CLAUDE.md (the n8n "System Message") and your own ~/.claude settings.
 -    // STEP 1: systemPrompt → { type: 'preset', preset: 'claude_code' } (CLAUDE.md is added on top of the preset).
 -    // STEP 1: tools → [] and disallowedTools → ['WebSearch', 'WebFetch', 'Bash']: this agent only reads and answers.
 -    // STEP 1: maxTurns → 3 (n8n: "Max Iterations").
 -    // STEP 1: outputFormat → { type: 'json_schema', schema: prioritySchema } (Priority Parser).
 +    cwd: path.join(lessonDirectory, 'claude-project'),
-+    settingSources: ['project'],
++    settingSources: ['project', 'user'],
 +    systemPrompt: { type: 'preset', preset: 'claude_code' },
 +    tools: [],
 +    disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],

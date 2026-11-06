@@ -7,7 +7,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     tools: [],
     disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],

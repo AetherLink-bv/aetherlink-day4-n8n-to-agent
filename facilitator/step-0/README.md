@@ -30,7 +30,7 @@ Claude Code is the default backend and uses your local Claude login. An API key 
 | `sdk-login` | Claude Code login | `npm run lesson1 -- MSG-01 --backend sdk-login` |
 
 Anthropic's Agent SDK documentation says third-party products may not offer claude.ai login for SDK agents without approval. Use `sdk-login` for your own local learning only.
-Use Claude Code `2.1.205` or newer; earlier versions could silently ignore an invalid `--json-schema`.
+Use Claude Code `2.1.205` or newer; earlier versions can silently ignore an invalid `--json-schema`.
 
 ## Start (Step 0)
 
@@ -120,7 +120,7 @@ nodes has a place in code:
 | --- | --- | --- |
 | Execute workflow / Chat Message trigger | `npm run lessonN -- MSG-0N` or `npm run chat`: input becomes the `prompt` of `query()` | 0 |
 | AI Agent node + OpenAI Chat Model | `query({ prompt, options })` in `lib/run.mjs` | 1 |
-| System Message | `CLAUDE.md`, loaded by `settingSources: ['project']` | 1 |
+| System Message | `CLAUDE.md`, loaded by the `'project'` entry of `settingSources: ['project', 'user']` | 1 |
 | Max Iterations | `maxTurns` | 1 |
 | Simple Memory | `npm run chat` resumes each turn with `resume: sessionId`; `--no-memory` starts each turn fresh | 0 |
 | Priority Parser (structured output) | `outputFormat: { type: 'json_schema', schema }` | 1 |
@@ -146,5 +146,5 @@ A passing label check does not replace human review of a draft.
 ## Earlier version
 
 The previous version of this repo (a TypeScript n8n-parity triage agent with
-markdown memory and an HTML course) is kept on the branch
-`pre-restructure-2026-10-08`.
+markdown memory and an HTML course) is kept as the tag
+`archive/pre-restructure-2026-10-08` (`git checkout archive/pre-restructure-2026-10-08`).

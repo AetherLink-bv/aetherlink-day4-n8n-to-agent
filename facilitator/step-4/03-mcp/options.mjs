@@ -12,7 +12,7 @@ const customerContext = path.join(path.dirname(lessonDirectory), 'docs', 'custom
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],

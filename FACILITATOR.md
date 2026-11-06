@@ -377,7 +377,7 @@ export const prioritySchema = {
 **Build 1 — `01-single-agent/options.mjs`.** Type it in this order, explaining each line:
 
 1. `cwd` → the agent works in `claude-project/`.
-2. `settingSources: ['project']` → loads `claude-project/CLAUDE.md`.
+2. `settingSources: ['project', 'user']` → loads `claude-project/CLAUDE.md` and the participant's own `~/.claude` settings.
 3. `systemPrompt` preset → Claude Code's built-in system prompt; `CLAUDE.md` is added on top.
 4. `tools: []`, `disallowedTools` → this agent only reads and answers.
 5. `maxTurns: 3` and `outputFormat` → bounded turns and a validated priority result.
@@ -392,7 +392,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     tools: [],
     disallowedTools: ['WebSearch', 'WebFetch', 'Bash'],
@@ -593,7 +593,7 @@ const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
@@ -939,7 +939,7 @@ const customerContext = path.join(path.dirname(lessonDirectory), 'docs', 'custom
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     systemPrompt: { type: 'preset', preset: 'claude_code' },
     agents,
     tools: ['Agent', 'Write'],
@@ -1303,7 +1303,7 @@ Run `npm run check:assignment` after Part 2 and after Part 4.
 If core items remain, the check exits 1. Fix them first.
 If core passes with open stretch items, the check exits 0. Stretch is optional.
 If both parts pass, the check exits 0.
-Run `npm run check:assignment -- --strict` to require stretch. Open stretch items then exit 1.
+Run `npm run check:assignment -- --strict` to make stretch count. Then open stretch items make the check exit 1.
 Run the check on Step 4 to see missing tasks.
 Run it on `solution` to see the complete reference work.
 
