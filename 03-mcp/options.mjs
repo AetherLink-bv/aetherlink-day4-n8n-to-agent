@@ -51,7 +51,7 @@ export function buildResolveOptions({ backend = 'sdk' } = {}) {
   const questionTool = backend === 'claude-code' ? [] : ['AskUserQuestion'];
   return {
     ...options,
-    settingSources: backend === 'claude-code' ? ['project', 'user'] : ['user'],
+    settingSources: backend === 'claude-code' ? ['project', 'user'] : [],
     agents: assignmentAgents,
     tools: ['Agent', ...questionTool],
     allowedTools: [
