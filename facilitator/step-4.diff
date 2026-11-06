@@ -215,7 +215,7 @@ index 8dbd263..9deedd2 100644
    and `docs/n8n-flow-diagram.html`. Only the MCP server reads the workbook.
  - Run `npm run verify` before you push.
 diff --git a/README.md b/README.md
-index c327832..e6638fc 100644
+index 7028af6..0c0a35c 100644
 --- a/README.md
 +++ b/README.md
 @@ -83,6 +83,13 @@ See what a step adds: `git diff origin/main origin/step-1`,
@@ -366,7 +366,7 @@ index c327832..e6638fc 100644
 +- If core items remain, the check exits 1. Fix them first.
 +- If core passes with open stretch items, the check exits 0. Stretch is optional.
 +- If both parts pass, the check reports success and exits 0.
-+- Run `npm run check:assignment -- --strict` to require stretch. Open stretch items then exit 1.
++- Run `npm run check:assignment -- --strict` to make stretch count. Then open stretch items make the check exit 1.
  
  ## Safety
  
@@ -382,10 +382,10 @@ index c327832..e6638fc 100644
  
  ## Earlier version
 diff --git a/SOLO.md b/SOLO.md
-index 4b8dbb2..e1390eb 100644
+index 18f8169..c6c127d 100644
 --- a/SOLO.md
 +++ b/SOLO.md
-@@ -932,6 +932,32 @@ Fill in low, medium or high for each message, then run `npm run check` again.
+@@ -942,6 +942,32 @@ Fill in low, medium or high for each message, then run `npm run check` again.
  
  ---
  
@@ -417,8 +417,8 @@ index 4b8dbb2..e1390eb 100644
 +
  ## Stretch · Assignment: chat in, chat out
  
- Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
-@@ -965,6 +991,291 @@ More stretch:
+ Last session's assignment: the ticket enters at the Chat Input, goes through the whole flow, and a chat
+@@ -975,6 +1001,295 @@ More stretch:
  - Run `MSG-07` to `MSG-09` with `lesson2` (no tool) and compare with `lesson3`.
  - Compare the customer and transaction facts returned by the read-only MCP tools.
  
@@ -441,21 +441,22 @@ index 4b8dbb2..e1390eb 100644
 +**Demo (facilitator).** Show the three Zod input schemas in `03-mcp/transaction-mcp/server.js`.
 +Run one update. Show the JSON copy. Then run `npm run reset:mcp`.
 +
-+**Your turn.** Start on `step-4` and run `npm run check:assignment`: each red line names one file
++**Your turn.** Start on `step-4` and run `npm run check:assignment`. Each red line names one file
 +and one change. Fix one line at a time.
 +
 +1. Add `add_transaction`, `update_transaction` and `delete_transaction` to
-+   `03-mcp/transaction-mcp/server.js`. Use Zod input schemas. Register them only when
-+   `process.env.TRANSACTIONS_WRITES_ENABLED === '1'`, so the Step 3 lesson stays read-only.
-+2. Use the starter `03-mcp/transaction-mcp/store.mjs` to load and save the JSON copy.
-+   Add it to `server.js` when you add write tools.
-+   Use the starter `03-mcp/transaction-mcp/reset.mjs`; `npm run reset:mcp` removes the copy and drafts.
-+3. Create `03-mcp/claude-project/.claude/agents/transaction-agent.md` with `name: transaction-agent`.
-+   Give it exactly these tools: `get_transaction`, `update_transaction` and `add_transaction`.
-+4. In `03-mcp/options.mjs`, export `buildResolveOptions({ backend })`: the Step 3 options plus
-+   `transaction-agent` in `agents` (same three tools). Keep write tools out of the orchestrator's
-+   `allowedTools`, and give the transactions server `TRANSACTIONS_WRITES_ENABLED: '1'` in its `env`.
-+5. Create `03-mcp/claude-project/.mcp.json` so interactive Claude Code in that folder gets the
++   `03-mcp/transaction-mcp/server.js`, each with a Zod input schema.
++2. Register these write tools only when `process.env.TRANSACTIONS_WRITES_ENABLED === '1'`.
++   This keeps the Step 3 lesson read-only.
++3. In `server.js`, use the starter `03-mcp/transaction-mcp/store.mjs` to load and save the JSON copy.
++   `npm run reset:mcp` uses the starter `03-mcp/transaction-mcp/reset.mjs` to remove the copy and drafts.
++4. Create `03-mcp/claude-project/.claude/agents/transaction-agent.md` with `name: transaction-agent`.
++5. Give `transaction-agent` exactly these tools: `get_transaction`, `update_transaction` and `add_transaction`.
++6. In `03-mcp/options.mjs`, export `buildResolveOptions({ backend })`. It returns the Step 3 options
++   plus `transaction-agent` in `agents`, with the same three tools.
++7. In `buildResolveOptions()`, keep the write tools out of the orchestrator's `allowedTools`.
++8. In `buildResolveOptions()`, give the transactions server `TRANSACTIONS_WRITES_ENABLED: '1'` in its `env`.
++9. Create `03-mcp/claude-project/.mcp.json` so interactive Claude Code in that folder gets the
 +   desks with writes enabled:
 +
 +   ```json
@@ -482,7 +483,9 @@ index 4b8dbb2..e1390eb 100644
 +   }
 +   ```
 +
-+6. Add these three rules to `03-mcp/claude-project/CLAUDE.md`, word for word (the check looks for them):
++Then add the write rules:
++
++1. Add these three rules to `03-mcp/claude-project/CLAUDE.md`, word for word (the check looks for them):
 +
 +   ```markdown
 +   - Only `transaction-agent` changes transactions in the final assignment.
@@ -490,11 +493,11 @@ index 4b8dbb2..e1390eb 100644
 +   - A denied write is final. Do not retry it or ask another agent to write.
 +   ```
 +
-+7. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
-+8. Treat the added sentence as the only customer claim, not a confirmed fact.
-+9. Copy each status and existing detail exactly.
-+10. Change status only when the ticket and tool results support a new status.
-+    Otherwise, keep the current status exactly.
++2. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
++3. Treat the added sentence as the only customer claim, not a confirmed fact.
++4. Copy each status and existing detail exactly.
++5. Change status only when the ticket and tool results support a new status.
++   Otherwise, keep the current status exactly.
 +
 +**Done when:** a smoke test adds, updates and deletes records in a new temporary store.
 +Check that the workbook hash stays the same.
@@ -528,15 +531,16 @@ index 4b8dbb2..e1390eb 100644
 +
 +**Your turn:**
 +
-+1. Add `03-mcp/hooks/transaction-guard.mjs`. Export `createSdkHooks()` with a `PreToolUse` and a
-+   `PostToolUse` callback, and let the file also run as a command (`pre` or `post`).
-+2. Allow reads without a prompt.
-+   Check transaction IDs and statuses before writes.
-+3. Allow updates below €100 without a prompt.
-+   Ask a person before larger updates, adds and deletes.
-+4. Add one JSON line to `participant-output/audit.jsonl` after each write.
-+5. Register the hook in both backends. SDK: add `hooks: createSdkHooks()` to `buildResolveOptions()`
-+   for the SDK backends. Claude Code: create `03-mcp/claude-project/.claude/settings.json`:
++1. Add `03-mcp/hooks/transaction-guard.mjs`.
++2. In that file, export `createSdkHooks()` with a `PreToolUse` and a `PostToolUse` callback.
++   The same file also runs as a command (`pre` or `post`).
++3. Allow reads without a prompt.
++4. Before a write, check the transaction ID and the status.
++5. Allow updates below €100 without a prompt.
++6. Ask a person before larger updates, adds and deletes.
++7. Add one JSON line to `participant-output/audit.jsonl` after each write.
++8. Register the hook for the SDK backends: add `hooks: createSdkHooks()` to `buildResolveOptions()`.
++9. Register the hook for Claude Code: create `03-mcp/claude-project/.claude/settings.json`:
 +
 +   ```json
 +   {
@@ -567,8 +571,8 @@ index 4b8dbb2..e1390eb 100644
 +   }
 +   ```
 +
-+   The `mcp__drafts__save_reply_draft` part of the matcher is for Part 3; it does no harm before then.
-+6. Tell the orchestrator and `transaction-agent` to stop after a denial (the third rule in Part 1).
++   The `mcp__drafts__save_reply_draft` part of the matcher is for Part 3. It does no harm before then.
++10. Tell the orchestrator and `transaction-agent` to stop after a denial (the third rule in Part 1).
 +
 +Check the core:
 +
@@ -611,7 +615,7 @@ index 4b8dbb2..e1390eb 100644
 +8. Give it only `mcp__drafts__save_reply_draft`.
 +9. Create `.claude/agents/fraud-check-agent.md` with `name: fraud-check-agent`.
 +10. Give it only `get_transaction`, `list_transactions` and `get_customer`.
-+11. Make it return the required JSON fields.
++11. Make it return the JSON fields `fraud_risk`, `signals` and `hold`.
 +12. Wire both agents in `03-mcp/agents.mjs`.
 +13. Let the hook allow draft saves without a prompt.
 +14. Audit each draft save in `PostToolUse`.
@@ -625,7 +629,7 @@ index 4b8dbb2..e1390eb 100644
 +Edit `.mcp.json` to load the server in Claude Code.
 +
 +**Done when:** the test saves a draft to a temporary folder.
-+Check the required header and overwrite behavior.
++Check the draft header and the overwrite behavior.
 +Check that the fraud agent has only read tools.
 +
 +### Part 4 · Ask a person and resolve a ticket (stretch)
@@ -705,7 +709,7 @@ index 4b8dbb2..e1390eb 100644
 +- If core items remain, the check exits 1. Fix them first.
 +- If core passes with open stretch items, the check exits 0. Stretch is optional.
 +- If both parts pass, the check reports success and exits 0.
-+- Run `npm run check:assignment -- --strict` to require stretch. Open stretch items then exit 1.
++- Run `npm run check:assignment -- --strict` to make stretch count. Then open stretch items make the check exit 1.
 +
  ## Wrap-up · recap round, bridge to Workshop 5
  

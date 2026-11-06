@@ -30,7 +30,7 @@ Claude Code is the default backend and uses your local Claude login. An API key 
 | `sdk-login` | Claude Code login | `npm run lesson1 -- MSG-01 --backend sdk-login` |
 
 Anthropic's Agent SDK documentation says third-party products may not offer claude.ai login for SDK agents without approval. Use `sdk-login` for your own local learning only.
-Use Claude Code `2.1.205` or newer; earlier versions could silently ignore an invalid `--json-schema`.
+Use Claude Code `2.1.205` or newer; earlier versions can silently ignore an invalid `--json-schema`.
 
 ## Start (Step 0)
 

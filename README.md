@@ -30,7 +30,7 @@ Claude Code is the default backend and uses your local Claude login. An API key 
 | `sdk-login` | Claude Code login | `npm run lesson1 -- MSG-01 --backend sdk-login` |
 
 Anthropic's Agent SDK documentation says third-party products may not offer claude.ai login for SDK agents without approval. Use `sdk-login` for your own local learning only.
-Use Claude Code `2.1.205` or newer; earlier versions could silently ignore an invalid `--json-schema`.
+Use Claude Code `2.1.205` or newer; earlier versions can silently ignore an invalid `--json-schema`.
 
 ## Start (Step 0)
 
@@ -291,7 +291,7 @@ Run `npm run check:assignment` after Part 2 and again after Part 4.
 - If core items remain, the check exits 1. Fix them first.
 - If core passes with open stretch items, the check exits 0. Stretch is optional.
 - If both parts pass, the check reports success and exits 0.
-- Run `npm run check:assignment -- --strict` to require stretch. Open stretch items then exit 1.
+- Run `npm run check:assignment -- --strict` to make stretch count. Then open stretch items make the check exit 1.
 
 ## Safety
 

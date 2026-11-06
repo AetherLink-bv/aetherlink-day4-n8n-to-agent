@@ -1303,7 +1303,7 @@ Run `npm run check:assignment` after Part 2 and after Part 4.
 If core items remain, the check exits 1. Fix them first.
 If core passes with open stretch items, the check exits 0. Stretch is optional.
 If both parts pass, the check exits 0.
-Run `npm run check:assignment -- --strict` to require stretch. Open stretch items then exit 1.
+Run `npm run check:assignment -- --strict` to make stretch count. Then open stretch items make the check exit 1.
 Run the check on Step 4 to see missing tasks.
 Run it on `solution` to see the complete reference work.
 

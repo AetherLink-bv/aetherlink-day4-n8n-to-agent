@@ -120,8 +120,8 @@ last session), `lib/run.mjs` (the `query()` loop), and `01-single-agent/options.
 `// STEP 1` TODOs.
 
 n8n then: Execute workflow or the Chat Message trigger started one run. SDK now:
-`npm run lessonN -- MSG-0N` starts one run; `npm run chat` accepts free text and resumes
-the prior session, like Simple Memory.
+`npm run lessonN -- MSG-0N` starts one run. `npm run chat` accepts free text and resumes
+the previous session, like Simple Memory.
 
 Claude Code is the default for real runs. See [Set up Workshop 4](docs/SETUP.md) for platform
 instructions and optional API-key use with the `sdk` backend.
@@ -146,7 +146,8 @@ the parsed priority and the Switch route. The AI gives the label. The code picks
 
 1. Dress rehearsal: `npm run lesson1 -- MSG-01 --dry-run`. Look for `outputFormat`: that is the form.
 2. A real run: `npm run lesson1 -- MSG-01`. Look for `Structured output`, and `Switch → low`.
-3. Memory: `npm run chat`. Give it a colour, then ask for it back. Then try again with `--no-memory`.
+3. Memory: start `npm run chat`, give it a colour and ask for it back.
+4. No memory: do the same with `npm run chat -- --no-memory`. Now the chat does not know the colour.
 
 No internet or no login? Show [docs/sample-trace.md](docs/sample-trace.md) and say clearly that it
 is a sample.
@@ -226,7 +227,7 @@ export const prioritySchema = {
 
 Then open `01-single-agent/options.mjs` again and make two changes. People often forget the second one.
 
-1. Add this import line at the very top of the file:
+1. Add this import line as the first line of the file:
 
    ```js
    import { prioritySchema } from './priority-schema.mjs';
@@ -261,15 +262,20 @@ missing in `options.mjs`. Stuck? `git stash -u`, then `git switch step-1` gives 
 2. Open `01-single-agent/priority-schema.mjs` and `lib/switch.mjs`. The schema defines what the answer
    looks like. The Switch picks the route: the code decides, not the model.
 
-3. Start the chat and give it something to remember. Type `My favourite colour is red`. Then ask
-   `What is my favourite colour?`. Type `exit` to stop.
+3. Start the chat.
 
    ```sh
    npm run chat
    ```
 
-4. Do it again, without memory. Ask the same question. This time it does not know: every message is a
-   new conversation.
+4. Type `My favourite colour is red`.
+
+5. Ask `What is my favourite colour?`.
+
+6. Type `exit` to stop the chat.
+
+7. Start the chat without memory and ask the same question. This time it does not know: every message
+   is a new conversation.
 
    ```sh
    npm run chat -- --no-memory
@@ -284,37 +290,40 @@ The chat follows `CLAUDE.md` too, so even "My favourite colour is red" can get a
 
 ### Your turn · Step 1c: six messages and the tone trap
 
-1. Label six messages, one by one. Then run MSG-02 to MSG-06. Write each label down (low, medium or
-   high) on paper or in a notes file: you enter them in Step 4.
+1. Run MSG-01 to MSG-06, one at a time. The command below runs MSG-01.
 
    ```sh
    npm run lesson1 -- MSG-01
    ```
 
-2. Remove the rules for high, medium and low. In `01-single-agent/claude-project/CLAUDE.md`, select
-   everything from the line `## Priority definitions` up to the next line that starts with `##`. Cut it
-   (Ctrl+X) and save (Ctrl+S).
+2. Write down each label (low, medium or high) on paper or in a notes file. You enter them in Step 4.
 
-3. Run two messages again. For MSG-01 and MSG-06, write down: the same label as before, or a different one?
+3. In `01-single-agent/claude-project/CLAUDE.md`, select everything from the line `## Priority definitions`
+   up to the next line that starts with `##`. These lines are the rules for high, medium and low.
+
+4. Cut the selection (Ctrl+X) and save the file (Ctrl+S).
+
+5. Run MSG-01 and MSG-06 again. For each, write down: the same label as before, or a different one?
 
    ```sh
    npm run lesson1 -- MSG-01
    npm run lesson1 -- MSG-06
    ```
 
-4. Put the rules back. Paste the section back in the same place (Ctrl+V) and save. Lost it? Run:
+6. Paste the rules back in the same place (Ctrl+V) and save the file. Lost them? Run:
 
    ```sh
    git checkout origin/step-1 -- 01-single-agent/claude-project/CLAUDE.md
    ```
 
-5. Check that it still works. Look for: `fail 0`.
+7. Run the tests. Look for: `fail 0`.
 
    ```sh
    npm run verify
    ```
 
-**Done when:** six labels are written down, the tone trap is compared, `CLAUDE.md` is restored, and `fail 0`.
+**Done when:** you have six labels, you have compared the tone trap, `CLAUDE.md` has its rules again,
+and verify shows `fail 0`.
 
 **What changed in the prompt:** without the definitions the model judges by tone, so a loud
 message can look urgent and a calm one harmless. A strong model often still gets MSG-01 and MSG-06
@@ -353,7 +362,7 @@ set in code. When you start `claude` in the repository root, Claude Code reads t
 
 ### Demo (facilitator)
 
-1. Dress rehearsal: `npm run lesson2 -- MSG-05 --dry-run`. Shows the setup. No agents are called yet.
+1. Dress rehearsal: `npm run lesson2 -- MSG-05 --dry-run`. It shows the setup. It does not call agents yet.
 2. A real run: `npm run lesson2 -- MSG-05`. Look for: first `Agent → risk-agent`, then
    `Agent → customer-reply-agent`.
 3. The draft: open `02-subagents/claude-project/output/MSG-05.md`. A person reads it before anything
@@ -628,7 +637,7 @@ desks never change a record. A person reviews each reply draft before it is sent
 ### Your turn · Step 3
 
 1. Get the Step 3 files. The last three lines install the payment desk and take you back to the
-   package folder. You don't need to start the desks yourself: the SDK starts each one when it is needed.
+   package folder. You do not start the desks yourself: the SDK starts each desk when an agent needs it.
 
    ```sh
    git checkout origin/step-3 -- 03-mcp .mcp.json .claude lib package.json test/step3.test.mjs
@@ -644,8 +653,7 @@ desks never change a record. A person reviews each reply draft before it is sent
    npm run smoke:mcp
    ```
 
-3. Run three messages. Write each label down (on paper or in a notes file): you enter them in
-   `labels.json` in Step 4. The label is under `Result` in the draft, for example
+3. Run three messages. Each draft shows the label under `Result`, for example
    `03-mcp/claude-project/output/MSG-08.md`.
 
    ```sh
@@ -654,10 +662,12 @@ desks never change a record. A person reviews each reply draft before it is sent
    npm run lesson3 -- MSG-09
    ```
 
-4. Find the lookups. In the trace: `get_customer` and `get_transaction`. In the draft: the
+4. Write down each label on paper or in a notes file. You enter them in `labels.json` in Step 4.
+
+5. Find the lookups. In the trace: `get_customer` and `get_transaction`. In the draft: the
    `External data` section.
 
-5. Stuck? This gives you the finished version.
+6. Stuck? This gives you the finished version.
 
    ```sh
    git stash -u
@@ -891,8 +901,8 @@ It does not call a model.
    npm run check
    ```
 
-2. Fill in your labels. Open `labels.json` and enter `low`, `medium` or `high` for MSG-01 to MSG-09,
-   based on your own runs (Step 1 and Step 3). Save.
+2. In `labels.json`, enter `low`, `medium` or `high` for MSG-01 to MSG-09. Use the labels from your
+   own runs (Step 1 and Step 3), and save the file.
 
 3. Check them.
 
@@ -910,7 +920,7 @@ It does not call a model.
    ```
 
    (Example output only.) Lesson 1 passes at 6/6, Lesson 3 at 9/9. `MSG-10` is not graded. `revise`
-   means: reread the priority definitions and the trace. Do not change a label just to pass.
+   means: reread the priority definitions and the trace. Do not change a label only to pass.
 
 4. Fill in the acceptance table. For each message: the label, the facts from the desks, and whether a
    person has read the draft.
@@ -923,8 +933,8 @@ It does not call a model.
    | MSG-08 | | | | |
    | MSG-09 | | | | |
 
-5. Save it. Create the folder `participant-output/` in the package folder and save the table there as
-   `participant-output/acceptance-table.md`. Git ignores this folder, so your notes stay on your laptop.
+5. Save the table as `participant-output/acceptance-table.md` in the package folder. Create the folder
+   `participant-output/` first if it is not there. Git ignores this folder, so your notes stay on your laptop.
    Stuck? `git stash -u`, then `git switch step-4`.
 
 **Check your screen:** the first run of `npm run check` created `labels.json`. That is not an error.
@@ -934,7 +944,7 @@ Fill in low, medium or high for each message, then run `npm run check` again.
 
 ## Stretch · Assignment: chat in, chat out
 
-Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
+Last session's assignment: the ticket enters at the Chat Input, goes through the whole flow, and a chat
 message comes back. Same assignment, in code:
 
 ```sh
@@ -955,7 +965,7 @@ available from a chat.
 
 1. Paste one customer message with a `TX-####` ID from `docs/customer-messages.md` and ask for the
    priority, the analysis and a reply draft.
-2. Watch the trace: which subagent ran, which MCP tool was called?
+2. Watch the trace: which subagent ran, and which MCP tool did it call?
 3. Ask a follow-up in the same chat. Now the session is the memory, like Simple Memory last session.
 4. Explore, like "look at other nodes" last session: add a `SKILL.md` or a `PreToolUse` hook. What
    would you change in `CLAUDE.md`?

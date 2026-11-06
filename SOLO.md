@@ -120,8 +120,8 @@ last session), `lib/run.mjs` (the `query()` loop), and `01-single-agent/options.
 `// STEP 1` TODOs.
 
 n8n then: Execute workflow or the Chat Message trigger started one run. SDK now:
-`npm run lessonN -- MSG-0N` starts one run; `npm run chat` accepts free text and resumes
-the prior session, like Simple Memory.
+`npm run lessonN -- MSG-0N` starts one run. `npm run chat` accepts free text and resumes
+the previous session, like Simple Memory.
 
 Claude Code is the default for real runs. See [Set up Workshop 4](docs/SETUP.md) for platform
 instructions and optional API-key use with the `sdk` backend.
@@ -146,7 +146,8 @@ the parsed priority and the Switch route. The AI gives the label. The code picks
 
 1. Dress rehearsal: `npm run lesson1 -- MSG-01 --dry-run`. Look for `outputFormat`: that is the form.
 2. A real run: `npm run lesson1 -- MSG-01`. Look for `Structured output`, and `Switch → low`.
-3. Memory: `npm run chat`. Give it a colour, then ask for it back. Then try again with `--no-memory`.
+3. Memory: start `npm run chat`, give it a colour and ask for it back.
+4. No memory: do the same with `npm run chat -- --no-memory`. Now the chat does not know the colour.
 
 No internet or no login? Show [docs/sample-trace.md](docs/sample-trace.md) and say clearly that it
 is a sample.
@@ -226,7 +227,7 @@ export const prioritySchema = {
 
 Then open `01-single-agent/options.mjs` again and make two changes. People often forget the second one.
 
-1. Add this import line at the very top of the file:
+1. Add this import line as the first line of the file:
 
    ```js
    import { prioritySchema } from './priority-schema.mjs';
@@ -261,15 +262,20 @@ missing in `options.mjs`. Stuck? `git stash -u`, then `git switch step-1` gives 
 2. Open `01-single-agent/priority-schema.mjs` and `lib/switch.mjs`. The schema defines what the answer
    looks like. The Switch picks the route: the code decides, not the model.
 
-3. Start the chat and give it something to remember. Type `My favourite colour is red`. Then ask
-   `What is my favourite colour?`. Type `exit` to stop.
+3. Start the chat.
 
    ```sh
    npm run chat
    ```
 
-4. Do it again, without memory. Ask the same question. This time it does not know: every message is a
-   new conversation.
+4. Type `My favourite colour is red`.
+
+5. Ask `What is my favourite colour?`.
+
+6. Type `exit` to stop the chat.
+
+7. Start the chat without memory and ask the same question. This time it does not know: every message
+   is a new conversation.
 
    ```sh
    npm run chat -- --no-memory
@@ -284,37 +290,40 @@ The chat follows `CLAUDE.md` too, so even "My favourite colour is red" can get a
 
 ### Your turn · Step 1c: six messages and the tone trap
 
-1. Label six messages, one by one. Then run MSG-02 to MSG-06. Write each label down (low, medium or
-   high) on paper or in a notes file: you enter them in Step 4.
+1. Run MSG-01 to MSG-06, one at a time. The command below runs MSG-01.
 
    ```sh
    npm run lesson1 -- MSG-01
    ```
 
-2. Remove the rules for high, medium and low. In `01-single-agent/claude-project/CLAUDE.md`, select
-   everything from the line `## Priority definitions` up to the next line that starts with `##`. Cut it
-   (Ctrl+X) and save (Ctrl+S).
+2. Write down each label (low, medium or high) on paper or in a notes file. You enter them in Step 4.
 
-3. Run two messages again. For MSG-01 and MSG-06, write down: the same label as before, or a different one?
+3. In `01-single-agent/claude-project/CLAUDE.md`, select everything from the line `## Priority definitions`
+   up to the next line that starts with `##`. These lines are the rules for high, medium and low.
+
+4. Cut the selection (Ctrl+X) and save the file (Ctrl+S).
+
+5. Run MSG-01 and MSG-06 again. For each, write down: the same label as before, or a different one?
 
    ```sh
    npm run lesson1 -- MSG-01
    npm run lesson1 -- MSG-06
    ```
 
-4. Put the rules back. Paste the section back in the same place (Ctrl+V) and save. Lost it? Run:
+6. Paste the rules back in the same place (Ctrl+V) and save the file. Lost them? Run:
 
    ```sh
    git checkout origin/step-1 -- 01-single-agent/claude-project/CLAUDE.md
    ```
 
-5. Check that it still works. Look for: `fail 0`.
+7. Run the tests. Look for: `fail 0`.
 
    ```sh
    npm run verify
    ```
 
-**Done when:** six labels are written down, the tone trap is compared, `CLAUDE.md` is restored, and `fail 0`.
+**Done when:** you have six labels, you have compared the tone trap, `CLAUDE.md` has its rules again,
+and verify shows `fail 0`.
 
 **What changed in the prompt:** without the definitions the model judges by tone, so a loud
 message can look urgent and a calm one harmless. A strong model often still gets MSG-01 and MSG-06
@@ -353,7 +362,7 @@ set in code. When you start `claude` in the repository root, Claude Code reads t
 
 ### Demo (facilitator)
 
-1. Dress rehearsal: `npm run lesson2 -- MSG-05 --dry-run`. Shows the setup. No agents are called yet.
+1. Dress rehearsal: `npm run lesson2 -- MSG-05 --dry-run`. It shows the setup. It does not call agents yet.
 2. A real run: `npm run lesson2 -- MSG-05`. Look for: first `Agent → risk-agent`, then
    `Agent → customer-reply-agent`.
 3. The draft: open `02-subagents/claude-project/output/MSG-05.md`. A person reads it before anything
@@ -628,7 +637,7 @@ desks never change a record. A person reviews each reply draft before it is sent
 ### Your turn · Step 3
 
 1. Get the Step 3 files. The last three lines install the payment desk and take you back to the
-   package folder. You don't need to start the desks yourself: the SDK starts each one when it is needed.
+   package folder. You do not start the desks yourself: the SDK starts each desk when an agent needs it.
 
    ```sh
    git checkout origin/step-3 -- 03-mcp .mcp.json .claude lib package.json test/step3.test.mjs
@@ -644,8 +653,7 @@ desks never change a record. A person reviews each reply draft before it is sent
    npm run smoke:mcp
    ```
 
-3. Run three messages. Write each label down (on paper or in a notes file): you enter them in
-   `labels.json` in Step 4. The label is under `Result` in the draft, for example
+3. Run three messages. Each draft shows the label under `Result`, for example
    `03-mcp/claude-project/output/MSG-08.md`.
 
    ```sh
@@ -654,10 +662,12 @@ desks never change a record. A person reviews each reply draft before it is sent
    npm run lesson3 -- MSG-09
    ```
 
-4. Find the lookups. In the trace: `get_customer` and `get_transaction`. In the draft: the
+4. Write down each label on paper or in a notes file. You enter them in `labels.json` in Step 4.
+
+5. Find the lookups. In the trace: `get_customer` and `get_transaction`. In the draft: the
    `External data` section.
 
-5. Stuck? This gives you the finished version.
+6. Stuck? This gives you the finished version.
 
    ```sh
    git stash -u
@@ -891,8 +901,8 @@ It does not call a model.
    npm run check
    ```
 
-2. Fill in your labels. Open `labels.json` and enter `low`, `medium` or `high` for MSG-01 to MSG-09,
-   based on your own runs (Step 1 and Step 3). Save.
+2. In `labels.json`, enter `low`, `medium` or `high` for MSG-01 to MSG-09. Use the labels from your
+   own runs (Step 1 and Step 3), and save the file.
 
 3. Check them.
 
@@ -910,7 +920,7 @@ It does not call a model.
    ```
 
    (Example output only.) Lesson 1 passes at 6/6, Lesson 3 at 9/9. `MSG-10` is not graded. `revise`
-   means: reread the priority definitions and the trace. Do not change a label just to pass.
+   means: reread the priority definitions and the trace. Do not change a label only to pass.
 
 4. Fill in the acceptance table. For each message: the label, the facts from the desks, and whether a
    person has read the draft.
@@ -923,8 +933,8 @@ It does not call a model.
    | MSG-08 | | | | |
    | MSG-09 | | | | |
 
-5. Save it. Create the folder `participant-output/` in the package folder and save the table there as
-   `participant-output/acceptance-table.md`. Git ignores this folder, so your notes stay on your laptop.
+5. Save the table as `participant-output/acceptance-table.md` in the package folder. Create the folder
+   `participant-output/` first if it is not there. Git ignores this folder, so your notes stay on your laptop.
    Stuck? `git stash -u`, then `git switch step-4`.
 
 **Check your screen:** the first run of `npm run check` created `labels.json`. That is not an error.
@@ -960,7 +970,7 @@ claude -p "Find and fix the bug in utils.js. Explain the change." --allowedTools
 
 ## Stretch · Assignment: chat in, chat out
 
-Last session's assignment: the ticket goes in via the Chat Input, through the whole flow, and a chat
+Last session's assignment: the ticket enters at the Chat Input, goes through the whole flow, and a chat
 message comes back. Same assignment, in code:
 
 ```sh
@@ -981,7 +991,7 @@ available from a chat.
 
 1. Paste one customer message with a `TX-####` ID from `docs/customer-messages.md` and ask for the
    priority, the analysis and a reply draft.
-2. Watch the trace: which subagent ran, which MCP tool was called?
+2. Watch the trace: which subagent ran, and which MCP tool did it call?
 3. Ask a follow-up in the same chat. Now the session is the memory, like Simple Memory last session.
 4. Explore, like "look at other nodes" last session: add a `SKILL.md` or a `PreToolUse` hook. What
    would you change in `CLAUDE.md`?
@@ -1010,21 +1020,22 @@ Give no agent `delete_transaction`.
 **Demo (facilitator).** Show the three Zod input schemas in `03-mcp/transaction-mcp/server.js`.
 Run one update. Show the JSON copy. Then run `npm run reset:mcp`.
 
-**Your turn.** Start on `step-4` and run `npm run check:assignment`: each red line names one file
+**Your turn.** Start on `step-4` and run `npm run check:assignment`. Each red line names one file
 and one change. Fix one line at a time.
 
 1. Add `add_transaction`, `update_transaction` and `delete_transaction` to
-   `03-mcp/transaction-mcp/server.js`. Use Zod input schemas. Register them only when
-   `process.env.TRANSACTIONS_WRITES_ENABLED === '1'`, so the Step 3 lesson stays read-only.
-2. Use the starter `03-mcp/transaction-mcp/store.mjs` to load and save the JSON copy.
-   Add it to `server.js` when you add write tools.
-   Use the starter `03-mcp/transaction-mcp/reset.mjs`; `npm run reset:mcp` removes the copy and drafts.
-3. Create `03-mcp/claude-project/.claude/agents/transaction-agent.md` with `name: transaction-agent`.
-   Give it exactly these tools: `get_transaction`, `update_transaction` and `add_transaction`.
-4. In `03-mcp/options.mjs`, export `buildResolveOptions({ backend })`: the Step 3 options plus
-   `transaction-agent` in `agents` (same three tools). Keep write tools out of the orchestrator's
-   `allowedTools`, and give the transactions server `TRANSACTIONS_WRITES_ENABLED: '1'` in its `env`.
-5. Create `03-mcp/claude-project/.mcp.json` so interactive Claude Code in that folder gets the
+   `03-mcp/transaction-mcp/server.js`, each with a Zod input schema.
+2. Register these write tools only when `process.env.TRANSACTIONS_WRITES_ENABLED === '1'`.
+   This keeps the Step 3 lesson read-only.
+3. In `server.js`, use the starter `03-mcp/transaction-mcp/store.mjs` to load and save the JSON copy.
+   `npm run reset:mcp` uses the starter `03-mcp/transaction-mcp/reset.mjs` to remove the copy and drafts.
+4. Create `03-mcp/claude-project/.claude/agents/transaction-agent.md` with `name: transaction-agent`.
+5. Give `transaction-agent` exactly these tools: `get_transaction`, `update_transaction` and `add_transaction`.
+6. In `03-mcp/options.mjs`, export `buildResolveOptions({ backend })`. It returns the Step 3 options
+   plus `transaction-agent` in `agents`, with the same three tools.
+7. In `buildResolveOptions()`, keep the write tools out of the orchestrator's `allowedTools`.
+8. In `buildResolveOptions()`, give the transactions server `TRANSACTIONS_WRITES_ENABLED: '1'` in its `env`.
+9. Create `03-mcp/claude-project/.mcp.json` so interactive Claude Code in that folder gets the
    desks with writes enabled:
 
    ```json
@@ -1051,7 +1062,9 @@ and one change. Fix one line at a time.
    }
    ```
 
-6. Add these three rules to `03-mcp/claude-project/CLAUDE.md`, word for word (the check looks for them):
+Then add the write rules:
+
+1. Add these three rules to `03-mcp/claude-project/CLAUDE.md`, word for word (the check looks for them):
 
    ```markdown
    - Only `transaction-agent` changes transactions in the final assignment.
@@ -1059,11 +1072,11 @@ and one change. Fix one line at a time.
    - A denied write is final. Do not retry it or ask another agent to write.
    ```
 
-7. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
-8. Treat the added sentence as the only customer claim, not a confirmed fact.
-9. Copy each status and existing detail exactly.
-10. Change status only when the ticket and tool results support a new status.
-    Otherwise, keep the current status exactly.
+2. Keep existing `issue_details` and append ` | MSG-0N (customer report): <one short sentence of what the customer says>`.
+3. Treat the added sentence as the only customer claim, not a confirmed fact.
+4. Copy each status and existing detail exactly.
+5. Change status only when the ticket and tool results support a new status.
+   Otherwise, keep the current status exactly.
 
 **Done when:** a smoke test adds, updates and deletes records in a new temporary store.
 Check that the workbook hash stays the same.
@@ -1097,15 +1110,16 @@ Run a large update. Deny it. Show that the agent stops.
 
 **Your turn:**
 
-1. Add `03-mcp/hooks/transaction-guard.mjs`. Export `createSdkHooks()` with a `PreToolUse` and a
-   `PostToolUse` callback, and let the file also run as a command (`pre` or `post`).
-2. Allow reads without a prompt.
-   Check transaction IDs and statuses before writes.
-3. Allow updates below €100 without a prompt.
-   Ask a person before larger updates, adds and deletes.
-4. Add one JSON line to `participant-output/audit.jsonl` after each write.
-5. Register the hook in both backends. SDK: add `hooks: createSdkHooks()` to `buildResolveOptions()`
-   for the SDK backends. Claude Code: create `03-mcp/claude-project/.claude/settings.json`:
+1. Add `03-mcp/hooks/transaction-guard.mjs`.
+2. In that file, export `createSdkHooks()` with a `PreToolUse` and a `PostToolUse` callback.
+   The same file also runs as a command (`pre` or `post`).
+3. Allow reads without a prompt.
+4. Before a write, check the transaction ID and the status.
+5. Allow updates below €100 without a prompt.
+6. Ask a person before larger updates, adds and deletes.
+7. Add one JSON line to `participant-output/audit.jsonl` after each write.
+8. Register the hook for the SDK backends: add `hooks: createSdkHooks()` to `buildResolveOptions()`.
+9. Register the hook for Claude Code: create `03-mcp/claude-project/.claude/settings.json`:
 
    ```json
    {
@@ -1136,8 +1150,8 @@ Run a large update. Deny it. Show that the agent stops.
    }
    ```
 
-   The `mcp__drafts__save_reply_draft` part of the matcher is for Part 3; it does no harm before then.
-6. Tell the orchestrator and `transaction-agent` to stop after a denial (the third rule in Part 1).
+   The `mcp__drafts__save_reply_draft` part of the matcher is for Part 3. It does no harm before then.
+10. Tell the orchestrator and `transaction-agent` to stop after a denial (the third rule in Part 1).
 
 Check the core:
 
@@ -1180,7 +1194,7 @@ Show its JSON result.
 8. Give it only `mcp__drafts__save_reply_draft`.
 9. Create `.claude/agents/fraud-check-agent.md` with `name: fraud-check-agent`.
 10. Give it only `get_transaction`, `list_transactions` and `get_customer`.
-11. Make it return the required JSON fields.
+11. Make it return the JSON fields `fraud_risk`, `signals` and `hold`.
 12. Wire both agents in `03-mcp/agents.mjs`.
 13. Let the hook allow draft saves without a prompt.
 14. Audit each draft save in `PostToolUse`.
@@ -1194,7 +1208,7 @@ Edit `transaction-guard.mjs` to allow and audit drafts.
 Edit `.mcp.json` to load the server in Claude Code.
 
 **Done when:** the test saves a draft to a temporary folder.
-Check the required header and overwrite behavior.
+Check the draft header and the overwrite behavior.
 Check that the fraud agent has only read tools.
 
 ### Part 4 · Ask a person and resolve a ticket (stretch)
@@ -1274,7 +1288,7 @@ Run `npm run check:assignment` after Part 2 and again after Part 4.
 - If core items remain, the check exits 1. Fix them first.
 - If core passes with open stretch items, the check exits 0. Stretch is optional.
 - If both parts pass, the check reports success and exits 0.
-- Run `npm run check:assignment -- --strict` to require stretch. Open stretch items then exit 1.
+- Run `npm run check:assignment -- --strict` to make stretch count. Then open stretch items make the check exit 1.
 
 ## Wrap-up · recap round, bridge to Workshop 5
 

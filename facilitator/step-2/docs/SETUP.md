@@ -84,7 +84,7 @@ The Claude Code subprocess does not inherit `ANTHROPIC_API_KEY`; that key is for
 ## Docker
 
 The repository image installs Node.js 22, Git, Claude Code `2.1.287`, and the lesson dependencies. Claude Code auto-updates are disabled so the image stays reproducible.
-The lessons require Claude Code `2.1.205` or newer: before that version invalid `--json-schema` schemas could be silently ignored.
+The lessons need Claude Code `2.1.205` or newer. Older versions can silently ignore an invalid `--json-schema` schema.
 
 ```sh
 docker build -t w4 .
