@@ -15,7 +15,12 @@ The Workshop 4 slides determine the lesson order. Start with the
 If you need a separate copy, download the
 [raw n8n JSON](https://raw.githubusercontent.com/AetherLink-bv/aetherlink-day4-n8n-to-agent/main/n8n/support-triage.json).
 
-Open the repository in Claude Code. Copy this first participant prompt:
+Before class, the trainer uses the **Trainer preparation** prompt in
+[`SOLO.md`](SOLO.md) to rebuild the app from this JSON. The trainer reviews the
+build and selects the lesson steps before participants receive the app.
+
+After that review, open the repository in Claude Code. Copy this first
+participant prompt:
 
 ```text
 Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.
