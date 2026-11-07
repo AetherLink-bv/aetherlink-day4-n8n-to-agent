@@ -60,7 +60,7 @@ pre { margin: 8px 0 0; padding: 10px; overflow-x: auto; border: 1px solid var(--
 <main class="wrap">
 <header>
   <h1>Support Triage Flow</h1>
-  <span class="eyebrow">n8n/support-triage.json · final Workshop 3 flow</span>
+  <span class="eyebrow">Conceptual overview · n8n/support-triage.json is authoritative</span>
 </header>
 <figure>
 <svg viewBox="0 0 1280 680" role="img" aria-label="Chat and manual triggers feed an AI Agent with a chat model, memory and structured priority parser. The agent uses Customer Reply, Risk and Customer Context agents, with a Data Table tool for customer lookup. A Switch routes low, medium and high priority to their corresponding action nodes.">
@@ -103,11 +103,11 @@ pre { margin: 8px 0 0; padding: 10px; overflow-x: auto; border: 1px solid var(--
   <rect class="node" x="700" y="180" width="160" height="50" rx="6"/>
   <text class="label" x="780" y="201">Switch</text><text class="type" x="780" y="219">priority</text>
   <rect class="node" x="1000" y="75" width="220" height="50" rx="6"/>
-  <text class="label" x="1110" y="96">Low Priority Action</text><text class="type" x="1110" y="114">AUTO_REPLY · Self-service support</text>
+  <text class="label" x="1110" y="96">Low Priority Action</text><text class="type" x="1110" y="114">auto_reply · Self-service support</text>
   <rect class="node" x="1000" y="180" width="220" height="50" rx="6"/>
-  <text class="label" x="1110" y="201">Medium Priority Action</text><text class="type" x="1110" y="219">INVESTIGATE · Support team</text>
+  <text class="label" x="1110" y="201">Medium Priority Action</text><text class="type" x="1110" y="219">investigate · Support team</text>
   <rect class="node" x="1000" y="285" width="220" height="50" rx="6"/>
-  <text class="label" x="1110" y="306">High Priority Action</text><text class="type" x="1110" y="324">ESCALATE · Payments escalation team</text>
+  <text class="label" x="1110" y="306">High Priority Action</text><text class="type" x="1110" y="324">escalate · Payments escalation team</text>
 
   <rect class="node data" x="420" y="335" width="140" height="48" rx="6"/>
   <text class="label" x="490" y="355">OpenAI Chat Model</text><text class="type" x="490" y="373">gpt-5-mini</text>
@@ -154,13 +154,13 @@ pre { margin: 8px 0 0; padding: 10px; overflow-x: auto; border: 1px solid var(--
   <section class="panel">
     <h2>Switch routes</h2>
     <p>The workflow compares the structured priority and selects one action:</p>
-    <pre>low     → AUTO_REPLY  · Self-service support
-medium  → INVESTIGATE · Support team
-high    → ESCALATE    · Payments escalation team</pre>
+    <pre>low     → auto_reply  · Self-service support
+medium  → investigate · Support team
+high    → escalate    · Payments escalation team</pre>
   </section>
   <section class="panel">
     <h2>Workshop boundary</h2>
-    <p>The n8n export shows the final W3 workflow. The code workshop rebuilds its customer context lookup as a read-only stdio MCP server; transaction lookup and approval are introduced in Step 3.</p>
+    <p>This diagram is a conceptual overview. The sanitized JSON is the source for exact nodes, connections, prompts and output. The code workshop rebuilds customer lookup as read-only stdio MCP; transaction lookup is an extension in SOLO 3.</p>
     <p class="muted">No model credentials are included in the export.</p>
   </section>
 </div>
