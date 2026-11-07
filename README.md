@@ -8,6 +8,24 @@ Follow [`SOLO.md`](SOLO.md). It contains one trainer-preparation prompt and five
 participant assignments. Every assignment asks Claude Code to build, show the
 diff, run a real check and stop for your review.
 
+## Start with the n8n JSON
+
+The Workshop 4 slides determine the lesson order. Start with the
+[`n8n/support-triage.json`](n8n/support-triage.json) file in this repository.
+If you need a separate copy, download the
+[raw n8n JSON](https://raw.githubusercontent.com/AetherLink-bv/aetherlink-day4-n8n-to-agent/main/n8n/support-triage.json).
+
+Open the repository in Claude Code. Copy this first participant prompt:
+
+```text
+Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.
+```
+
+You start with the JSON and the trainer's reviewed app. You finish when you can
+trace the app behavior to the JSON and name every missing proof as `OPEN`.
+Continue with the assignments in [`SOLO.md`](SOLO.md). Each assignment contains
+its own copy-ready prompt, expected evidence and stop point.
+
 ## The source behavior
 
 [`n8n/support-triage.json`](n8n/support-triage.json) is the sanitized export of
