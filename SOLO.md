@@ -7,6 +7,10 @@ result and decide whether to continue.
 Do not switch to a finished step branch or copy finished files. If a check
 fails, give Claude Code the real error and ask for the smallest fix.
 
+The canonical Workshop 4 slides determine the lesson route, order and scope.
+Update `SOLO.md` and the participant repository only after trainer review. If
+the materials conflict, follow the slides.
+
 ## Source contract
 
 The sanitized n8n export is [`n8n/support-triage.json`](n8n/support-triage.json).
@@ -36,7 +40,9 @@ Use n8n MCP to find and read “Day 3 · 12 · Reference · Full ticket triage (
 
 Read AGENTS.md, README.md, docs/SETUP.md and SOLO.md. Map the nodes, connections, system messages and output parser. Then build a bounded working app from this starter. Preserve Customer Context → Risk → Customer Reply, output {priority, message}, case-insensitive routes and memory isolation by ticket_id. Enforce draft-only output as deliberate hardening. Explain setup commands, show the actual diff, run the documented checks and one real case, and list every unverified behavior as OPEN.
 
-Only after the actual build and run, list every SOLO.md step. Propose the teaching storyline, mark excessive detail for removal and produce five reviewed assignments. Deliver the reviewed working folder, mapping, evidence and OPEN gaps to the participants. Stop before adding optional features.
+Only after the actual build and run, list every current SOLO.md build step in order and propose the teaching storyline. Then stop. Wait for the trainer to choose which steps are essential, too large or less important. Do not create assignments or edit SOLO.md or the participant repository before the trainer accepts that selection.
+
+After the trainer accepts the selection, turn each kept step into one reviewed copy/paste or typing assignment. Give every assignment a starting state, a visible expected result and a stop condition. Then update SOLO.md and the participant repository to match the leading Workshop 4 slides. Show the documentation diff for trainer review. Deliver the reviewed working folder, mapping, evidence and OPEN gaps to the participants. Stop before adding optional features.
 ```
 
 ## SOLO 0 · Inspect the prepared baseline · 10 minutes
