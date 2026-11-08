@@ -69,12 +69,13 @@ The initial `verify` uses offline dry runs and requires no API key. The default
 backend uses your Claude Code login. See [`docs/SETUP.md`](docs/SETUP.md) for
 PowerShell, WSL, macOS, Linux, Docker and company login instructions.
 
-## Five assignments
+## Six assignments
 
 | SOLO | You build or inspect | Visible evidence |
 | --- | --- | --- |
 | 0 | The trainer's n8n mapping and reviewed baseline | Diff, checks, real run and `OPEN` gaps |
 | 1 | One agent with policy and structured priority | Focused test and tone-trap runs |
+| 1M | Reviewed file memory for two isolated tickets | Two sourced `memory.md` files and a fresh-session readback |
 | 2 | Risk and Customer Reply specialists | Specialist trace and reviewed draft |
 | 3 | Customer Context, read-only MCP and exact output | Tool trace, route test and reviewed draft |
 | 4 | Behavior comparison and acceptance proof | Acceptance table with evidence or `OPEN` |

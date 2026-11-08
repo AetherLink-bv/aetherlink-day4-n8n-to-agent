@@ -78,6 +78,41 @@ the real output.
 
 **Stop:** after the policy section is restored.
 
+### SOLO 1b · Inspect the form and memory evidence
+
+Use this protocol for the documented memory check:
+
+1. Run `npm run lesson1 -- MSG-01 --dry-run` and inspect `outputFormat`,
+   `priority-schema.mjs` and `lib/switch.mjs`. This is setup evidence, not a
+   model result.
+2. Run `npm run chat`. In that conversation, identify the fictional case as
+   `T-101`, give it a harmless marker and ask for that marker in the next turn.
+3. Exit the chat. Start a new `npm run chat` process for `T-202` and ask for
+   the `T-101` marker. The new conversation must not know it.
+4. Use actual output from a model run, or use the marked sample in
+   `docs/sample-trace.md` and call it sample evidence.
+
+```text
+Run the documented SOLO 1 dry run and point to outputFormat, priority-schema.mjs and lib/switch.mjs. Then run the documented chat memory check with two ticket_id values. Explain which output is setup evidence and which output came from a model. Show the commands and actual output. Change nothing. Stop for my review.
+```
+
+**Check:** the same conversation recalls its marker. A fresh conversation for
+another ticket does not receive that marker.
+
+**Stop:** after you have separated setup evidence, model evidence and sample
+evidence.
+
+### SOLO 1c · Challenge the policy
+
+```text
+Read my SOLO 1 diff and actual runs. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, run MSG-01 and MSG-06 before and after. Record the labels and explain whether the result changed. Restore the accepted policy from the current diff, rerun npm run verify and show the clean restoration. Do not use a finished branch or reveal an answer key. Stop for my review.
+```
+
+**Check:** the before and after evidence uses the same messages, and the
+accepted policy is restored with `npm run verify` passing.
+
+**Stop:** after inspecting the restored diff and actual verification output.
+
 ## SOLO 1M · Build reviewed memory per ticket · 20 minutes
 
 **Scenario:** T-001 must resume in a new Claude Code session without mixing in
