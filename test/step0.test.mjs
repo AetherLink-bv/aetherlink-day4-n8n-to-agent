@@ -34,6 +34,11 @@ test('Step 0: the Switch routes known priorities and ignores unknown values', ()
   assert.deepEqual(route('low'), routes.low);
   assert.deepEqual(route('MEDIUM'), routes.medium);
   assert.deepEqual(route('High'), routes.high);
+  assert.deepEqual(Object.fromEntries(Object.entries(routes).map(([priority, { action }]) => [priority, action])), {
+    low: 'auto_reply',
+    medium: 'investigate',
+    high: 'escalate',
+  });
   assert.equal(route('urgent'), null);
 });
 

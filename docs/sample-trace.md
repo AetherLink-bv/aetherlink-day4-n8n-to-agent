@@ -15,7 +15,7 @@ Structured output:
   "priority": "low",
   "reason": "The customer needs help finding a receipt."
 }
-Switch → low → AUTO_REPLY (Self-service support)
+Switch → low → auto_reply (Self-service support)
 ```
 
 Claude Code prints these events while it runs. A dry run prints the equivalent command but does not call a model.
