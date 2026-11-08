@@ -78,6 +78,43 @@ the real output.
 
 **Stop:** after the policy section is restored.
 
+## SOLO 1M · Build reviewed memory per ticket · 20 minutes
+
+**Scenario:** T-001 must resume in a new Claude Code session without mixing in
+T-002.
+
+**Starting state:** `docs/memory-lab/T-001.md` and `T-002.md` are separate
+fictional sources. No conversation, technical log or ticket memory file exists.
+
+```text
+Use Claude Code itself as our chat. Do not build a UI, add a model API call, or change the Agent SDK flow. Read docs/memory-lab/T-001.md only. No conversation or technical log exists for this exercise, so do not invent either one. Explain the difference between conversation/session resume, append-only technical logging, and a curated ticket memory file.
+
+Propose tickets/T-001/memory.md with exactly these headings: Confirmed facts, Decisions, Open questions, and Next step. Map every item to a stable T-001 source label. Preserve uncertain source claims as OPEN: under Open questions. Keep only durable ticket context. Do not include credentials, authentication data, tokens, personal data, a transcript dump, or speculation. Show the proposed file and wait for my approval. After I approve, create only tickets/T-001/memory.md and show the diff. Stop and tell me to open a fresh Claude Code session.
+```
+
+Open a new Claude Code session. Paste:
+
+```text
+This is a fresh Claude Code session. Read only tickets/T-001/memory.md. Do not read a transcript, technical log, T-002 source, or T-002 memory. Summarize the confirmed facts, decisions, open questions, and next step with their source references. State that you read this file explicitly and that it was not loaded automatically. Propose no implementation. Stop after the summary.
+```
+
+Open another new Claude Code session. Paste:
+
+```text
+This is another fresh Claude Code session. Read docs/memory-lab/T-002.md only. Do not read docs/memory-lab/T-001.md or tickets/T-001/memory.md. Propose tickets/T-002/memory.md with exactly these headings: Confirmed facts, Decisions, Open questions, and Next step. Map every item to a stable T-002 source label. Preserve uncertain source claims as OPEN: under Open questions. Do not include credentials, authentication data, tokens, personal data, a transcript dump, or speculation. Show the proposal and wait for my approval. After I approve, create only tickets/T-002/memory.md and show the diff. Do not create or rewrite technical logs. Stop for my isolation review.
+```
+
+**Actions:** review each proposal before its write. Keep both source fixtures
+unchanged. Use separate fresh sessions. After Claude stops, compare both files
+yourself and confirm that T-002 contains no T-001 label or fact.
+
+**Expected result:** two small reviewed memory files exist. Each contains
+sourced facts, decisions, open questions and a next step. The fresh session
+resumes T-001 only after reading its file. T-002 contains no T-001 facts.
+
+**Stop:** after T-001 resumed without replaying a conversation or reading logs,
+and T-002 stayed isolated. Do not build a UI or add a model call.
+
 ## SOLO 2 · Build Risk and Reply
 
 ```text
