@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 const read = (path) => readFileSync(path, 'utf8');
 
-test('participant docs stay on one branch and use five prompt-first assignments', () => {
+test('participant docs stay on one branch and use six prompt-first assignments', () => {
   const docs = `${read('README.md')}\n${read('SOLO.md')}`;
   const packageJson = JSON.parse(read('package.json'));
 
@@ -14,6 +14,13 @@ test('participant docs stay on one branch and use five prompt-first assignments'
   for (let step = 0; step <= 4; step += 1) {
     assert.match(read('SOLO.md'), new RegExp(`## SOLO ${step} \\u00b7`));
   }
+  assert.match(read('SOLO.md'), /## SOLO 1M ·/);
+  assert.match(read('SOLO.md'), /### SOLO 1b · Inspect the form and memory evidence/);
+  assert.match(read('SOLO.md'), /### SOLO 1c · Challenge the policy/);
+  assert.match(read('README.md'), /## Six assignments/);
+  assert.match(docs, /separate read-only reference/i);
+  assert.match(docs, /unsolved (?:`main` )?starter/i);
+  assert.match(docs, /do not copy (?:its )?finished files/i);
   assert.match(docs, /Claude Code/i);
   assert.match(docs, /observable check|Visible evidence/i);
   assert.match(docs, /\*\*Stop:\*\*/i);

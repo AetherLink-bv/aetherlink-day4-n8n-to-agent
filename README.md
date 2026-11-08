@@ -16,20 +16,23 @@ If you need a separate copy, download the
 [raw n8n JSON](https://raw.githubusercontent.com/AetherLink-bv/aetherlink-day4-n8n-to-agent/main/n8n/support-triage.json).
 
 Before class, the trainer uses the **Trainer preparation** prompt in
-[`SOLO.md`](SOLO.md) to rebuild the app from this JSON. The trainer reviews the
-build and selects the lesson steps before participants receive the app.
+[`SOLO.md`](SOLO.md) to build and review a separate read-only reference from
+this JSON. Participants keep their own unsolved `main` starter for every build
+assignment. The reference supplies only the diff, checks and real-run evidence
+used during SOLO 0. Do not copy finished files from it.
 
-After that review, open the repository in Claude Code. Copy this first
-participant prompt:
+Open your own starter in Claude Code. Add the separate trainer reference folder
+or evidence pack as read-only context. Copy this first participant prompt:
 
 ```text
 Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.
 ```
 
-You start with the JSON and the trainer's reviewed app. You finish when you can
-trace the app behavior to the JSON and name every missing proof as `OPEN`.
-Continue with the assignments in [`SOLO.md`](SOLO.md). Each assignment contains
-its own copy-ready prompt, expected evidence and stop point.
+You start with the JSON in your unsolved starter and inspect the trainer's
+separate reference. You finish when you can trace the reference behavior to the
+JSON and name every missing proof as `OPEN`. Continue building in your starter
+with the assignments in [`SOLO.md`](SOLO.md). Each assignment contains its own
+copy-ready prompt, expected evidence and stop point.
 
 ## The source behavior
 
@@ -69,20 +72,21 @@ The initial `verify` uses offline dry runs and requires no API key. The default
 backend uses your Claude Code login. See [`docs/SETUP.md`](docs/SETUP.md) for
 PowerShell, WSL, macOS, Linux, Docker and company login instructions.
 
-## Five assignments
+## Six assignments
 
 | SOLO | You build or inspect | Visible evidence |
 | --- | --- | --- |
 | 0 | The trainer's n8n mapping and reviewed baseline | Diff, checks, real run and `OPEN` gaps |
 | 1 | One agent with policy and structured priority | Focused test and tone-trap runs |
+| 1M | Reviewed file memory for two isolated tickets | Two sourced `memory.md` files and a fresh-session readback |
 | 2 | Risk and Customer Reply specialists | Specialist trace and reviewed draft |
 | 3 | Customer Context, read-only MCP and exact output | Tool trace, route test and reviewed draft |
 | 4 | Behavior comparison and acceptance proof | Acceptance table with evidence or `OPEN` |
 
-The public `main` branch is the starter. Before class, the trainer builds and
-reviews a working baseline in a separate working copy and shares that folder
-with participants. A learner with only `main` can repeat the same preparation
-outside the ten-minute SOLO 0.
+The public `main` branch is the unsolved starter. Before class, the trainer
+builds and reviews a separate reference and shares it read-only. Participants
+inspect that evidence during SOLO 0, then return to their starter for SOLO 1–4.
+If the reference is missing, stop and ask the trainer before SOLO 0.
 
 ## What already exists
 

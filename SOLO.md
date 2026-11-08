@@ -42,14 +42,15 @@ Read AGENTS.md, README.md, docs/SETUP.md and SOLO.md. Map the nodes, connections
 
 Only after the actual build and run, list every current SOLO.md build step in order and propose the teaching storyline. Then stop. Wait for the trainer to choose which steps are essential, too large or less important. Do not create assignments or edit SOLO.md or the participant repository before the trainer accepts that selection.
 
-After the trainer accepts the selection, turn each kept step into one reviewed copy/paste or typing assignment. Give every assignment a starting state, a visible expected result and a stop condition. Then update SOLO.md and the participant repository to match the leading Workshop 4 slides. Show the documentation diff for trainer review. Deliver the reviewed working folder, mapping, evidence and OPEN gaps to the participants. Stop before adding optional features.
+After the trainer accepts the selection, turn each kept step into one reviewed copy/paste or typing assignment. Give every assignment a starting state, a visible expected result and a stop condition. Then update SOLO.md and the participant repository to match the leading Workshop 4 slides. Show the documentation diff for trainer review. Deliver a separate read-only reference folder, mapping, evidence and OPEN gaps to the participants. Keep the participant starter TODOs unimplemented. Stop before adding optional features.
 ```
 
 ## SOLO 0 · Inspect the prepared baseline · 10 minutes
 
-Open the trainer's reviewed working folder in Claude Code. If you only have a
-fresh clone from `main`, use it to repeat trainer preparation outside this
-ten-minute slot.
+Clone `main` as your own unsolved starter. Add the trainer's separate reference
+folder or evidence pack to Claude Code as read-only context. Do not copy its
+finished files. If the reference is missing, stop and ask the trainer before
+SOLO 0. After this review, continue SOLO 1–4 only in your starter.
 
 ```text
 Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.
@@ -77,6 +78,41 @@ Help me type one loud low-impact ticket and one calm serious ticket. Run both. E
 the real output.
 
 **Stop:** after the policy section is restored.
+
+### SOLO 1b · Inspect the form and memory evidence
+
+Use this protocol for the documented memory check:
+
+1. Run `npm run lesson1 -- MSG-01 --dry-run` and inspect `outputFormat`,
+   `priority-schema.mjs` and `lib/switch.mjs`. This is setup evidence, not a
+   model result.
+2. Run `npm run chat`. In that conversation, identify the fictional case as
+   `T-101`, give it a harmless marker and ask for that marker in the next turn.
+3. Exit the chat. Start a new `npm run chat` process for `T-202` and ask for
+   the `T-101` marker. The new conversation must not know it.
+4. Use actual output from a model run, or use the marked sample in
+   `docs/sample-trace.md` and call it sample evidence.
+
+```text
+Run the documented SOLO 1 dry run and point to outputFormat, priority-schema.mjs and lib/switch.mjs. Then run the documented chat memory check with two ticket_id values. Explain which output is setup evidence and which output came from a model. Show the commands and actual output. Change nothing. Stop for my review.
+```
+
+**Check:** the same conversation recalls its marker. A fresh conversation for
+another ticket does not receive that marker.
+
+**Stop:** after you have separated setup evidence, model evidence and sample
+evidence.
+
+### SOLO 1c · Challenge the policy
+
+```text
+Read my SOLO 1 diff and actual runs. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, run MSG-01 and MSG-06 before and after. Record the labels and explain whether the result changed. Restore the accepted policy from the current diff, rerun npm run verify and show the clean restoration. Do not use a finished branch or reveal an answer key. Stop for my review.
+```
+
+**Check:** the before and after evidence uses the same messages, and the
+accepted policy is restored with `npm run verify` passing.
+
+**Stop:** after inspecting the restored diff and actual verification output.
 
 ## SOLO 1M · Build reviewed memory per ticket · 20 minutes
 
