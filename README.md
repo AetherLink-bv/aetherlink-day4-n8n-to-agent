@@ -36,7 +36,7 @@ The Workshop 4 slides determine the lesson order. Start with the
 If you need a separate copy, download the
 [raw n8n JSON](https://raw.githubusercontent.com/AetherLink-bv/aetherlink-day4-n8n-to-agent/main/n8n/support-triage.json).
 
-Before class, the trainer follows [Trainer preparation](SOLO.md#trainer-preparation--before-the-session)
+Before class, the trainer follows [Trainer preparation](SOLO.md#trainer-preparation-before-the-session)
 to build and review a separate read-only reference from this JSON. Participants
 keep their unsolved starter for every build assignment. The reference supplies
 only the diff, checks and real-run evidence used during SOLO 0.
