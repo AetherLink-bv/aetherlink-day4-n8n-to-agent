@@ -8,6 +8,27 @@ Follow [`SOLO.md`](SOLO.md). It contains one trainer-preparation prompt and six
 participant assignments. Each assignment includes a copy-ready prompt, an
 observable check and a stop for your review.
 
+## Participant start
+
+Install Node.js 22 or newer, Git and Claude Code. Replace
+`firstname-lastname` with your own lowercase name. Then run:
+
+```sh
+git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
+cd aetherlink-day4-n8n-to-agent
+git switch -c my/firstname-lastname
+claude
+```
+
+Add the trainer's separate read-only reference folder or evidence pack to
+Claude Code. Open [`SOLO.md`](SOLO.md) and paste the SOLO 0 prompt. Do not copy
+finished files from the reference. If the reference is missing, stop and ask
+the trainer.
+
+Before SOLO 1, let Claude Code run `npm ci`, `npm run doctor` and
+`npm run verify`. These checks use offline dry runs and require no API key.
+Use [`docs/SETUP.md`](docs/SETUP.md) only when installation or login fails.
+
 ## Start with the n8n JSON
 
 The Workshop 4 slides determine the lesson order. Start with the
@@ -15,11 +36,10 @@ The Workshop 4 slides determine the lesson order. Start with the
 If you need a separate copy, download the
 [raw n8n JSON](https://raw.githubusercontent.com/AetherLink-bv/aetherlink-day4-n8n-to-agent/main/n8n/support-triage.json).
 
-Before class, the trainer uses the **Trainer preparation** prompt in
-[`SOLO.md`](SOLO.md) to build and review a separate read-only reference from
-this JSON. Participants keep their own unsolved `main` starter for every build
-assignment. The reference supplies only the diff, checks and real-run evidence
-used during SOLO 0. Do not copy finished files from it.
+Before class, the trainer follows [Trainer preparation](SOLO.md#trainer-preparation--before-the-session)
+to build and review a separate read-only reference from this JSON. Participants
+keep their unsolved starter for every build assignment. The reference supplies
+only the diff, checks and real-run evidence used during SOLO 0.
 
 Open your own starter in Claude Code. Add the separate trainer reference folder
 or evidence pack as read-only context. Copy this first participant prompt:
@@ -53,24 +73,6 @@ The complete app preserves this order and contract:
 
 Transaction lookup is a workshop extension. Draft-only output is deliberate
 hardening. A route called `auto_reply` never authorizes sending.
-
-## Start
-
-Install Node.js 22 or newer, Git and Claude Code. Then run:
-
-```sh
-git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
-cd aetherlink-day4-n8n-to-agent
-git switch -c my/<name>
-npm ci
-npm run doctor
-npm run verify
-claude
-```
-
-The initial `verify` uses offline dry runs and requires no API key. The default
-backend uses your Claude Code login. See [`docs/SETUP.md`](docs/SETUP.md) for
-PowerShell, WSL, macOS, Linux, Docker and company login instructions.
 
 ## Six assignments
 
