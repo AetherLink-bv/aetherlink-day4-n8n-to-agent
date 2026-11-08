@@ -4,9 +4,9 @@ This participant repository starts with a small scaffold. You use Claude Code
 to rebuild the Workshop 3 support flow from the sanitized n8n export. Stay on
 one branch. Do not copy finished files from step branches.
 
-Follow [`SOLO.md`](SOLO.md). It contains one trainer-preparation prompt and five
-participant assignments. Every assignment asks Claude Code to build, show the
-diff, run a real check and stop for your review.
+Follow [`SOLO.md`](SOLO.md). It contains one trainer-preparation prompt and six
+participant assignments. Each assignment includes a copy-ready prompt, an
+observable check and a stop for your review.
 
 ## Start with the n8n JSON
 
