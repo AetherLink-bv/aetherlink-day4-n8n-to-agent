@@ -10,14 +10,19 @@ observable check and a stop for your review.
 
 ## Participant start
 
-Install Node.js 22 or newer, Git and Claude Code. Replace
-`firstname-lastname` with your own lowercase name. Then run:
+Install Node.js 22 or newer, Git and Claude Code. Then run:
 
 ```sh
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
+claude --setting-sources project --strict-mcp-config --no-chrome
+```
+
+If you want a named personal branch, create it before SOLO 1. Replace
+`firstname-lastname` with your own lowercase name:
+
+```sh
 git switch -c my/firstname-lastname
-claude
 ```
 
 Add the trainer's separate read-only reference folder or evidence pack to
