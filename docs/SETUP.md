@@ -17,14 +17,14 @@ Install the native Claude Code CLI:
 irm https://claude.ai/install.ps1 | iex
 ```
 
-Open a new PowerShell window, log in once, and check the tools:
+Open a new PowerShell window, clone the project, log in once from that folder, and check the tools:
 
 ```powershell
-claude
-node --version
-claude --version
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
+claude --setting-sources project --strict-mcp-config --no-chrome
+node --version
+claude --version
 npm ci
 npm run doctor
 npm run verify
@@ -50,17 +50,17 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 source ~/.bashrc
 nvm install 22
 curl -fsSL https://claude.ai/install.sh | bash
-claude
-node --version
-claude --version
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
+claude --setting-sources project --strict-mcp-config --no-chrome
+node --version
+claude --version
 npm ci
 npm run doctor
 npm run verify
 ```
 
-Run `claude` once inside WSL and complete sign-in there. A Windows login is separate.
+Run `claude --setting-sources project --strict-mcp-config --no-chrome` once inside the cloned project in WSL. Complete sign-in there. A Windows login is separate.
 
 ## Linux and macOS
 
@@ -68,11 +68,11 @@ Install Git and Node.js 22 or newer with your usual package manager. Install Cla
 
 ```sh
 curl -fsSL https://claude.ai/install.sh | bash
-claude
-node --version
-claude --version
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
+claude --setting-sources project --strict-mcp-config --no-chrome
+node --version
+claude --version
 npm ci
 npm run doctor
 npm run verify

@@ -58,6 +58,7 @@ test('toClaudeArgs maps lesson options to Claude Code flags', () => {
   const mcpConfig = JSON.parse(args[args.indexOf('--mcp-config') + 1]);
   assert.deepEqual(mcpConfig.mcpServers, { customers: { type: 'stdio', command: 'node', args: ['customers.js'] } });
   assert.ok(args.includes('--strict-mcp-config'));
+  assert.ok(args.includes('--no-chrome'));
   assert.deepEqual(JSON.parse(args[args.indexOf('--json-schema') + 1]), {
     type: 'object',
     required: ['priority'],
@@ -95,6 +96,7 @@ test('failed result events print diagnostics and throw', async () => {
       },
     }), /Agent run failed \(error_api\): request rejected/);
     assert.equal(childOptions.env.ANTHROPIC_API_KEY, undefined);
+    assert.equal(childOptions.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY, '1');
     const pathKey = Object.keys(childOptions.env).find((key) => key.toUpperCase() === 'PATH');
     assert.equal(childOptions.env[pathKey], process.env.PATH);
     assert.match(diagnostics.join('\n'), /request rejected/);
