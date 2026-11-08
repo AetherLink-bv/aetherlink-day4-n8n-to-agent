@@ -42,14 +42,15 @@ Read AGENTS.md, README.md, docs/SETUP.md and SOLO.md. Map the nodes, connections
 
 Only after the actual build and run, list every current SOLO.md build step in order and propose the teaching storyline. Then stop. Wait for the trainer to choose which steps are essential, too large or less important. Do not create assignments or edit SOLO.md or the participant repository before the trainer accepts that selection.
 
-After the trainer accepts the selection, turn each kept step into one reviewed copy/paste or typing assignment. Give every assignment a starting state, a visible expected result and a stop condition. Then update SOLO.md and the participant repository to match the leading Workshop 4 slides. Show the documentation diff for trainer review. Deliver the reviewed working folder, mapping, evidence and OPEN gaps to the participants. Stop before adding optional features.
+After the trainer accepts the selection, turn each kept step into one reviewed copy/paste or typing assignment. Give every assignment a starting state, a visible expected result and a stop condition. Then update SOLO.md and the participant repository to match the leading Workshop 4 slides. Show the documentation diff for trainer review. Deliver a separate read-only reference folder, mapping, evidence and OPEN gaps to the participants. Keep the participant starter TODOs unimplemented. Stop before adding optional features.
 ```
 
 ## SOLO 0 · Inspect the prepared baseline · 10 minutes
 
-Open the trainer's reviewed working folder in Claude Code. If you only have a
-fresh clone from `main`, use it to repeat trainer preparation outside this
-ten-minute slot.
+Clone `main` as your own unsolved starter. Add the trainer's separate reference
+folder or evidence pack to Claude Code as read-only context. Do not copy its
+finished files. If the reference is missing, stop and ask the trainer before
+SOLO 0. After this review, continue SOLO 1–4 only in your starter.
 
 ```text
 Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.

@@ -18,6 +18,9 @@ test('participant docs stay on one branch and use six prompt-first assignments',
   assert.match(read('SOLO.md'), /### SOLO 1b · Inspect the form and memory evidence/);
   assert.match(read('SOLO.md'), /### SOLO 1c · Challenge the policy/);
   assert.match(read('README.md'), /## Six assignments/);
+  assert.match(docs, /separate read-only reference/i);
+  assert.match(docs, /unsolved (?:`main` )?starter/i);
+  assert.match(docs, /do not copy (?:its )?finished files/i);
   assert.match(docs, /Claude Code/i);
   assert.match(docs, /observable check|Visible evidence/i);
   assert.match(docs, /\*\*Stop:\*\*/i);
