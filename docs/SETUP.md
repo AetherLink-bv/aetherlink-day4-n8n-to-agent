@@ -22,7 +22,7 @@ Open a new PowerShell window, clone the project, log in once from that folder, a
 ```powershell
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project --strict-mcp-config --no-chrome
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 node --version
 claude --version
 npm ci
@@ -52,7 +52,7 @@ nvm install 22
 curl -fsSL https://claude.ai/install.sh | bash
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project --strict-mcp-config --no-chrome
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 node --version
 claude --version
 npm ci
@@ -60,7 +60,7 @@ npm run doctor
 npm run verify
 ```
 
-Run `claude --setting-sources project --strict-mcp-config --no-chrome` once inside the cloned project in WSL. Complete sign-in there. A Windows login is separate.
+Run `claude --setting-sources project,user --strict-mcp-config --no-chrome` once inside the cloned project in WSL. Complete sign-in there. A Windows login is separate.
 
 ## Linux and macOS
 
@@ -70,7 +70,7 @@ Install Git and Node.js 22 or newer with your usual package manager. Install Cla
 curl -fsSL https://claude.ai/install.sh | bash
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project --strict-mcp-config --no-chrome
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 node --version
 claude --version
 npm ci
@@ -112,8 +112,13 @@ In PowerShell, use `-v "${PWD}:/workshop"` instead of `-v "$PWD:/workshop"`.
 ## Company login (Vertex AI, Bedrock)
 
 On a company laptop, Claude Code may run through Vertex AI or Amazon Bedrock instead of a claude.ai login.
-The lessons pick that up from the `env` block in `~/.claude/settings.json`. You do not need an API key or a
-`.env` file. The lessons copy only that block: your own `CLAUDE.md`, MCP servers and hooks stay out.
+That login is in the `env` block of `~/.claude/settings.json`. The start command and every lesson load
+project and user settings (`project,user`), so the login reaches them. You do not need an API key or a
+`.env` file.
+
+User settings also load your personal `CLAUDE.md`, hooks and plugins. A personal `CLAUDE.md` can change
+the tone of an answer, and a large personal setup makes each run slower and more expensive. MCP servers
+and claude.ai connectors from your account stay off: the lessons pass a strict MCP configuration.
 
 Check it with `npm run doctor`. The `Login settings` line names the variables it found, never their values.
 

@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, 'step-*', solution, facilitator]
+    branches: [main, 'trainer/solution']
   pull_request:
   workflow_dispatch:
 
@@ -37,4 +37,3 @@ jobs:
           persist-credentials: false
       - run: docker build -t w4-workshop .
       - run: docker run --rm w4-workshop npm run verify
-      - run: docker run --rm w4-workshop sh -c 'if [ -f 03-mcp/transaction-mcp/smoke.mjs ]; then npm run smoke:mcp; fi'

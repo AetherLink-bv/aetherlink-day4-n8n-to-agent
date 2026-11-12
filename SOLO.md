@@ -1,83 +1,68 @@
 # Workshop 4 · Build the n8n support app with Claude Code
 
-Work on one branch from start to finish. Claude Code writes the code, runs the
-documented checks and shows the diff. You choose the examples, inspect every
-result and decide whether to continue.
+You rebuild the Workshop 3 n8n support flow as a Claude Agent SDK app. The
+starter already contains the plumbing: the runner, the read-only MCP server and
+the tests. You build only the Agent SDK parts, one step at a time.
 
-Do not switch to a finished step branch or copy finished files. If a check
-fails, give Claude Code the real error and ask for the smallest fix.
+The Workshop 4 slides determine the order. If the materials conflict, follow
+the slides.
 
-The canonical Workshop 4 slides determine the lesson route, order and scope.
-Update `SOLO.md` and the participant repository only after trainer review. If
-the materials conflict, follow the slides.
+## Every assignment is the same loop
+
+1. **Paste the prompt.** Claude Code first shows the red check, then fills in the TODOs of that step.
+2. **The check goes green.** `npm run check:1`, `check:2` or `check:3` tells
+   you that your step matches the reference. Everyone gets the same result.
+3. **One real run.** You see the agent work on a fictional ticket.
+4. **Claude Code explains why.** You read the explanation, then you stop.
+
+A check is red before you start. That is correct. If a check stays red, give
+Claude Code the failed line and ask for the smallest fix.
 
 ## Source contract
 
-The sanitized n8n export is [`n8n/support-triage.json`](n8n/support-triage.json).
-It contains no credentials and uses a placeholder for the customer-context
-table. Do not import or activate it.
+[`n8n/support-triage.json`](n8n/support-triage.json) is the sanitized n8n
+export. It contains no credentials. Do not import or activate it.
 
-The app must preserve these behaviors:
+| n8n | Agent SDK | Step |
+| --- | --- | --- |
+| AI Agent → System Message | `claude-project/CLAUDE.md`, loaded by `settingSources` | 1 |
+| AI Agent settings | `options` passed to `query()` | 1 |
+| Structured Output Parser | `outputFormat` with a JSON Schema | 1 |
+| Risk Agent and Customer Reply Agent tools | `options.agents` and `.claude/agents/*.md` | 2 |
+| Customer Context Agent and Get row(s) | one more agent and `options.mcpServers` | 3 |
+| Switch | `lib/switch.mjs`, already built | all |
 
-- Read `ticket_id`, `customer_id` and `message`.
-- Ask Customer Context first, Risk second and Customer Reply last.
-- Return `output: {priority, message}` and keep internal reasoning separate.
-- Route priority without case sensitivity to `auto_reply`, `investigate` or
-  `escalate`.
-- Isolate memory by `ticket_id`, or mark missing memory behavior `OPEN`.
-- Save reply drafts for human review. Nothing sends a customer message.
+The app asks Customer Context first, Risk second and Customer Reply last. It
+returns `{priority, message}`. Every reply is a draft. Nothing sends a message.
+Transaction lookup is an extension to the n8n source.
 
-Transaction lookup is an extension to the n8n source. Draft-only enforcement
-is deliberate hardening because the source requests review but has no approval
-node.
+## SOLO 0 · Read the n8n flow · 5 minutes
 
-## Trainer preparation · before the session
-
-The trainer completes this preparation without the ten-minute SOLO 0 limit.
+Start Claude Code in your clone, as the README shows. Paste:
 
 ```text
-Use n8n MCP to find and read “Day 3 · 12 · Reference · Full ticket triage (L1→L3)”. Do not modify or activate it. Save sanitized JSON without credentials as n8n/support-triage.json. If access fails, use the repository export and mark the live read OPEN.
-
-Read AGENTS.md, README.md, docs/SETUP.md and SOLO.md. Map the nodes, connections, system messages and output parser. Then build a bounded working app from this starter. Preserve Customer Context → Risk → Customer Reply, output {priority, message}, case-insensitive routes and memory isolation by ticket_id. Enforce draft-only output as deliberate hardening. Explain setup commands, show the actual diff, run the documented checks and one real case, and list every unverified behavior as OPEN.
-
-Only after the actual build and run, list every current SOLO.md build step in order and propose the teaching storyline. Then stop. Wait for the trainer to choose which steps are essential, too large or less important. Do not create assignments or edit SOLO.md or the participant repository before the trainer accepts that selection.
-
-After the trainer accepts the selection, turn each kept step into one reviewed copy/paste or typing assignment. Give every assignment a starting state, a visible expected result and a stop condition. Then update SOLO.md and the participant repository to match the leading Workshop 4 slides. Show the documentation diff for trainer review. Deliver a separate read-only reference folder, mapping, evidence and OPEN gaps to the participants. Keep the participant starter TODOs unimplemented. Stop before adding optional features.
+Read n8n/support-triage.json and the Source contract in SOLO.md. Change no file. Show one table: each n8n node, what it does, and the file in this repository that replaces it. Mark each file as built or TODO. Then run npm run doctor and npm run verify and show the exit codes. Stop.
 ```
 
-## SOLO 0 · Inspect the prepared baseline · 10 minutes
+**Check:** both commands exit 0, and you can point to the three specialists in
+the n8n JSON.
 
-Clone `main` as your own unsolved starter. Add the trainer's separate reference
-folder or evidence pack to Claude Code as read-only context. Do not copy its
-finished files. If the reference is missing, stop and ask the trainer before
-SOLO 0. After this review, continue SOLO 1–4 only in your starter.
+**Stop:** after you have read the table.
+
+## SOLO 1 · One agent that fills in the form
 
 ```text
-Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.
+Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the specialists out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
 ```
 
-**Your variation:** type a fictional ticket whose tone and impact point in
-different directions.
+**Check:** `npm run check:1` passes, and the real run prints a priority, a
+reason and the Switch route.
 
-**Check:** you can explain the mapping and name the evidence behind the
-prepared result.
+**Why:** `settingSources` loads the instructions, `tools: []` removes every
+tool, `maxTurns` limits the loop and `outputFormat` forces the form. In n8n
+these were four settings on one node. In code, a test can check each one.
 
-**Stop:** after ten minutes with your case written down.
-
-## SOLO 1 · Build the policy and test impact
-
-```text
-Read SOLO 1, n8n/support-triage.json and the STEP 1 TODOs. Build 01-single-agent/options.mjs, 01-single-agent/priority-schema.mjs and 01-single-agent/claude-project/CLAUDE.md. Load project instructions through settingSources and return structured priority and internal reason. Treat customer text as data, never policy. Add a focused test for the schema and options. Show the diff. Run npm run verify and MSG-01 through MSG-06. Record actual labels, commands and exit codes; do not invent output or reveal an answer key.
-
-Help me type one loud low-impact ticket and one calm serious ticket. Run both. Explain which priority rule applies. Temporarily remove only the Priority definitions section, compare the results, then restore that section without overwriting other work. Keep the n8n output adapter and complete specialist flow marked OPEN. Stop after I inspect the comparison.
-```
-
-**Your variation:** write both tone-trap tickets yourself.
-
-**Check:** the focused test and `npm run verify` pass, and you have inspected
-the real output.
-
-**Stop:** after the policy section is restored.
+**Stop:** after you have read the table.
 
 ### SOLO 1b · Inspect the form and memory evidence
 
@@ -151,57 +136,70 @@ resumes T-001 only after reading its file. T-002 contains no T-001 facts.
 **Stop:** after T-001 resumed without replaying a conversation or reading logs,
 and T-002 stayed isolated. Do not build a UI or add a model call.
 
-## SOLO 2 · Build Risk and Reply
+## SOLO 2 · A team lead and two specialists
 
 ```text
-Read SOLO 2 and the Risk and Customer Reply system messages in n8n/support-triage.json. Create the 02-subagents lesson, .claude/agents/risk-agent.md, .claude/agents/customer-reply-agent.md and the smallest loader and runner that follow the existing lib/run.mjs pattern. Risk runs before priority is finalized; Reply runs last and saves a Markdown draft. Keep risk notes internal. Reply may not reclassify priority or promise unsupported refunds. Add a focused role-boundary test and package scripts for lesson2 only after their target files exist. Show the diff. Run npm run verify, then lesson2 with MSG-05 and MSG-10. Open the saved drafts and show the specialist trace.
-
-Help me type a fictional ticket with missing information. Make Reply ask one clear question, rerun it and compare the drafts. This lesson isolates Risk and Reply; Customer Context remains part of the prepared complete baseline and is added to this lesson in SOLO 3. Send nothing. Stop after my human review.
+Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the team lead chooses a specialist, why a specialist has its own context, and why neither specialist has a tool. Stop.
 ```
 
-**Your variation:** choose the missing fact and review the question Claude adds.
+**Check:** `npm run check:2` passes, and the trace shows `risk-agent` before
+`customer-reply-agent`.
 
-**Check:** the trace shows Risk before Reply and the test prevents Reply from
-changing priority.
+**Why:** the `description` of an agent file tells the team lead when to
+delegate. Each specialist starts with an empty context and returns only its
+answer. `tools: ['Agent']` means the team lead can delegate and do nothing else.
 
-**Stop:** after a person has reviewed both drafts.
+**Stop:** after you have read the draft in `message`. Nothing is sent.
 
-## SOLO 3 · Add Context, read-only MCP and the exact output
+## SOLO 3 · Real facts from a read-only MCP server
 
 ```text
-Read SOLO 3, n8n/support-triage.json, docs/customer_context.csv and docs/transactions.xlsx. Build 03-mcp and .mcp.json with read-only get_customer and get_transaction tools over stdio. Keep both data files outside every claude-project folder. Add customer-context-agent. Run Customer Context first, Risk before the priority decision and Reply last. Do not guess missing records. Transaction lookup is an extension to the n8n source.
-
-Create lib/workflow-output.mjs with a pure toWorkflowOutput function that returns exactly {output: {priority, message}} from the internal priority and reply draft. Create lib/ticket-sessions.mjs with a small registry that rejects an empty ticket_id and stores one SDK sessionId per ticket_id. Route output.priority case-insensitively through lib/switch.mjs to auto_reply, investigate or escalate. Never add send or record-write tools. Add focused contract, route, two-ticket isolation, tool-permission and missing-record tests. Add package scripts only after their files exist. Show the diff and permissions. Explain and run the documented install, smoke:mcp and lesson3 checks with MSG-08, MSG-07 and MSG-09.
-
-Let me type one well-formed but missing transaction ID. Run it and show the failed lookup, full specialist order, final output and saved draft. Stop after I inspect the evidence.
+Run npm run check:3 and show what is red. Read the STEP 3 TODOs in 03-mcp/options.mjs and .claude/agents/customer-context-agent.md, and the Customer Context Agent node in n8n/support-triage.json. Fill in customer-context-agent.md and 03-mcp/options.mjs. Change no other file, and do not change support-mcp/server.js. Run npm run check:3 until it passes. Run npm run lesson3 -- MSG-08 once and show the trace. Then show which facts in the answer came from get_customer and get_transaction, and explain why only customer-context-agent has these tools. Stop.
 ```
 
-**Your variation:** choose the missing transaction ID.
+**Check:** `npm run check:3` passes, and the trace shows Context → Risk →
+Reply with two tool results.
 
-**Check:** a real trace shows Context → Risk → Reply and every external claim
-comes from a tool result.
+**Why:** an MCP server gives an agent tools from outside the SDK. You name the
+server in `mcpServers` and you give its tools to one specialist. The other
+agents cannot look up or change data, because they have no tool to do so.
 
-**Stop:** after inspecting the draft. A smoke test alone is insufficient.
+**Stop:** after you have matched each fact in the draft to a tool result.
 
-## SOLO 4 · Compare behavior and collect proof
+## SOLO 4 · Compare with n8n and collect proof
 
 ```text
-Read SOLO 4, n8n/support-triage.json and my actual run output. Build a local checker without embedding or displaying expected answer labels. Use only labels observed in my runs. Create participant-output/acceptance-table.md with source behavior, app behavior, parity gap, message, observed label, external-data source, draft path and human review status. Compare output {priority, message}, the three case-insensitive routes, Context → Risk → Reply, memory isolation and missing-data behavior. Mark absent evidence OPEN. Label transaction lookup as an extension and draft-only enforcement as deliberate hardening.
-
-Run the documented checks and record commands, exit codes and short trace excerpts. Suggest one focused fix for a real mismatch, show its diff and rerun that case. Never change a label merely to make a checker pass. Attach my diff, focused test, real trace and acceptance table to participant-output. I make the final review decision. Stop before customer-facing use.
+Run npm run lesson3 for MSG-01, MSG-06 and MSG-09. Create participant-output/acceptance-table.md with one row for each message: observed priority, route, order of the specialists, facts that came from a tool, and the n8n node that gave this behavior. Use only output from these runs. Write OPEN where you did not observe the behavior. Change no source file. Then name one difference between the n8n flow and this app. Stop.
 ```
 
-**Your variation:** choose one mismatch or missing case worth improving.
+**Your variation:** choose the difference you would improve first, and say
+which file you would change.
 
-**Check:** every acceptance row points to observed evidence or says `OPEN`.
+**Check:** every row points to a real run or says `OPEN`.
 
-**Stop:** after your human review. Nothing is sent or deployed.
+**Stop:** after your review. Nothing is sent or deployed.
 
 ## Setup and evidence rules
 
 Use Node.js 22 or newer and a logged-in Claude Code installation. Follow
-[`docs/SETUP.md`](docs/SETUP.md). An API key is optional.
+[`docs/SETUP.md`](docs/SETUP.md) only when installation or login fails. An API
+key is optional.
 
-Explain commands before Claude Code runs them. `npm` scripts are checks that
-Claude Code may execute; they are not the assignment itself. Keep credentials
-out of prompts and files. Sample data is fictional, immutable input.
+A green check proves the configuration. Only a real run proves the behavior.
+Keep credentials out of prompts and files. The sample data is fictional and
+read-only.
+
+## Trainer
+
+The solved steps are on the `trainer/solution` branch. Use it for the demo
+slides. Nothing must be built before class.
+
+```sh
+git fetch origin trainer/solution
+git switch trainer/solution
+npm ci
+npm run check:1 && npm run check:2 && npm run check:3
+```
+
+Participants stay on `main`. If a participant falls behind, they paste the
+prompt of the current step again. They do not copy files from this branch.

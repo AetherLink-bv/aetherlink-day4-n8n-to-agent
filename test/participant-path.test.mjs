@@ -3,32 +3,35 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
 const read = (path) => readFileSync(path, 'utf8');
+const startCommand = 'claude --setting-sources project,user --strict-mcp-config --no-chrome';
 
-test('participant docs stay on one branch and use six prompt-first assignments', () => {
-  const docs = `${read('README.md')}\n${read('SOLO.md')}`;
-  const packageJson = JSON.parse(read('package.json'));
+test('participant docs give one route with a check for each build step', () => {
+  const solo = read('SOLO.md');
+  const participantPart = solo.slice(0, solo.indexOf('\n## Trainer'));
+  const scripts = JSON.parse(read('package.json')).scripts;
 
-  assert.equal(packageJson.name, 'aetherlink-day4-n8n-to-agent');
-  assert.doesNotMatch(docs, /git (?:checkout|switch) (?:origin\/)?(?:step-|solution)/i);
-  assert.doesNotMatch(docs, /copy (?:the )?(?:code|files?).*finished branch/i);
-  for (let step = 0; step <= 4; step += 1) {
-    assert.match(read('SOLO.md'), new RegExp(`## SOLO ${step} \\u00b7`));
+  for (const heading of ['## SOLO 0 ·', '## SOLO 1 ·', '### SOLO 1b ·', '### SOLO 1c ·', '## SOLO 1M ·', '## SOLO 2 ·', '## SOLO 3 ·', '## SOLO 4 ·']) {
+    assert.ok(solo.includes(heading), `SOLO.md has ${heading}`);
   }
-  assert.match(read('SOLO.md'), /## SOLO 1M ·/);
-  assert.match(read('SOLO.md'), /### SOLO 1b · Inspect the form and memory evidence/);
-  assert.match(read('SOLO.md'), /### SOLO 1c · Challenge the policy/);
-  assert.match(read('README.md'), /## Six assignments/);
-  assert.match(docs, /separate read-only reference/i);
-  assert.match(docs, /unsolved (?:`main` )?starter/i);
-  assert.match(docs, /do not copy (?:its )?finished files/i);
-  assert.match(docs, /Claude Code/i);
-  assert.match(docs, /observable check|Visible evidence/i);
-  assert.match(docs, /\*\*Stop:\*\*/i);
-  assert.match(read('README.md'), /git clone https:\/\/github\.com\/AetherLink-bv\/aetherlink-day4-n8n-to-agent\.git\ncd aetherlink-day4-n8n-to-agent\nclaude --setting-sources project --strict-mcp-config --no-chrome/);
-  assert.equal((read('docs/SETUP.md').match(/git clone[^\n]*\ncd aetherlink-day4-n8n-to-agent\nclaude --setting-sources project --strict-mcp-config --no-chrome/g) ?? []).length, 3);
+  for (const step of [1, 2, 3]) {
+    assert.ok(scripts[`check:${step}`] && scripts[`lesson${step}`], `step ${step} has a check and a lesson script`);
+    assert.match(participantPart, new RegExp(`npm run check:${step} until it passes`), `SOLO ${step} stops on its check`);
+    assert.match(participantPart, new RegExp(`npm run lesson${step} -- MSG-\\d\\d once`), `SOLO ${step} has one real run`);
+  }
+  assert.doesNotMatch(participantPart, /git (?:checkout|switch)|trainer evidence|reference folder/i, 'participants need no branch and no trainer material');
+  assert.ok(read('README.md').includes(`cd aetherlink-day4-n8n-to-agent\nnpm ci\n${startCommand}`));
+  assert.equal(read('docs/SETUP.md').split(startCommand).length - 1, 4);
   assert.equal(JSON.parse(read('.claude/settings.json')).autoMemoryEnabled, false);
 });
 
+test('the starter leaves every build step to the participant', () => {
+  for (const file of ['01-single-agent/options.mjs', '01-single-agent/priority-schema.mjs', '02-subagents/options.mjs', '03-mcp/options.mjs']) {
+    assert.match(read(file), /STEP \d:/, `${file} still has its TODOs`);
+  }
+  for (const agent of ['risk-agent', 'customer-reply-agent', 'customer-context-agent']) {
+    assert.match(read(`.claude/agents/${agent}.md`), /TODO \(Step \d\)/, `${agent}.md still has its TODOs`);
+  }
+});
 test('the sanitized n8n source defines the complete app contract', () => {
   const workflow = JSON.parse(read('n8n/support-triage.json'));
   const names = workflow.nodes.map(({ name }) => name);

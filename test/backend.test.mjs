@@ -23,7 +23,7 @@ test('backend selection follows argument, environment, key, then Claude Code def
 
 test('toClaudeArgs maps lesson options to Claude Code flags', () => {
   const args = toClaudeArgs('Customer message', {
-    settingSources: ['project'],
+    settingSources: ['project', 'user'],
     maxTurns: 3,
     model: 'sonnet',
     tools: [],
@@ -43,7 +43,7 @@ test('toClaudeArgs maps lesson options to Claude Code flags', () => {
   assert.deepEqual(args.slice(0, 5), ['-p', 'Customer message', '--output-format', 'stream-json', '--verbose']);
   assert.ok(args.includes('--tools') && args[args.indexOf('--tools') + 1] === '');
   assert.ok(args.includes('--append-system-prompt') && args.includes('Keep answers short.'));
-  assert.ok(args.includes('--setting-sources') && args.includes('project'));
+  assert.equal(args[args.indexOf('--setting-sources') + 1], 'project,user');
   assert.ok(args.includes('--max-turns') && args.includes('3'));
   assert.ok(args.includes('--allowedTools') && args.includes('Agent,mcp__customers__get_customer'));
   assert.ok(args.includes('--disallowedTools') && args.includes('Bash'));
@@ -120,4 +120,32 @@ test('doctor reports a missing CLI without failing', () => {
     backend: 'claude-code',
     claudeVersion: '2.1.204',
   }), /below minimum/);
+});
+
+test('the trace names each specialist and the model it runs on, once', () => {
+  const lines = [];
+  const log = console.log;
+  console.log = (line) => lines.push(line);
+  try {
+    printEvent({ type: 'assistant', message: { model: 'claude-lead', content: [{ type: 'tool_use', id: 'call-1', name: 'Agent', input: { subagent_type: 'risk-agent' } }] } });
+    const fromSpecialist = { type: 'assistant', parent_tool_use_id: 'call-1', message: { model: 'claude-specialist', content: [{ type: 'text', text: 'Risk note.' }] } };
+    printEvent(fromSpecialist);
+    printEvent(fromSpecialist);
+  } finally {
+    console.log = log;
+  }
+  assert.deepEqual(lines, [
+    '[tool_use] Agent → risk-agent',
+    '[subagent] risk-agent · model claude-specialist',
+    '[assistant] Risk note.',
+    '[assistant] Risk note.',
+  ]);
+});
+
+test('every run switches off background subagents from user settings', () => {
+  const args = toClaudeArgs('Customer message', { tools: [] });
+  assert.deepEqual(JSON.parse(args[args.indexOf('--settings') + 1]).env, {
+    CLAUDE_CODE_FORK_SUBAGENT: '0',
+    CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: '0',
+  });
 });
