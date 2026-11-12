@@ -4,7 +4,8 @@ This repo is the participant repo for AetherLink Academy Workshop 4. `main` is
 the starter: the plumbing is built and every Agent SDK part is a TODO with a
 check in `checks/`. `trainer/solution` is `main` with every TODO solved. Keep
 `README.md`, `SOLO.md`, the starter files and the Workshop 4 slides in sync. Do
-not solve a TODO on `main` and do not direct participants to `trainer/solution`.
+not solve a TODO on `main` (`npm run check:starter` guards this in CI) and do not
+direct participants to `trainer/solution`.
 
 - Do not add a `CLAUDE.md` at the repo root: the lessons load `CLAUDE.md` from their
   own `claude-project/` folder, and Claude Code also reads parent folders.

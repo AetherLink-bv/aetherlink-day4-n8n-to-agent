@@ -24,14 +24,6 @@ test('participant docs give one route with a check for each build step', () => {
   assert.equal(JSON.parse(read('.claude/settings.json')).autoMemoryEnabled, false);
 });
 
-test('the starter leaves every build step to the participant', () => {
-  for (const file of ['01-single-agent/options.mjs', '01-single-agent/priority-schema.mjs', '02-subagents/options.mjs', '03-mcp/options.mjs']) {
-    assert.match(read(file), /STEP \d:/, `${file} still has its TODOs`);
-  }
-  for (const agent of ['risk-agent', 'customer-reply-agent', 'customer-context-agent']) {
-    assert.match(read(`.claude/agents/${agent}.md`), /TODO \(Step \d\)/, `${agent}.md still has its TODOs`);
-  }
-});
 test('the sanitized n8n source defines the complete app contract', () => {
   const workflow = JSON.parse(read('n8n/support-triage.json'));
   const names = workflow.nodes.map(({ name }) => name);
