@@ -9,3 +9,5 @@ labels.json
 !02-subagents/claude-project/output/.gitkeep
 !03-mcp/claude-project/output/.gitkeep
 participant-output/
+# Local state that personal Claude Code hooks may write during a real run
+.omc/
