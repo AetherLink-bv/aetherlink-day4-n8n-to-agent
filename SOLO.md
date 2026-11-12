@@ -9,7 +9,7 @@ the slides.
 
 ## Every assignment is the same loop
 
-1. **Paste the prompt.** Claude Code fills in the TODOs of that step.
+1. **Paste the prompt.** Claude Code first shows the red check, then fills in the TODOs of that step.
 2. **The check goes green.** `npm run check:1`, `check:2` or `check:3` tells
    you that your step matches the reference. Everyone gets the same result.
 3. **One real run.** You see the agent work on a fictional ticket.
@@ -52,7 +52,7 @@ the n8n JSON.
 ## SOLO 1 · One agent that fills in the form
 
 ```text
-Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the specialists out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
+Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the specialists out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
 ```
 
 **Check:** `npm run check:1` passes, and the real run prints a priority, a
@@ -139,7 +139,7 @@ and T-002 stayed isolated. Do not build a UI or add a model call.
 ## SOLO 2 · A team lead and two specialists
 
 ```text
-Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the team lead chooses a specialist, why a specialist has its own context, and why neither specialist has a tool. Stop.
+Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the team lead chooses a specialist, why a specialist has its own context, and why neither specialist has a tool. Stop.
 ```
 
 **Check:** `npm run check:2` passes, and the trace shows `risk-agent` before
@@ -154,7 +154,7 @@ answer. `tools: ['Agent']` means the team lead can delegate and do nothing else.
 ## SOLO 3 · Real facts from a read-only MCP server
 
 ```text
-Read the STEP 3 TODOs in 03-mcp/options.mjs and .claude/agents/customer-context-agent.md, and the Customer Context Agent node in n8n/support-triage.json. Fill in customer-context-agent.md and 03-mcp/options.mjs. Change no other file, and do not change support-mcp/server.js. Run npm run check:3 until it passes. Run npm run lesson3 -- MSG-08 once and show the trace. Then show which facts in the answer came from get_customer and get_transaction, and explain why only customer-context-agent has these tools. Stop.
+Run npm run check:3 and show what is red. Read the STEP 3 TODOs in 03-mcp/options.mjs and .claude/agents/customer-context-agent.md, and the Customer Context Agent node in n8n/support-triage.json. Fill in customer-context-agent.md and 03-mcp/options.mjs. Change no other file, and do not change support-mcp/server.js. Run npm run check:3 until it passes. Run npm run lesson3 -- MSG-08 once and show the trace. Then show which facts in the answer came from get_customer and get_transaction, and explain why only customer-context-agent has these tools. Stop.
 ```
 
 **Check:** `npm run check:3` passes, and the trace shows Context → Risk →
