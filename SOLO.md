@@ -13,7 +13,9 @@ the slides.
 2. **The check goes green.** `npm run check:1`, `check:2` or `check:3` tells
    you that your step matches the reference. Everyone gets the same result.
 3. **One real run.** You see the agent work on a fictional ticket.
-4. **Claude Code explains why.** You read the explanation, then you stop.
+4. **Claude Code explains why.** You read the explanation.
+5. **Test it yourself.** You type the same check and the same run in a second
+   terminal, and compare your screen with the slide.
 
 A check is red before you start. That is correct. If a check stays red, give
 Claude Code the failed line and ask for the smallest fix.
@@ -44,6 +46,13 @@ Start Claude Code in your clone, as the README shows. Paste:
 Read n8n/support-triage.json and the Source contract in SOLO.md. Change no file. Show one table: each n8n node, what it does, and the file in this repository that replaces it. Mark each file as built or TODO. Then run npm run doctor and npm run verify and show the exit codes. Stop.
 ```
 
+Then test it yourself in a second terminal:
+
+```sh
+npm run doctor
+npm run verify
+```
+
 **Check:** both commands exit 0, and you can point to the three specialists in
 the n8n JSON.
 
@@ -53,6 +62,13 @@ the n8n JSON.
 
 ```text
 Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the specialists out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
+```
+
+Then test it yourself in a second terminal:
+
+```sh
+npm run check:1
+npm run lesson1 -- MSG-06
 ```
 
 **Check:** `npm run check:1` passes, and the real run prints a priority, a
@@ -142,6 +158,13 @@ and T-002 stayed isolated. Do not build a UI or add a model call.
 Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the team lead chooses a specialist, why a specialist has its own context, and why neither specialist has a tool. Stop.
 ```
 
+Then test it yourself in a second terminal:
+
+```sh
+npm run check:2
+npm run lesson2 -- MSG-05
+```
+
 **Check:** `npm run check:2` passes, and the trace shows `risk-agent` before
 `customer-reply-agent`.
 
@@ -155,6 +178,14 @@ answer. `tools: ['Agent']` means the team lead can delegate and do nothing else.
 
 ```text
 Run npm run check:3 and show what is red. Read the STEP 3 TODOs in 03-mcp/options.mjs and .claude/agents/customer-context-agent.md, and the Customer Context Agent node in n8n/support-triage.json. Fill in customer-context-agent.md and 03-mcp/options.mjs. Change no other file, and do not change support-mcp/server.js. Run npm run check:3 until it passes. Run npm run lesson3 -- MSG-08 once and show the trace. Then show which facts in the answer came from get_customer and get_transaction, and explain why only customer-context-agent has these tools. Stop.
+```
+
+Then test it yourself in a second terminal:
+
+```sh
+npm run smoke:mcp
+npm run check:3
+npm run lesson3 -- MSG-08
 ```
 
 **Check:** `npm run check:3` passes, and the trace shows Context → Risk →
