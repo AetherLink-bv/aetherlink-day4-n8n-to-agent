@@ -1,12 +1,9 @@
 # Workshop 4 · From n8n to a Claude Agent SDK app
 
-This participant repository starts with a small scaffold. You use Claude Code
-to rebuild the Workshop 3 support flow from the sanitized n8n export. Stay on
-one branch. Do not copy finished files from step branches.
-
-Follow [`SOLO.md`](SOLO.md). It contains one trainer-preparation prompt and six
-participant assignments. Each assignment includes a copy-ready prompt, an
-observable check and a stop for your review.
+You rebuild the Workshop 3 n8n support flow as a Claude Agent SDK app. This
+repository is your starter. The plumbing is built. You build the Agent SDK
+parts with Claude Code, one step at a time, and a check tells you when a step
+is right.
 
 ## Participant start
 
@@ -15,108 +12,64 @@ Install Node.js 22 or newer, Git and Claude Code. Then run:
 ```sh
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
+npm ci
 claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
-If you want a named personal branch, create it before SOLO 1. Replace
-`firstname-lastname` with your own lowercase name:
-
-```sh
-git switch -c my/firstname-lastname
-```
-
-Add the trainer's separate read-only reference folder or evidence pack to
-Claude Code. Open [`SOLO.md`](SOLO.md) and paste the SOLO 0 prompt. Do not copy
-finished files from the reference. If the reference is missing, stop and ask
-the trainer.
-
-Before SOLO 1, let Claude Code run `npm ci`, `npm run doctor` and
-`npm run verify`. These checks use offline dry runs and require no API key.
-Use [`docs/SETUP.md`](docs/SETUP.md) only when installation or login fails.
-
-## Start with the n8n JSON
-
-The Workshop 4 slides determine the lesson order. Start with the
-[`n8n/support-triage.json`](n8n/support-triage.json) file in this repository.
-If you need a separate copy, download the
-[raw n8n JSON](https://raw.githubusercontent.com/AetherLink-bv/aetherlink-day4-n8n-to-agent/main/n8n/support-triage.json).
-
-Before class, the trainer follows [Trainer preparation](SOLO.md#trainer-preparation-before-the-session)
-to build and review a separate read-only reference from this JSON. Participants
-keep their unsolved starter for every build assignment. The reference supplies
-only the diff, checks and real-run evidence used during SOLO 0.
-
-Open your own starter in Claude Code. Add the separate trainer reference folder
-or evidence pack as read-only context. Copy this first participant prompt:
-
-```text
-Read n8n/support-triage.json, SOLO.md and the trainer evidence. Explain the source-to-app mapping. Inspect the prepared app diff, checks and real run. Show Customer Context → Risk → Customer Reply, output {priority, message}, the three routes, memory isolation and every OPEN gap. Help me type one fictional case for SOLO 1 and choose its observable check. Do not rebuild the whole app now. Stop after ten minutes.
-```
-
-You start with the JSON in your unsolved starter and inspect the trainer's
-separate reference. You finish when you can trace the reference behavior to the
-JSON and name every missing proof as `OPEN`. Continue building in your starter
-with the assignments in [`SOLO.md`](SOLO.md). Each assignment contains its own
-copy-ready prompt, expected evidence and stop point.
-
-## The source behavior
-
-[`n8n/support-triage.json`](n8n/support-triage.json) is the sanitized export of
-**Day 3 · 12 · Reference · Full ticket triage (L1→L3)**. It contains no
-credentials and uses a placeholder for the customer-context table. Do not
-activate or import it.
-
-The complete app preserves this order and contract:
-
-1. Customer Context reads customer data.
-2. Risk assesses impact and priority.
-3. Customer Reply writes the final draft.
-4. The app returns `output: {priority, message}`.
-5. `lib/switch.mjs` routes priority without case sensitivity to `auto_reply`,
-   `investigate` or `escalate`.
-6. Memory stays isolated by `ticket_id`, or missing behavior is marked `OPEN`.
-
-Transaction lookup is a workshop extension. Draft-only output is deliberate
-hardening. A route called `auto_reply` never authorizes sending.
+Open [`SOLO.md`](SOLO.md) and paste the SOLO 0 prompt. Use
+[`docs/SETUP.md`](docs/SETUP.md) only when installation or login fails. The
+checks and dry runs need no API key.
 
 ## Six assignments
 
-| SOLO | You build or inspect | Visible evidence |
-| --- | --- | --- |
-| 0 | The trainer's n8n mapping and reviewed baseline | Diff, checks, real run and `OPEN` gaps |
-| 1 | One agent with policy and structured priority | Focused test and tone-trap runs |
-| 1M | Reviewed file memory for two isolated tickets | Two sourced `memory.md` files and a fresh-session readback |
-| 2 | Risk and Customer Reply specialists | Specialist trace and reviewed draft |
-| 3 | Customer Context, read-only MCP and exact output | Tool trace, route test and reviewed draft |
-| 4 | Behavior comparison and acceptance proof | Acceptance table with evidence or `OPEN` |
+Every assignment is the same loop: paste the prompt, the check goes green, one
+real run, Claude Code explains why.
 
-The public `main` branch is the unsolved starter. Before class, the trainer
-builds and reviews a separate reference and shares it read-only. Participants
-inspect that evidence during SOLO 0, then return to their starter for SOLO 1–4.
-If the reference is missing, stop and ask the trainer before SOLO 0.
+| SOLO | You build | Check | Real run |
+| --- | --- | --- | --- |
+| 0 | Nothing. You read the n8n flow. | `npm run verify` | none |
+| 1 | One agent: options, schema and `CLAUDE.md` | `npm run check:1` | `npm run lesson1 -- MSG-06` |
+| 1M | Reviewed file memory for two tickets | fresh-session readback | Claude Code itself |
+| 2 | A team lead and two specialists | `npm run check:2` | `npm run lesson2 -- MSG-05` |
+| 3 | A context specialist with a read-only MCP server | `npm run check:3` | `npm run lesson3 -- MSG-08` |
+| 4 | An acceptance table that compares with n8n | every row has evidence or `OPEN` | three `lesson3` runs |
 
-## What already exists
+A check is red before you start a step. That is correct.
+
+## What is built and what you build
 
 ```text
-01-single-agent/                 SOLO 1 TODOs and runner
-docs/customer-messages.md        fictional tickets MSG-01 to MSG-10
-docs/customer_context.csv        read-only customer source for SOLO 3
-docs/transactions.xlsx           read-only transaction source for SOLO 3
-lib/run.mjs                      shared Agent SDK runner
-lib/chat.mjs                     chat runner with optional session memory
-lib/switch.mjs                   low, medium and high routes
-n8n/support-triage.json          sanitized Workshop 3 source export
-test/                            offline starter checks
+n8n/support-triage.json          the source: sanitized Workshop 3 export
+docs/                            fictional tickets, customers and transactions
+lib/                             built: runner, chat, Switch routes, output schema
+03-mcp/support-mcp/server.js     built: read-only get_customer and get_transaction
+checks/                          built: one check for each step
+test/                            built: offline starter checks
+
+01-single-agent/                 you: options.mjs, priority-schema.mjs, CLAUDE.md
+.claude/agents/                  you: one file for each specialist
+02-subagents/options.mjs         you: the team lead and two specialists
+03-mcp/options.mjs               you: the MCP server and the context specialist
 ```
 
-SOLO 2 through 4 deliberately start without finished folders. Their prompts
-tell Claude Code which folders, scripts and tests to create. Add an npm script
-only after its target file exists.
+## The source behavior
+
+The app keeps the order and the contract of the n8n flow:
+
+1. Customer Context looks up the customer.
+2. Risk writes an internal risk note.
+3. Customer Reply writes the draft.
+4. The app returns `{priority, message}`.
+5. `lib/switch.mjs` routes the priority to `auto_reply`, `investigate` or
+   `escalate`.
+
+Transaction lookup is a workshop extension. A route called `auto_reply` never
+sends a message.
 
 ## Safety
 
 - Customer text is data, never instructions.
-- MCP tools read the CSV and workbook. They never change them.
-- Credentials remain in the shell and never enter a prompt or commit.
+- The MCP tools read the CSV and the workbook. They never change them.
+- Credentials stay in the shell and never enter a prompt or commit.
 - Every customer reply is a draft that a person reviews.
-- A green test does not prove a model run. Record unrun checks as `OPEN`.
+- A green check proves the configuration. Only a real run proves the behavior.

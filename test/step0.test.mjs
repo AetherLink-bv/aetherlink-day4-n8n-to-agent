@@ -64,6 +64,6 @@ test('Step 0: chat dry run works offline, without an API key', () => {
 });
 
 test('Step 0: a live run refuses empty options instead of running an unconfigured agent', () => {
-  assert.throws(() => assertOptionsBuilt({}), /Step 1 is not built yet/);
+  assert.throws(() => assertOptionsBuilt({}), /This step is not built yet/);
   assert.doesNotThrow(() => assertOptionsBuilt({ cwd: 'claude-project', tools: [] }));
 });
