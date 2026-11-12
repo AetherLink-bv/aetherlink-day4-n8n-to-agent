@@ -13,6 +13,7 @@ test('SDK runs only use the MCP servers the lesson names', () => {
   assert.deepEqual(sdk.settingSources, ['project', 'user']);
   assert.deepEqual(login.settingSources, ['project', 'user']);
   assert.equal(sdk.extraArgs['no-chrome'], null);
+  assert.match(sdk.extraArgs.settings, /"CLAUDE_CODE_FORK_SUBAGENT":"0"/);
   assert.equal(login.extraArgs['no-chrome'], null);
   assert.equal(sdk.env.PATH, '/bin');
   assert.equal(sdk.env.ANTHROPIC_API_KEY, 'test-key');

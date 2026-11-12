@@ -121,3 +121,31 @@ test('doctor reports a missing CLI without failing', () => {
     claudeVersion: '2.1.204',
   }), /below minimum/);
 });
+
+test('the trace names each specialist and the model it runs on, once', () => {
+  const lines = [];
+  const log = console.log;
+  console.log = (line) => lines.push(line);
+  try {
+    printEvent({ type: 'assistant', message: { model: 'claude-lead', content: [{ type: 'tool_use', id: 'call-1', name: 'Agent', input: { subagent_type: 'risk-agent' } }] } });
+    const fromSpecialist = { type: 'assistant', parent_tool_use_id: 'call-1', message: { model: 'claude-specialist', content: [{ type: 'text', text: 'Risk note.' }] } };
+    printEvent(fromSpecialist);
+    printEvent(fromSpecialist);
+  } finally {
+    console.log = log;
+  }
+  assert.deepEqual(lines, [
+    '[tool_use] Agent → risk-agent',
+    '[subagent] risk-agent · model claude-specialist',
+    '[assistant] Risk note.',
+    '[assistant] Risk note.',
+  ]);
+});
+
+test('every run switches off background subagents from user settings', () => {
+  const args = toClaudeArgs('Customer message', { tools: [] });
+  assert.deepEqual(JSON.parse(args[args.indexOf('--settings') + 1]).env, {
+    CLAUDE_CODE_FORK_SUBAGENT: '0',
+    CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: '0',
+  });
+});
