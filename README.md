@@ -15,7 +15,7 @@ Install Node.js 22 or newer, Git and Claude Code. Then run:
 ```sh
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project --strict-mcp-config --no-chrome
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
 If you want a named personal branch, create it before SOLO 1. Replace

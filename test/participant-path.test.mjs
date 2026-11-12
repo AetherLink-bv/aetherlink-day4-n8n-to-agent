@@ -24,8 +24,8 @@ test('participant docs stay on one branch and use six prompt-first assignments',
   assert.match(docs, /Claude Code/i);
   assert.match(docs, /observable check|Visible evidence/i);
   assert.match(docs, /\*\*Stop:\*\*/i);
-  assert.match(read('README.md'), /git clone https:\/\/github\.com\/AetherLink-bv\/aetherlink-day4-n8n-to-agent\.git\ncd aetherlink-day4-n8n-to-agent\nclaude --setting-sources project --strict-mcp-config --no-chrome/);
-  assert.equal((read('docs/SETUP.md').match(/git clone[^\n]*\ncd aetherlink-day4-n8n-to-agent\nclaude --setting-sources project --strict-mcp-config --no-chrome/g) ?? []).length, 3);
+  assert.match(read('README.md'), /git clone https:\/\/github\.com\/AetherLink-bv\/aetherlink-day4-n8n-to-agent\.git\ncd aetherlink-day4-n8n-to-agent\nclaude --setting-sources project,user --strict-mcp-config --no-chrome/);
+  assert.equal((read('docs/SETUP.md').match(/git clone[^\n]*\ncd aetherlink-day4-n8n-to-agent\nclaude --setting-sources project,user --strict-mcp-config --no-chrome/g) ?? []).length, 3);
   assert.equal(JSON.parse(read('.claude/settings.json')).autoMemoryEnabled, false);
 });
 

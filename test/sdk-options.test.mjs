@@ -10,8 +10,8 @@ test('SDK runs only use the MCP servers the lesson names', () => {
   assert.equal(sdk.strictMcpConfig, true);
   assert.equal(login.strictMcpConfig, true);
   assert.deepEqual(sdk.mcpServers, options.mcpServers);
-  assert.deepEqual(sdk.settingSources, ['project']);
-  assert.deepEqual(login.settingSources, ['project']);
+  assert.deepEqual(sdk.settingSources, ['project', 'user']);
+  assert.deepEqual(login.settingSources, ['project', 'user']);
   assert.equal(sdk.extraArgs['no-chrome'], null);
   assert.equal(login.extraArgs['no-chrome'], null);
   assert.equal(sdk.env.PATH, '/bin');
