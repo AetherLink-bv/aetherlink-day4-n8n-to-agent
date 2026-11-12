@@ -20,7 +20,7 @@
     "lesson3": "node 03-mcp/agent.mjs",
     "smoke:mcp": "node 03-mcp/support-mcp/smoke.mjs",
     "test": "node --test \"test/*.test.mjs\"",
-    "verify": "npm test && npm run smoke:mcp && npm run lesson1 -- MSG-01 --dry-run && npm run chat -- --dry-run"
+    "verify": "npm test && npm run check:1 && npm run check:2 && npm run check:3 && npm run smoke:mcp && npm run lesson1 -- MSG-01 --dry-run && npm run chat -- --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "0.3.281",
