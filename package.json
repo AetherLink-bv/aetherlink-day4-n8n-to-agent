@@ -13,6 +13,7 @@
     "check:1": "node --test checks/step1.test.mjs",
     "check:2": "node --test checks/step2.test.mjs",
     "check:3": "node --test checks/step3.test.mjs",
+    "check:starter": "node --test checks/starter.test.mjs",
     "doctor": "node lib/doctor.mjs",
     "lesson1": "node 01-single-agent/agent.mjs",
     "lesson2": "node 02-subagents/agent.mjs",

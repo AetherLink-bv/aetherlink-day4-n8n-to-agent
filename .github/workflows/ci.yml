@@ -28,6 +28,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run verify
+      - name: The starter still has every TODO
+        if: github.ref_name != 'trainer/solution' && github.head_ref != 'trainer/solution'
+        run: npm run check:starter
   docker:
     name: Docker offline verification
     runs-on: ubuntu-latest
