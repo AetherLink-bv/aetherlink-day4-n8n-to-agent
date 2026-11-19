@@ -84,17 +84,22 @@ these were four settings on one node. In code, a test can check each one.
 
 ### SOLO 1b · Inspect the form and memory evidence
 
-Use this protocol for the documented memory check:
+Start in the project root, the folder that contains `package.json`. Use this
+protocol for the documented memory check:
 
 1. Run `npm run lesson1 -- MSG-01 --dry-run` and inspect `outputFormat`,
    `priority-schema.mjs` and `lib/switch.mjs`. This is setup evidence, not a
    model result.
-2. Run `npm run chat`. In that conversation, identify the fictional case as
-   `T-101`, give it a harmless marker and ask for that marker in the next turn.
-3. Exit the chat. Start a new `npm run chat` process for `T-202` and ask for
-   the `T-101` marker. The new conversation must not know it.
-4. Use actual output from a model run, or use the marked sample in
-   `docs/sample-trace.md` and call it sample evidence.
+2. Run `npm run chat`. Wait for `you>`. Enter: “This is ticket T-101. Remember
+   the harmless marker BLUE-LANTERN.” At the next `you>`, ask: “What is the
+   marker for T-101?” This answer is live model evidence.
+3. At the next `you>`, enter `exit`. Wait for the normal shell prompt. Stay in
+   the project root and run `npm run chat` again. At `you>`, enter: “This is
+   ticket T-202. What is the marker for T-101?” This new process must not know
+   it.
+4. Keep the evidence labels separate: the dry run is configuration evidence,
+   the chat is live model evidence and `docs/sample-trace.md` is sample
+   evidence.
 
 ```text
 Run the documented SOLO 1 dry run and point to outputFormat, priority-schema.mjs and lib/switch.mjs. Then run the documented chat memory check with two ticket_id values. Explain which output is setup evidence and which output came from a model. Show the commands and actual output. Change nothing. Stop for my review.
@@ -108,9 +113,18 @@ evidence.
 
 ### SOLO 1c · Challenge the policy
 
+Start with the accepted files from SOLO 1. Keep those edits. Before the
+experiment, read the exact current Priority definitions and inspect
+`git diff -- 01-single-agent/claude-project/CLAUDE.md`. Do not reset the file
+or replace unrelated work.
+
 ```text
 Read my SOLO 1 diff and actual runs. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, run MSG-01 and MSG-06 before and after. Record the labels and explain whether the result changed. Restore the accepted policy from the current diff, rerun npm run verify and show the clean restoration. Do not use a finished branch or reveal an answer key. Stop for my review.
 ```
+
+After the experiment, restore only the temporary policy change to the exact
+pre-experiment text. Inspect the same diff again. Your accepted SOLO 1 edits
+must remain, and the temporary change must be gone.
 
 **Check:** the before and after evidence uses the same messages, and the
 accepted policy is restored with `npm run verify` passing.
@@ -131,13 +145,19 @@ Use Claude Code itself as our chat. Do not build a UI, add a model API call, or 
 Propose tickets/T-001/memory.md with exactly these headings: Confirmed facts, Decisions, Open questions, and Next step. Map every item to a stable T-001 source label. Preserve uncertain source claims as OPEN: under Open questions. Keep only durable ticket context. Do not include credentials, authentication data, tokens, personal data, a transcript dump, or speculation. Show the proposed file and wait for my approval. After I approve, create only tickets/T-001/memory.md and show the diff. Stop and tell me to open a fresh Claude Code session.
 ```
 
-Open a new Claude Code session. Paste:
+Type `/exit` in Claude Code. Wait for the normal shell prompt and stay in the
+project root. Start a fresh session with
+`claude --setting-sources project,user --strict-mcp-config --no-chrome`.
+Then paste:
 
 ```text
 This is a fresh Claude Code session. Read only tickets/T-001/memory.md. Do not read a transcript, technical log, T-002 source, or T-002 memory. Summarize the confirmed facts, decisions, open questions, and next step with their source references. State that you read this file explicitly and that it was not loaded automatically. Propose no implementation. Stop after the summary.
 ```
 
-Open another new Claude Code session. Paste:
+Type `/exit` again. Wait for the normal shell prompt and stay in the project
+root. Run
+`claude --setting-sources project,user --strict-mcp-config --no-chrome` again.
+Then paste:
 
 ```text
 This is another fresh Claude Code session. Read docs/memory-lab/T-002.md only. Do not read docs/memory-lab/T-001.md or tickets/T-001/memory.md. Propose tickets/T-002/memory.md with exactly these headings: Confirmed facts, Decisions, Open questions, and Next step. Map every item to a stable T-002 source label. Preserve uncertain source claims as OPEN: under Open questions. Do not include credentials, authentication data, tokens, personal data, a transcript dump, or speculation. Show the proposal and wait for my approval. After I approve, create only tickets/T-002/memory.md and show the diff. Do not create or rewrite technical logs. Stop for my isolation review.
@@ -214,9 +234,14 @@ which file you would change.
 
 ## SOLO 5 · Match the final Day 3 route
 
-The folder `day4-sdk-parity/` is already in this repository. It adds the final
-Day 3 policy, all three sub-agents, deterministic routing and review-draft
-storage. It does not change the earlier assignments.
+Start in the project root, the folder that contains `package.json`. The folder
+`day4-sdk-parity/` is already bundled in this repository. Use that copy first.
+If it is missing, download the Day 4 SDK exercise from the course slide and
+unpack it so the project root contains `day4-sdk-parity/`. Do not run the
+commands from inside that folder.
+
+The exercise adds the final Day 3 policy, all three sub-agents, deterministic
+routing and review-draft storage. It does not change the earlier assignments.
 
 Run the offline check:
 
@@ -257,10 +282,12 @@ The solved steps are on the `trainer/solution` branch. Use it for the demo
 slides. Nothing must be built before class.
 
 ```sh
-git fetch origin trainer/solution
-git switch trainer/solution
+git clone --branch trainer/solution --single-branch https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git aetherlink-day4-trainer
+cd aetherlink-day4-trainer
 npm ci
+npm run verify
 npm run check:1 && npm run check:2 && npm run check:3
+node day4-sdk-parity/verify.mjs
 ```
 
 Participants stay on `main`. If a participant falls behind, they paste the
