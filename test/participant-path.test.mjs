@@ -10,7 +10,7 @@ test('participant docs give one route with a check for each build step', () => {
   const participantPart = solo.slice(0, solo.indexOf('\n## Trainer'));
   const scripts = JSON.parse(read('package.json')).scripts;
 
-  for (const heading of ['## SOLO 0 ·', '## SOLO 1 ·', '### SOLO 1b ·', '### SOLO 1c ·', '## SOLO 1M ·', '## SOLO 2 ·', '## SOLO 3 ·', '## SOLO 4 ·']) {
+  for (const heading of ['## SOLO 0 ·', '## SOLO 1 ·', '### SOLO 1b ·', '### SOLO 1c ·', '## SOLO 1M ·', '## SOLO 2 ·', '## SOLO 3 ·', '## SOLO 4 ·', '## SOLO 5 ·']) {
     assert.ok(solo.includes(heading), `SOLO.md has ${heading}`);
   }
   for (const step of [1, 2, 3]) {

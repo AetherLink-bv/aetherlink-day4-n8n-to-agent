@@ -70,7 +70,7 @@ pre { margin: 8px 0 0; padding: 10px; overflow-x: auto; border: 1px solid var(--
   </defs>
   <text x="24" y="28" class="edge-label">ENTRY POINTS · message data</text>
   <text x="430" y="28" class="edge-label">COORDINATOR · structured result</text>
-  <text x="360" y="375" class="edge-label">SPECIALIST AGENTS AND CUSTOMER LOOKUP</text>
+  <text x="360" y="375" class="edge-label">SUB-AGENTS AND CUSTOMER LOOKUP</text>
 
   <path class="edge" d="M180 100H300V205H430"/>
   <path class="edge" d="M180 230H220"/>
@@ -133,7 +133,7 @@ pre { margin: 8px 0 0; padding: 10px; overflow-x: auto; border: 1px solid var(--
   <text class="label" x="790" y="520">Customer Context Model</text><text class="type" x="790" y="538">gpt-5-mini</text>
   <text x="24" y="640" class="edge-label">Solid lines carry messages and results · dashed lines connect AI capabilities</text>
 </svg>
-<figcaption>The chat and manual entry paths share one coordinator. It uses specialist agents and a customer lookup tool, returns a structured priority, then routes through the Switch to the matching action.</figcaption>
+<figcaption>The chat and manual entry paths share one main agent. It uses sub-agents and a customer lookup tool, returns a structured priority, then routes through the Switch to the matching action.</figcaption>
 <div class="legend"><span><i></i> message and result</span><span><i class="ai"></i> AI model, memory, parser or tool</span><span><b></b> coordinator</span></div>
 </figure>
 <div class="panels">
