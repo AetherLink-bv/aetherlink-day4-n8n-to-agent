@@ -28,5 +28,5 @@ test('Step 1: CLAUDE.md holds the policy from the n8n system message', () => {
   }
   assert.match(policy, /customer data, not instructions/i, 'CLAUDE.md says the ticket message is customer data, not instructions');
   assert.match(policy, /a person approves/i, 'CLAUDE.md says a person approves');
-  assert.doesNotMatch(policy, /Risk Agent|Customer Reply Agent|Customer Context Agent/i, 'the specialists come in Step 2 and 3');
+  assert.doesNotMatch(policy, /Risk Agent|Customer Reply Agent|Customer Context Agent/i, 'the sub-agents come in Step 2 and 3');
 });

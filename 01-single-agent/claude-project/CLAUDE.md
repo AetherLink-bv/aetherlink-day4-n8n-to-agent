@@ -1,7 +1,7 @@
 # Customer Support Triage
 
 <!-- STEP 1: this file is the agent's system message (n8n: AI Agent → System Message).
-     Fill each TODO from the AI Agent system message in n8n/support-triage.json. Leave the specialists out.
+     Fill each TODO from the AI Agent system message in n8n/support-triage.json. Leave the sub-agents out.
      Check your work with: npm run check:1 -->
 
 ## Purpose

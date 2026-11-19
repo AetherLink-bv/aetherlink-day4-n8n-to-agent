@@ -1,0 +1,26 @@
+[
+  {
+    "route": "low",
+    "message_id": "MSG-01",
+    "customer_id": "CUST-004",
+    "customer_type": "Standard",
+    "subject": "THIS IS RIDICULOUS!!!",
+    "message": "I have been trying for ten minutes to find where I can download last month's receipt. Why is this so difficult? Please send me the receipt or tell me where to find it."
+  },
+  {
+    "route": "medium",
+    "message_id": "MSG-06",
+    "customer_id": "CUST-005",
+    "customer_type": "Enterprise",
+    "subject": "URGENT!!! My logo is wrong!!!",
+    "message": "Your portal is showing our old company logo and this is completely unacceptable!!! Fix it NOW please."
+  },
+  {
+    "route": "high",
+    "message_id": "MSG-05",
+    "customer_id": "CUST-003",
+    "customer_type": "Enterprise",
+    "subject": "Possible duplicate charges",
+    "message": "Hi, our finance team sees the same €4,850 payment charged three times. Please investigate urgently because this affects today's cash position."
+  }
+]
