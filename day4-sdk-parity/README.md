@@ -2,11 +2,15 @@
 
 This follow-on uses the same participant repository as Day 4. It adds the final pieces from the revised Day 3 workflow without changing the earlier assignments.
 
-## Add it to the completed project
+## Run it from the completed project
 
 1. Finish the Day 4 assignments or use the trainer solution.
-2. Copy this folder into the project root as `day4-sdk-parity`.
-3. Run the offline check:
+2. Open a terminal in the project root, the folder that contains
+   `package.json`.
+3. Confirm that the bundled folder `day4-sdk-parity/` exists. Use this copy.
+   Only an older clone may need the download from the course slide. Unpack that
+   fallback so the project root contains `day4-sdk-parity/`.
+4. Stay in the project root and run the offline check:
 
    ```sh
    node day4-sdk-parity/verify.mjs
@@ -26,6 +30,9 @@ The check starts the real Agent SDK configuration in dry-run mode. It also sends
 The offline check does not test model behavior. Use the live runs below to verify the three routes and replies.
 
 ## Run the three examples
+
+Run every command below from the project root. Do not change into
+`day4-sdk-parity/`.
 
 ```sh
 node day4-sdk-parity/run.mjs MSG-01

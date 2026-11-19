@@ -4,16 +4,13 @@ import { test } from 'node:test';
 
 const read = path => readFileSync(path, 'utf8');
 
-test('the participant route contains the exact deck copy prompts', () => {
+test('the participant route contains the shared deck commands', () => {
   const solo = read('SOLO.md');
   const prompts = JSON.parse(read('docs/day4-lesson-prompts.json'));
 
-  for (const name of ['day3Review', 'solo1Aligned', 'solo2Aligned', 'solo4Final']) {
-    assert.ok(solo.includes(prompts[name]), `SOLO.md contains the exact ${name} prompt`);
+  for (const [name, command] of Object.entries(prompts)) {
+    assert.ok(solo.includes(command), `SOLO.md contains the exact ${name} command`);
   }
-
-  assert.ok(solo.includes(prompts.parityOffline));
-  for (const command of prompts.parityLive.split('\n')) assert.ok(solo.includes(command));
 });
 
 test('the final Day 3 sources are bundled and sanitized', () => {

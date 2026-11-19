@@ -4,5 +4,9 @@
   "solo2Aligned": "Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the main agent chooses a sub-agent, why a sub-agent has its own context, and why neither sub-agent has a tool. Stop.",
   "solo4Final": "Run npm run lesson3 for MSG-01, MSG-06 and MSG-09. Read n8n/day3-review-queue.json as the final Day 3 source. Create participant-output/acceptance-table.md with one row for each message: observed priority, route, order of the sub-agents, facts that came from a tool, and the final Day 3 node that gave this behavior. Use only output from these runs. Write OPEN where you did not observe the behavior. Change no source file. Then name one difference between the final Day 3 workflow and this app. Stop.",
   "parityOffline": "node day4-sdk-parity/verify.mjs",
-  "parityLive": "node day4-sdk-parity/run.mjs MSG-01\nnode day4-sdk-parity/run.mjs MSG-06\nnode day4-sdk-parity/run.mjs MSG-05"
+  "parityLive": "node day4-sdk-parity/run.mjs MSG-01\nnode day4-sdk-parity/run.mjs MSG-06\nnode day4-sdk-parity/run.mjs MSG-05",
+  "trainerStart": "git clone --branch trainer/solution --single-branch https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git aetherlink-day4-trainer\ncd aetherlink-day4-trainer\nnpm ci\nnpm run verify\nnpm run check:1 && npm run check:2 && npm run check:3\nnode day4-sdk-parity/verify.mjs",
+  "a1bDryRun": "npm run lesson1 -- MSG-01 --dry-run",
+  "a1bChat": "npm run chat",
+  "freshClaudeSession": "claude --setting-sources project,user --strict-mcp-config --no-chrome"
 }
