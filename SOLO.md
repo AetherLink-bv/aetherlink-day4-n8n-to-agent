@@ -22,8 +22,10 @@ Claude Code the failed line and ask for the smallest fix.
 
 ## Source contract
 
-[`n8n/support-triage.json`](n8n/support-triage.json) is the sanitized n8n
-export. It contains no credentials. Do not import or activate it.
+[`n8n/day3-review-queue.json`](n8n/day3-review-queue.json) is the final
+sanitized Day 3 workflow. [`n8n/support-triage.json`](n8n/support-triage.json)
+is the smaller starter snapshot used by Steps 1 to 3. Both files contain no
+credentials. Do not import or activate them.
 
 | n8n | Agent SDK | Step |
 | --- | --- | --- |
@@ -43,7 +45,7 @@ Transaction lookup is an extension to the n8n source.
 Start Claude Code in your clone, as the README shows. Paste:
 
 ```text
-Read n8n/support-triage.json and the Source contract in SOLO.md. Change no file. Show one table: each n8n node, what it does, and the file in this repository that replaces it. Mark each file as built or TODO. Then run npm run doctor and npm run verify and show the exit codes. Stop.
+Read n8n/day3-review-queue.json, n8n/support-triage.json and the Source contract in SOLO.md. Change no file. Show one comparison table with these columns: Day 3 part, final Day 3 node, starter snapshot node, and Agent SDK file that replaces it. Include chat, Simple Memory, the main AI Agent, Structured Output Parser, Switch, Customer Reply Agent, Risk Agent, Customer Context Agent, Get row(s), and all three Save draft nodes. Mark anything in the final workflow that Day 4 does not yet reproduce as OPEN. Stop.
 ```
 
 Then test it yourself in a second terminal:
@@ -53,15 +55,15 @@ npm run doctor
 npm run verify
 ```
 
-**Check:** both commands exit 0, and you can point to the three specialists in
-the n8n JSON.
+**Check:** both commands exit 0, and you can point to the three sub-agents in
+the final n8n JSON.
 
 **Stop:** after you have read the table.
 
 ## SOLO 1 · One agent that fills in the form
 
 ```text
-Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the specialists out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
+Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the sub-agents out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
 ```
 
 Then test it yourself in a second terminal:
@@ -152,10 +154,10 @@ resumes T-001 only after reading its file. T-002 contains no T-001 facts.
 **Stop:** after T-001 resumed without replaying a conversation or reading logs,
 and T-002 stayed isolated. Do not build a UI or add a model call.
 
-## SOLO 2 · A team lead and two specialists
+## SOLO 2 · A main agent and two sub-agents
 
 ```text
-Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the team lead chooses a specialist, why a specialist has its own context, and why neither specialist has a tool. Stop.
+Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the main agent chooses a sub-agent, why a sub-agent has its own context, and why neither sub-agent has a tool. Stop.
 ```
 
 Then test it yourself in a second terminal:
@@ -168,9 +170,9 @@ npm run lesson2 -- MSG-05
 **Check:** `npm run check:2` passes, and the trace shows `risk-agent` before
 `customer-reply-agent`.
 
-**Why:** the `description` of an agent file tells the team lead when to
-delegate. Each specialist starts with an empty context and returns only its
-answer. `tools: ['Agent']` means the team lead can delegate and do nothing else.
+**Why:** the `description` of an agent file tells the main agent when to
+delegate. Each sub-agent starts with an empty context and returns only its
+answer. `tools: ['Agent']` means the main agent can delegate and do nothing else.
 
 **Stop:** after you have read the draft in `message`. Nothing is sent.
 
@@ -192,7 +194,7 @@ npm run lesson3 -- MSG-08
 Reply with two tool results.
 
 **Why:** an MCP server gives an agent tools from outside the SDK. You name the
-server in `mcpServers` and you give its tools to one specialist. The other
+server in `mcpServers` and you give its tools to one sub-agent. The other
 agents cannot look up or change data, because they have no tool to do so.
 
 **Stop:** after you have matched each fact in the draft to a tool result.
@@ -200,7 +202,7 @@ agents cannot look up or change data, because they have no tool to do so.
 ## SOLO 4 · Compare with n8n and collect proof
 
 ```text
-Run npm run lesson3 for MSG-01, MSG-06 and MSG-09. Create participant-output/acceptance-table.md with one row for each message: observed priority, route, order of the specialists, facts that came from a tool, and the n8n node that gave this behavior. Use only output from these runs. Write OPEN where you did not observe the behavior. Change no source file. Then name one difference between the n8n flow and this app. Stop.
+Run npm run lesson3 for MSG-01, MSG-06 and MSG-09. Read n8n/day3-review-queue.json as the final Day 3 source. Create participant-output/acceptance-table.md with one row for each message: observed priority, route, order of the sub-agents, facts that came from a tool, and the final Day 3 node that gave this behavior. Use only output from these runs. Write OPEN where you did not observe the behavior. Change no source file. Then name one difference between the final Day 3 workflow and this app. Stop.
 ```
 
 **Your variation:** choose the difference you would improve first, and say
@@ -209,6 +211,35 @@ which file you would change.
 **Check:** every row points to a real run or says `OPEN`.
 
 **Stop:** after your review. Nothing is sent or deployed.
+
+## SOLO 5 · Match the final Day 3 route
+
+The folder `day4-sdk-parity/` is already in this repository. It adds the final
+Day 3 policy, all three sub-agents, deterministic routing and review-draft
+storage. It does not change the earlier assignments.
+
+Run the offline check:
+
+```sh
+node day4-sdk-parity/verify.mjs
+```
+
+Then run the three examples:
+
+```sh
+node day4-sdk-parity/run.mjs MSG-01
+node day4-sdk-parity/run.mjs MSG-06
+node day4-sdk-parity/run.mjs MSG-05
+```
+
+Inspect `day4-sdk-parity/review-drafts/`. Each run must create one draft with
+its priority and route. The reply must not contain the internal risk note or
+promise an action that this workflow does not perform.
+
+**Check:** the offline check passes. The live runs return low, medium and high.
+Each result is validated before its review draft is saved. Nothing is sent.
+
+**Stop:** after you have compared the three drafts with the final Day 3 route.
 
 ## Setup and evidence rules
 

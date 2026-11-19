@@ -5,7 +5,8 @@ import { workflowOutputSchema } from '../lib/workflow-output.mjs';
 
 const lessonDirectory = path.dirname(fileURLToPath(import.meta.url));
 
-// n8n: the AI Agent with two agent tools connected. SDK: one team lead with options.agents.
+// n8n: the AI Agent with two agent tools connected. SDK: one main agent with options.agents.
+// The trainer solution keeps the completed configuration that the participant builds in Step 2.
 export function buildOptions() {
   return {
     cwd: path.join(lessonDirectory, 'claude-project'),
