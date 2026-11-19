@@ -10,16 +10,17 @@
   },
   "scripts": {
     "chat": "node lib/chat.mjs",
-    "check:1": "node --test checks/step1.test.mjs",
-    "check:2": "node --test checks/step2.test.mjs",
-    "check:3": "node --test checks/step3.test.mjs",
-    "check:starter": "node --test checks/starter.test.mjs",
+    "check:1": "node --test --test-concurrency=2 checks/step1.test.mjs",
+    "check:2": "node --test --test-concurrency=2 checks/step2.test.mjs",
+    "check:3": "node --test --test-concurrency=2 checks/step3.test.mjs",
+    "check:starter": "node --test --test-concurrency=2 checks/starter.test.mjs",
     "doctor": "node lib/doctor.mjs",
     "lesson1": "node 01-single-agent/agent.mjs",
     "lesson2": "node 02-subagents/agent.mjs",
     "lesson3": "node 03-mcp/agent.mjs",
+    "parity:check": "node day4-sdk-parity/verify.mjs",
     "smoke:mcp": "node 03-mcp/support-mcp/smoke.mjs",
-    "test": "node --test \"test/*.test.mjs\"",
+    "test": "node --test --test-concurrency=2 \"test/*.test.mjs\"",
     "verify": "npm test && npm run smoke:mcp && npm run lesson1 -- MSG-01 --dry-run && npm run chat -- --dry-run"
   },
   "dependencies": {
