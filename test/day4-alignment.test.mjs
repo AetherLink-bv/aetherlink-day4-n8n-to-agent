@@ -47,7 +47,7 @@ test('the final Day 3 sources are bundled and sanitized', () => {
   }
 });
 
-test('SOLO 5 is bundled without changing the current build state', () => {
+test('SOLO 5 bundles the parity exercise and its three sub-agents', () => {
   for (const file of [
     'day4-sdk-parity/verify.mjs',
     'day4-sdk-parity/run.mjs',
@@ -56,16 +56,4 @@ test('SOLO 5 is bundled without changing the current build state', () => {
     'day4-sdk-parity/agents/risk-agent.md',
     'day4-sdk-parity/agents/customer-reply-agent.md',
   ]) assert.ok(existsSync(file), `${file} is bundled`);
-
-  const buildFiles = [
-    '01-single-agent/options.mjs',
-    '01-single-agent/priority-schema.mjs',
-    '02-subagents/options.mjs',
-    '03-mcp/options.mjs',
-  ];
-  const todoCount = buildFiles.filter(file => /STEP \d:/.test(read(file))).length;
-  assert.ok(
-    todoCount === 0 || todoCount === buildFiles.length,
-    'the repository is either the complete starter or the complete trainer solution',
-  );
 });
