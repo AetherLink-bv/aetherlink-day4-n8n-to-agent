@@ -8,8 +8,8 @@ This follow-on uses the same participant repository as Day 4. It adds the final 
 2. Open a terminal in the project root, the folder that contains
    `package.json`.
 3. Confirm that the bundled folder `day4-sdk-parity/` exists. Use this copy.
-   Only an older clone may need the download from the course slide. Unpack that
-   fallback so the project root contains `day4-sdk-parity/`.
+   If the folder is missing, follow [Update an older clone](../README.md#update-an-older-clone)
+   in the participant guide.
 4. Stay in the project root and run the offline check:
 
    ```sh

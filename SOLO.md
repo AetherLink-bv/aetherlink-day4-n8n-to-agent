@@ -317,10 +317,9 @@ which file you would change.
 ## SOLO 5 · Match the final Day 3 route
 
 Start in the project root, the folder that contains `package.json`. The folder
-`day4-sdk-parity/` is already bundled in this repository. Use that copy first.
-If it is missing, download the Day 4 SDK exercise from the course slide and
-unpack it so the project root contains `day4-sdk-parity/`. Do not run the
-commands from inside that folder.
+`day4-sdk-parity/` is already bundled in this repository. Use that copy.
+If the folder is missing, follow [Update an older clone](README.md#update-an-older-clone)
+to preserve your work and update this repository. Run the commands from the project root.
 
 The exercise adds the final Day 3 policy, all three sub-agents, deterministic
 routing and review-draft storage. It does not change the earlier assignments.
