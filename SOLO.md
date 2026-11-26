@@ -71,7 +71,7 @@ the final n8n JSON.
 
 ## SOLO 1 · One agent that fills in the form
 
-Describe the form one agent must return. Limit edits to the three Step 1 files. Ask for the first failed check and its passing result.
+Describe the form one agent must return. Limit edits to the three Step 1 files. Ask for the first failed check, its passing result and one real MSG-06 run. For each option in options.mjs, show the option, the n8n setting it replaces and what fails without it.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
@@ -100,7 +100,7 @@ these were four settings on one node. In code, a test can check each one.
 
 ### SOLO 1b · Inspect the form and memory evidence
 
-Start in the project root, the folder that contains `package.json`. Read the protocol before writing your prompt. These are the runs your prompt requests:
+Start in the project root, the folder that contains `package.json`. You operate both chats in Terminal 2. Enter the ticket labels as message text at `you>`. If you need help, write a prompt asking for guidance on the next step. Use OPEN for any output you could not observe.
 
 1. Run `npm run lesson1 -- MSG-01 --dry-run` and inspect `outputFormat`,
    `priority-schema.mjs` and `lib/switch.mjs`. This is setup evidence, not a
@@ -110,27 +110,25 @@ Start in the project root, the folder that contains `package.json`. Read the pro
    marker for T-101?” This answer is live model evidence.
 3. At the next `you>`, enter `exit`. Wait for the normal shell prompt. Stay in
    the project root and run `npm run chat` again. At `you>`, enter: “This is
-   ticket T-202. What is the marker for T-101?” This new process must not know
-   it.
+   ticket T-202. What is the marker for T-101?” Record what the new process actually answers. Then enter `exit`.
 4. Keep the evidence labels separate: the dry run is configuration evidence,
    the chat is live model evidence and `docs/sample-trace.md` is sample
    evidence.
 
-Write a prompt asking Claude Code to carry out the dry run and both separate chats above. Ask it to show the commands and actual output. Which evidence shows configuration, recall in T-101 and isolation in the fresh T-202 chat? Keep the code unchanged.
+Inspect your own terminal output. Did T-101 recall the marker? Did T-202 supply it without being told? Keep unexpected results as observed. Use OPEN for a missing result.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Run the documented SOLO 1 dry run and point to outputFormat, priority-schema.mjs and lib/switch.mjs. Then run the documented chat memory check with two ticket_id values. Explain which output is setup evidence and which output came from a model. Show the commands and actual output. Change nothing. Stop for my review.
+Guide me through the SOLO 1b dry run and the two chat processes in Terminal 2. I will type the messages and inspect the replies myself. Wait for my observed output before explaining each result. Label missing evidence OPEN. Change nothing.
 ```
 
 </details>
 
-Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing. Check that the first two messages used the same chat and T-202 used a fresh chat.
+Keep the output from your two chats. A completed chat needs no replay.
 
-**Check:** the same conversation recalls its marker. A fresh conversation for
-another ticket does not receive that marker.
+**Check:** compare both actual replies with the expected behavior. The first chat recalls the marker. The fresh chat has no prior conversation.
 
 **Stop:** after you have separated setup evidence, model evidence and sample
 evidence.
@@ -139,8 +137,10 @@ evidence.
 
 Start with the accepted files from SOLO 1. Keep those edits. Before the
 experiment, read the exact current Priority definitions and inspect
-`git diff -- 01-single-agent/claude-project/CLAUDE.md`. Do not reset the file
-or replace unrelated work.
+`git diff -- 01-single-agent/claude-project/CLAUDE.md`. Save a copy of this accepted file in a temporary folder outside the repository.
+Run `git hash-object --no-filters 01-single-agent/claude-project/CLAUDE.md`
+and record the hash. Run the same command with the path to your saved copy.
+Check that the hashes match before changing the policy. Leave the Git index alone.
 
 Choose a temporary policy variation. Require approval before the edit. Ask for comparable results on both tickets and proof that your accepted policy survived restoration.
 
@@ -148,13 +148,13 @@ Choose a temporary policy variation. Require approval before the edit. Ask for c
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Read my SOLO 1 diff and actual runs. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, run MSG-01 and MSG-06 before and after. Record the labels and explain whether the result changed. Restore the accepted policy from the current diff, rerun npm run verify and show the clean restoration. Do not use a finished branch or reveal an answer key. Stop for my review.
+Read my SOLO 1 diff and actual runs. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, run MSG-01 and MSG-06 before and after. Record the labels and explain whether the result changed. Restore only the experimental policy edit using my saved copy. Compare the restored file hash with my recorded hash, then run npm run verify. Show both hashes and the check result. Do not use a finished branch or reveal an answer key. Stop for my review.
 ```
 
 </details>
 
 After the experiment, restore only the temporary policy change to the exact
-pre-experiment text. Inspect the same diff again. Your accepted SOLO 1 edits
+pre-experiment text using your saved copy. Run the same hash command on the restored file. Its hash must match the recorded hash. Inspect the same diff again. Your accepted SOLO 1 edits
 must remain, and the temporary change must be gone.
 
 **Check:** the before and after evidence uses the same messages, and the
@@ -287,7 +287,7 @@ agents cannot look up or change data, because they have no tool to do so.
 
 ## SOLO 4 · Compare with n8n and collect proof
 
-Describe the comparison table for MSG-01, MSG-06 and MSG-09. Keep source files unchanged. Require direct evidence per row and OPEN for anything unobserved.
+Describe the acceptance table for MSG-01, MSG-06 and MSG-09. Include the message ID, observed priority, route, sub-agent order, facts from tools and the final Day 3 node. Keep source files unchanged. Require direct evidence per row and OPEN for anything unobserved.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>

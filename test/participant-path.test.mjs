@@ -30,17 +30,22 @@ test('participant docs give one route with a check for each build step', () => {
 
 test('participants inspect completed runs and execute only missing evidence in Terminal 2', () => {
   const sections = read('SOLO.md').split(/\n(?=##+ SOLO )/);
-  for (const step of ['1', '1b', '2', '3']) {
+  for (const step of ['1', '2', '3']) {
     const section = sections.find(text => text.startsWith('#') && text.split('\n')[0].includes('SOLO ' + step + ' ·'));
     assert.match(section, /Inspect the actual output Claude Code already showed/);
     assert.match(section, /In Terminal 2, run only commands whose results are missing/);
-    if (step === '1b') {
-      const brief = section.slice(0, section.indexOf('<details>'));
-      assert.match(brief, /carry out the dry run and both separate chats/);
-      assert.match(brief, /show the commands and actual output/);
-      assert.match(brief, /fresh T-202 chat/);
-    }
   }
+  const chat = sections.find(text => text.startsWith('### SOLO 1b'));
+  assert.match(chat, /You operate both chats in Terminal 2/);
+  assert.equal(chat.match(/BLUE-LANTERN/g)?.length, 1);
+  assert.equal(chat.match(/npm run chat/g)?.length, 2);
+  assert.match(chat, /ticket labels as message text/);
+  assert.match(chat, /I will type the messages and inspect the replies myself/);
+  assert.match(chat, /Label missing evidence OPEN/);
+  assert.doesNotMatch(chat, /ticket_id/);
+  const policy = sections.find(text => text.startsWith('### SOLO 1c'));
+  assert.match(policy, /git hash-object --no-filters/);
+  assert.match(policy, /Its hash must match the recorded hash/);
 });
 
 test('the sanitized n8n source defines the complete app contract', () => {
