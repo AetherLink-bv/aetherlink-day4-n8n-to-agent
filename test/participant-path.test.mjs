@@ -20,7 +20,11 @@ test('participant docs give one route with a check for each build step', () => {
   }
   assert.doesNotMatch(participantPart, /git (?:checkout|switch)|trainer evidence|reference folder/i, 'participants need no branch and no trainer material');
   assert.ok(read('README.md').includes(`cd aetherlink-day4-n8n-to-agent\nnpm ci\n${startCommand}`));
-  assert.equal(read('docs/SETUP.md').split(startCommand).length - 1, 4);
+  const setup = read('docs/SETUP.md');
+  for (const platform of ['Windows PowerShell', 'WSL', 'Linux and macOS']) {
+    const section = setup.split('## ' + platform + '\n')[1].split('\n## ')[0];
+    assert.ok(section.includes('npm run verify\n' + startCommand + '\n```'), platform + ' runs shell checks before opening Claude Code');
+  }
   assert.equal(JSON.parse(read('.claude/settings.json')).autoMemoryEnabled, false);
 });
 
