@@ -28,6 +28,21 @@ test('participant docs give one route with a check for each build step', () => {
   assert.equal(JSON.parse(read('.claude/settings.json')).autoMemoryEnabled, false);
 });
 
+test('participants inspect completed runs and execute only missing evidence in Terminal 2', () => {
+  const sections = read('SOLO.md').split(/\n(?=##+ SOLO )/);
+  for (const step of ['1', '1b', '2', '3']) {
+    const section = sections.find(text => text.startsWith('#') && text.split('\n')[0].includes('SOLO ' + step + ' ·'));
+    assert.match(section, /Inspect the actual output Claude Code already showed/);
+    assert.match(section, /In Terminal 2, run only commands whose results are missing/);
+    if (step === '1b') {
+      const brief = section.slice(0, section.indexOf('<details>'));
+      assert.match(brief, /carry out the dry run and both separate chats/);
+      assert.match(brief, /show the commands and actual output/);
+      assert.match(brief, /fresh T-202 chat/);
+    }
+  }
+});
+
 test('the sanitized n8n source defines the complete app contract', () => {
   const workflow = JSON.parse(read('n8n/support-triage.json'));
   const names = workflow.nodes.map(({ name }) => name);

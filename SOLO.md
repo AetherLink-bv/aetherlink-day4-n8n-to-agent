@@ -16,8 +16,8 @@ the slides.
    you that your step matches the reference. Everyone gets the same result.
 3. **One real run.** You see the agent work on a fictional ticket.
 4. **Claude Code explains why.** You read the explanation.
-5. **Test it yourself.** You type the same check and the same run in a second
-   terminal, and compare your screen with the slide.
+5. **Inspect the evidence.** Compare the actual output with the slide. In Terminal 2,
+   run only commands whose results are missing.
 
 A check is red before you start. That is correct. If a check stays red, give
 Claude Code the failed line and ask for the smallest fix.
@@ -57,7 +57,7 @@ Read n8n/day3-review-queue.json, n8n/support-triage.json and the Source contract
 
 </details>
 
-Then test it yourself in a second terminal:
+Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
 
 ```sh
 npm run doctor
@@ -82,7 +82,7 @@ Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-age
 
 </details>
 
-Then test it yourself in a second terminal:
+Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
 
 ```sh
 npm run check:1
@@ -100,8 +100,7 @@ these were four settings on one node. In code, a test can check each one.
 
 ### SOLO 1b · Inspect the form and memory evidence
 
-Start in the project root, the folder that contains `package.json`. Use this
-protocol for the documented memory check:
+Start in the project root, the folder that contains `package.json`. Read the protocol before writing your prompt. These are the runs your prompt requests:
 
 1. Run `npm run lesson1 -- MSG-01 --dry-run` and inspect `outputFormat`,
    `priority-schema.mjs` and `lib/switch.mjs`. This is setup evidence, not a
@@ -117,7 +116,7 @@ protocol for the documented memory check:
    the chat is live model evidence and `docs/sample-trace.md` is sample
    evidence.
 
-Design a two-ticket memory experiment using the protocol above. Keep the code unchanged. What output would distinguish same-session recall from a fresh session?
+Write a prompt asking Claude Code to carry out the dry run and both separate chats above. Ask it to show the commands and actual output. Which evidence shows configuration, recall in T-101 and isolation in the fresh T-202 chat? Keep the code unchanged.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
@@ -127,6 +126,8 @@ Run the documented SOLO 1 dry run and point to outputFormat, priority-schema.mjs
 ```
 
 </details>
+
+Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing. Check that the first two messages used the same chat and T-202 used a fresh chat.
 
 **Check:** the same conversation recalls its marker. A fresh conversation for
 another ticket does not receive that marker.
@@ -238,7 +239,7 @@ Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/
 
 </details>
 
-Then test it yourself in a second terminal:
+Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
 
 ```sh
 npm run check:2
@@ -267,7 +268,7 @@ Run npm run check:3 and show what is red. Read the STEP 3 TODOs in 03-mcp/option
 
 </details>
 
-Then test it yourself in a second terminal:
+Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
 
 ```sh
 npm run smoke:mcp
