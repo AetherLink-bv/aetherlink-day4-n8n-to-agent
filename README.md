@@ -16,14 +16,14 @@ npm ci
 claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
-Open [`SOLO.md`](SOLO.md) and paste the SOLO 0 prompt. Use
+Open [`SOLO.md`](SOLO.md) and write your first prompt for SOLO 0. Use
 [`docs/SETUP.md`](docs/SETUP.md) only when installation or login fails. The
 checks and dry runs need no API key.
 
 ## Nine assignments
 
-Every assignment is the same loop: paste the prompt, the check goes green, one
-real run, Claude Code explains why.
+Write your own prompt from the task. State the outcome, a boundary and the evidence
+you need. Check the result yourself. Open the example in SOLO.md if you get stuck.
 
 | SOLO | You build | Check | Real run |
 | --- | --- | --- | --- |
