@@ -42,7 +42,7 @@ The app asks Customer Context first, Risk second and Customer Reply last. It
 returns `{priority, message}`. Every reply is a draft. Nothing sends a message.
 Transaction lookup is an extension to the n8n source.
 
-## SOLO 0 · Read the n8n flow · 5 minutes
+## SOLO 0 · Read the n8n flow · 15 minutes
 
 Start Claude Code in your clone, as the README shows.
 
@@ -162,7 +162,7 @@ accepted policy is restored with `npm run verify` passing.
 
 **Stop:** after inspecting the restored diff and actual verification output.
 
-## SOLO 1M · Build reviewed memory per ticket · 20 minutes
+## SOLO 1M · Build reviewed memory per ticket · 25 minutes
 
 **Scenario:** T-001 must resume in a new Claude Code session without mixing in
 T-002.
