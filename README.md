@@ -5,6 +5,18 @@ repository is your starter. The plumbing is built. You build the Agent SDK
 parts with Claude Code, one step at a time, and a check tells you when a step
 is right.
 
+## From the Day 3 chat to the Day 4 app
+
+On Day 3 you grew one n8n chat through three phases:
+
+1. **Decision.** Start with a chat reply. Add memory and triage instructions so the agent can judge a ticket.
+2. **Control.** Add the Structured Output Parser to give the reply a fixed shape. The Switch reads the priority and selects a route.
+3. **Team.** Add specialist tools and a read-only customer lookup. In Assignment 11, each route saves a draft for a person to review.
+
+On Day 4 you rebuild these decisions in code. Start with the smaller
+[starter snapshot](n8n/support-triage.json). Compare your result with the
+[final Assignment 11 export](n8n/day3-review-queue.json) in SOLO 4 and 5.
+
 ## Participant start
 
 Install Node.js 22 or newer, Git and Claude Code. Then run:
@@ -16,14 +28,46 @@ npm ci
 claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
-Open [`SOLO.md`](SOLO.md) and paste the SOLO 0 prompt. Use
+Open [`SOLO.md`](SOLO.md) and write your first prompt for SOLO 0. Use
 [`docs/SETUP.md`](docs/SETUP.md) only when installation or login fails. The
 checks and dry runs need no API key.
 
+## Files for the lesson
+
+One clone supplies all nine assignments. Run the commands in the project root.
+
+| Use | Files in your clone |
+| --- | --- |
+| Setup and prompts | `package.json`, `package-lock.json`, `.claude/settings.json`, `SOLO.md`, `docs/SETUP.md`, `docs/day4-lesson-prompts.json` |
+| Compare the workflows | `n8n/day3-review-queue.json`, `n8n/support-triage.json`, `docs/n8n-flow-diagram.html` |
+| Inspect the support evidence | `docs/customer-messages.md`, `docs/customer_context.csv`, `docs/transactions.xlsx`, `docs/sample-trace.md` |
+| Review memory per ticket | `docs/memory-lab/T-001.md`, `docs/memory-lab/T-002.md` |
+| Build and check the agent | `01-single-agent/`, `02-subagents/`, `03-mcp/` (including its read-only server), `.claude/agents/`, `lib/`, `checks/`, `test/` |
+| Check final routing and draft storage | `day4-sdk-parity/` contains the reference code, policy, three agent definitions, cases and offline check. |
+
+The four sample JSON tickets in `fixtures/` include a follow-up, an adversarial input
+and a malformed input. The main exercises use the tickets in `docs/customer-messages.md`.
+
+### Update an older clone
+
+If a required file is missing, run `git remote get-url origin` and confirm it points
+to `AetherLink-bv/aetherlink-day4-n8n-to-agent`. Run `git status`. Continue on
+`main` in the same folder.
+
+- If you see local changes, review them for credentials first. Save your lesson work with
+  `git stash push --include-untracked -m "Day 4 work before update"`.
+  Confirm the new entry with `git stash list`. Keep its identifier.
+- With a clean working tree, run `git pull --ff-only origin main`. If it stops,
+  keep your saved work and ask the trainer before continuing.
+- If you created a stash above, run `git stash apply "stash@{0}"` only after
+  confirming that identifier still refers to your saved lesson work.
+  If Git reports a conflict, keep the stash and ask the trainer to help reconcile it.
+- Inspect `git status` and your lesson files. Run `npm ci` after the update.
+
 ## Nine assignments
 
-Every assignment is the same loop: paste the prompt, the check goes green, one
-real run, Claude Code explains why.
+Write your own prompt from the task. State the outcome, a boundary and the evidence
+you need. Check the result yourself. Open the example in SOLO.md if you get stuck.
 
 | SOLO | You build | Check | Real run |
 | --- | --- | --- | --- |

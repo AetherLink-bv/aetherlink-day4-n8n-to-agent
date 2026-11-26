@@ -17,17 +17,17 @@ Install the native Claude Code CLI:
 irm https://claude.ai/install.ps1 | iex
 ```
 
-Open a new PowerShell window, clone the project, log in once from that folder, and check the tools:
+Open a new PowerShell window. Run the checks in the shell. The last command opens Claude Code for sign-in and SOLO 0:
 
 ```powershell
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project,user --strict-mcp-config --no-chrome
 node --version
 claude --version
 npm ci
 npm run doctor
 npm run verify
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
 Set an API key only when you choose the `sdk` backend:
@@ -52,15 +52,15 @@ nvm install 22
 curl -fsSL https://claude.ai/install.sh | bash
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project,user --strict-mcp-config --no-chrome
 node --version
 claude --version
 npm ci
 npm run doctor
 npm run verify
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
-Run `claude --setting-sources project,user --strict-mcp-config --no-chrome` once inside the cloned project in WSL. Complete sign-in there. A Windows login is separate.
+The last command opens Claude Code inside WSL. Complete sign-in there. A Windows login is separate.
 
 ## Linux and macOS
 
@@ -70,15 +70,15 @@ Install Git and Node.js 22 or newer with your usual package manager. Install Cla
 curl -fsSL https://claude.ai/install.sh | bash
 git clone https://github.com/AetherLink-bv/aetherlink-day4-n8n-to-agent.git
 cd aetherlink-day4-n8n-to-agent
-claude --setting-sources project,user --strict-mcp-config --no-chrome
 node --version
 claude --version
 npm ci
 npm run doctor
 npm run verify
+claude --setting-sources project,user --strict-mcp-config --no-chrome
 ```
 
-The default backend is `claude-code`. It uses the Claude Code login on this machine. Use `--backend sdk` only when you want to use an API key.
+The last command opens Claude Code for sign-in and SOLO 0. The default backend is `claude-code`. It uses the Claude Code login on this machine. Use `--backend sdk` only when you want to use an API key.
 The Claude Code subprocess does not inherit `ANTHROPIC_API_KEY`; that key is for the `sdk` backend.
 
 ## Docker

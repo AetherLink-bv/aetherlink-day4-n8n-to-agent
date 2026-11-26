@@ -2,14 +2,14 @@
 
 This follow-on uses the same participant repository as Day 4. It adds the final pieces from the revised Day 3 workflow without changing the earlier assignments.
 
-## Run it from the completed project
+## Run the offline check from the starter
 
-1. Finish the Day 4 assignments or use the trainer solution.
+1. Start with the Day 4 starter after `npm ci`. A5 uses its bundled reference implementation, so it works even while earlier assignment checks are red.
 2. Open a terminal in the project root, the folder that contains
    `package.json`.
 3. Confirm that the bundled folder `day4-sdk-parity/` exists. Use this copy.
-   Only an older clone may need the download from the course slide. Unpack that
-   fallback so the project root contains `day4-sdk-parity/`.
+   If the folder is missing, follow [Update an older clone](../README.md#update-an-older-clone)
+   in the participant guide.
 4. Stay in the project root and run the offline check:
 
    ```sh
@@ -29,7 +29,7 @@ The check starts the real Agent SDK configuration in dry-run mode. It also sends
 
 The offline check does not test model behavior. Use the live runs below to verify the three routes and replies.
 
-## Run the three examples
+## Run the three live examples
 
 Run every command below from the project root. Do not change into
 `day4-sdk-parity/`.
@@ -40,7 +40,7 @@ node day4-sdk-parity/run.mjs MSG-06
 node day4-sdk-parity/run.mjs MSG-05
 ```
 
-You can also enter a free-text chat message:
+To try your own text, use the terminal equivalent of one Day 3 chat message. Set the fictional customer with `--customer` and enter the message with `--message`. This command starts a live run:
 
 ```sh
 node day4-sdk-parity/run.mjs --customer CUST-001 --message "Can you send my invoice?"
