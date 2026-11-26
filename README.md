@@ -5,6 +5,18 @@ repository is your starter. The plumbing is built. You build the Agent SDK
 parts with Claude Code, one step at a time, and a check tells you when a step
 is right.
 
+## From the Day 3 chat to the Day 4 app
+
+On Day 3 you grew one n8n chat through three phases:
+
+1. **Decision.** Start with a chat reply. Add memory and triage instructions so the agent can judge a ticket.
+2. **Control.** Add the Structured Output Parser to give the reply a fixed shape. The Switch reads the priority and selects a route.
+3. **Team.** Add specialist tools and a read-only customer lookup. In Assignment 11, each route saves a draft for a person to review.
+
+On Day 4 you rebuild these decisions in code. Start with the smaller
+[starter snapshot](n8n/support-triage.json). Compare your result with the
+[final Assignment 11 export](n8n/day3-review-queue.json) in SOLO 4 and 5.
+
 ## Participant start
 
 Install Node.js 22 or newer, Git and Claude Code. Then run:

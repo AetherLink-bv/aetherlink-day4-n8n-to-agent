@@ -25,9 +25,18 @@ Claude Code the failed line and ask for the smallest fix.
 ## Source contract
 
 [`n8n/day3-review-queue.json`](n8n/day3-review-queue.json) is the final
-sanitized Day 3 workflow. [`n8n/support-triage.json`](n8n/support-triage.json)
+sanitized workflow from Day 3 Assignment 11. [`n8n/support-triage.json`](n8n/support-triage.json)
 is the smaller starter snapshot used by Steps 1 to 3. Both files contain no
 credentials. Do not import or activate them.
+
+Trace the three Day 3 phases as you read the export:
+
+1. **Decision.** Follow `When chat message received` to `AI Agent`. Find the memory and instructions that help the agent judge priority.
+2. **Control.** Find the parser fields `priority` and `message`. Follow the priority into the Switch and point to its matching route.
+3. **Team.** Find the specialist tools attached to the agent. Follow a Switch route to its Save draft node. The final High output labels the operator message `[INTERNAL]`. A person reviews the saved draft before any customer contact.
+
+In SOLO 1 you rebuild the decision and the output form. In SOLO 2 and 3 you add the tools.
+In SOLO 4 and 5 you compare the routes and check the saved drafts.
 
 | n8n | Agent SDK | Step |
 | --- | --- | --- |
