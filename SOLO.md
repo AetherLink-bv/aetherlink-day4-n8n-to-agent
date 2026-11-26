@@ -22,6 +22,17 @@ the slides.
 A check is red before you start. That is correct. If a check stays red, give
 Claude Code the failed line and ask for the smallest fix.
 
+## Your two terminals
+
+Keep Claude Code open in Terminal 1. Press `Shift+Tab` until the mode named by
+the assignment appears at the bottom.
+
+- In Claude Code, start a shell command with `!`. For example, type
+  `!npm run check:1` and press Enter.
+- Use Terminal 2 for an interactive chat or a live lesson run. These commands
+  start another Claude process and must not run inside Claude Code.
+- At a `you>` prompt, type only the message. Do not add `!`.
+
 ## Source contract
 
 [`n8n/day3-review-queue.json`](n8n/day3-review-queue.json) is the final
@@ -53,6 +64,8 @@ Transaction lookup is an extension to the n8n source.
 
 ## SOLO 0 · Read the n8n flow · 15 minutes
 
+**Mode:** Plan mode. This assignment reads files and changes nothing.
+
 Start Claude Code in your clone, as the README shows.
 
 Ask for a comparison of the final Day 3 flow and the starter. Keep both files unchanged. Which missing behavior should the comparison mark OPEN?
@@ -66,39 +79,46 @@ Read n8n/day3-review-queue.json, n8n/support-triage.json and the Source contract
 
 </details>
 
-Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
+Inspect the output Claude Code already showed. Run only a missing command in
+Claude Code: `!npm run doctor` or `!npm run verify`.
 
-```sh
-npm run doctor
-npm run verify
+```text
+!npm run doctor
+!npm run verify
 ```
 
-**Check:** both commands exit 0, and you can point to the three sub-agents in
+**Visible result:** both commands exit 0, and you can point to the three sub-agents in
 the final n8n JSON.
 
 **Stop:** after you have read the table.
 
 ## SOLO 1 · One agent that fills in the form
 
-Describe the form one agent must return. Limit edits to the three Step 1 files. Ask for the first failed check, its passing result and one real MSG-06 run. For each option in options.mjs, show the option, the n8n setting it replaces and what fails without it.
+**Mode:** Manual mode. Review each proposed edit and command before you approve it.
+
+Describe the form one agent must return. Limit edits to the three Step 1 files. Ask for the first failed check and its passing result. Supply the observed MSG-06 output from Terminal 2 yourself, or require OPEN when it is unavailable. For each option in options.mjs, show the option, the n8n setting it replaces and what fails without it.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the sub-agents out. Change no other file. Run npm run check:1 until it passes. Run npm run lesson1 -- MSG-06 once and show the real output. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
+Run npm run check:1 and show what is red. Read the STEP 1 TODOs in 01-single-agent and the AI Agent node in n8n/support-triage.json. Fill in options.mjs, priority-schema.mjs and claude-project/CLAUDE.md. Copy the policy from the n8n system message and leave the sub-agents out. Change no other file. Run npm run check:1 until it passes. Do not run lesson1. Ask me for the MSG-06 output I observed in Terminal 2. Mark the live result OPEN if I cannot supply it. Then show one table: each option in options.mjs, the n8n setting it replaces, and what goes wrong without it. Stop.
 ```
 
 </details>
 
-Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
+Run the offline check in Claude Code. Run the live lesson once in Terminal 2.
+Give its observed output to Claude Code, or keep the live result OPEN.
+
+```text
+!npm run check:1
+```
 
 ```sh
-npm run check:1
 npm run lesson1 -- MSG-06
 ```
 
-**Check:** `npm run check:1` passes, and the real run prints a priority, a
+**Visible result:** `npm run check:1` passes, and the real run prints a priority, a
 reason and the Switch route.
 
 **Why:** `settingSources` loads the instructions, `tools: []` removes every
@@ -108,6 +128,8 @@ these were four settings on one node. In code, a test can check each one.
 **Stop:** after you have read the table.
 
 ### SOLO 1b · Inspect the form and memory evidence
+
+**Mode:** Plan mode. Claude Code guides you and changes nothing.
 
 Start in the project root, the folder that contains `package.json`. You operate both chats in Terminal 2. Enter the ticket labels as message text at `you>`. If you need help, write a prompt asking for guidance on the next step. Use OPEN for any output you could not observe.
 
@@ -137,12 +159,14 @@ Guide me through the SOLO 1b dry run and the two chat processes in Terminal 2. I
 
 Keep the output from your two chats. A completed chat needs no replay.
 
-**Check:** compare both actual replies with the expected behavior. The first chat recalls the marker. The fresh chat has no prior conversation.
+**Visible result:** compare both actual replies with the expected behavior. The first chat recalls the marker. The fresh chat has no prior conversation.
 
 **Stop:** after you have separated setup evidence, model evidence and sample
 evidence.
 
 ### SOLO 1c · Challenge the policy
+
+**Mode:** Manual mode. Approve the temporary edit before Claude Code applies it.
 
 Start with the accepted files from SOLO 1. Keep those edits. Before the
 experiment, read the exact current Priority definitions and inspect
@@ -151,27 +175,43 @@ Run `git hash-object --no-filters 01-single-agent/claude-project/CLAUDE.md`
 and record the hash. Run the same command with the path to your saved copy.
 Check that the hashes match before changing the policy. Leave the Git index alone.
 
-Choose a temporary policy variation. Require approval before the edit. Ask for comparable results on both tickets and proof that your accepted policy survived restoration.
+Before the temporary change, run both tickets in Terminal 2 and save the
+observed labels. If a run is unavailable, record it as OPEN.
+
+```sh
+npm run lesson1 -- MSG-01
+npm run lesson1 -- MSG-06
+```
+
+Choose a temporary policy variation. Require approval before the edit. Give
+Claude Code the two baseline observations or OPEN. After the approved edit,
+run the same two commands again in Terminal 2 and give Claude Code the new
+observations. Ask it to compare only the evidence you supplied.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Read my SOLO 1 diff and actual runs. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, run MSG-01 and MSG-06 before and after. Record the labels and explain whether the result changed. Restore only the experimental policy edit using my saved copy. Compare the restored file hash with my recorded hash, then run npm run verify. Show both hashes and the check result. Do not use a finished branch or reveal an answer key. Stop for my review.
+Read my SOLO 1 diff and the baseline observations I supply for MSG-01 and MSG-06. Do not run lesson commands. Propose one temporary policy change that could expose tone bias without changing the fixed route. Wait for my approval. After approval, tell me to run the same two tickets again in Terminal 2. Ask me for the new observations. Mark any result I cannot supply OPEN. Compare only my before and after evidence. Then tell me to restore the experimental policy edit using my saved copy. After I restore it, compare the restored file hash with my recorded hash and run npm run verify. Show both hashes and the check result. Do not use a finished branch or reveal an answer key. Stop for my review.
 ```
 
 </details>
+
+After approval, rerun the two commands above in Terminal 2. Give the observed
+labels to Claude Code, or keep the missing comparison OPEN.
 
 After the experiment, restore only the temporary policy change to the exact
 pre-experiment text using your saved copy. Run the same hash command on the restored file. Its hash must match the recorded hash. Inspect the same diff again. Your accepted SOLO 1 edits
 must remain, and the temporary change must be gone.
 
-**Check:** the before and after evidence uses the same messages, and the
+**Visible result:** the before and after evidence uses the same messages, and the
 accepted policy is restored with `npm run verify` passing.
 
 **Stop:** after inspecting the restored diff and actual verification output.
 
 ## SOLO 1M · Build reviewed memory per ticket · 25 minutes
+
+**Mode:** Manual mode. Approve each memory file before Claude Code writes it.
 
 **Scenario:** T-001 must resume in a new Claude Code session without mixing in
 T-002.
@@ -237,25 +277,31 @@ and T-002 stayed isolated. Do not build a UI or add a model call.
 
 ## SOLO 2 · A main agent and two sub-agents
 
-Describe the two specialists you need. Limit edits to their definitions and Step 2 options. Request a passing check and evidence of which specialist ran first.
+**Mode:** Manual mode. Review the three permitted files before approving edits.
+
+Describe the two specialists you need. Limit edits to their definitions and Step 2 options. Request a passing check. Supply the observed MSG-05 trace from Terminal 2 yourself, or require OPEN when it is unavailable.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Run npm run lesson2 -- MSG-05 once and show the trace. Then explain in five lines: how the main agent chooses a sub-agent, why a sub-agent has its own context, and why neither sub-agent has a tool. Stop.
+Run npm run check:2 and show what is red. Read the STEP 2 TODOs in 02-subagents/options.mjs and .claude/agents, and the Risk Agent and Customer Reply Agent nodes in n8n/support-triage.json. Fill in risk-agent.md, customer-reply-agent.md and 02-subagents/options.mjs. Copy each n8n tool description and system message. Change no other file. Run npm run check:2 until it passes. Do not run lesson2. Ask me for the MSG-05 trace I observed in Terminal 2. Mark the live result OPEN if I cannot supply it. Then explain in five lines: how the main agent chooses a sub-agent, why a sub-agent has its own context, and why neither sub-agent has a tool. Stop.
 ```
 
 </details>
 
-Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
+Run the offline check in Claude Code. Run the live lesson once in Terminal 2.
+Give its observed output to Claude Code, or keep the live result OPEN.
+
+```text
+!npm run check:2
+```
 
 ```sh
-npm run check:2
 npm run lesson2 -- MSG-05
 ```
 
-**Check:** `npm run check:2` passes, and the trace shows `risk-agent` before
+**Visible result:** `npm run check:2` passes, and the trace shows `risk-agent` before
 `customer-reply-agent`.
 
 **Why:** the `description` of an agent file tells the main agent when to
@@ -266,26 +312,32 @@ answer. `tools: ['Agent']` means the main agent can delegate and do nothing else
 
 ## SOLO 3 · Real facts from a read-only MCP server
 
-Describe a lookup that only the context specialist may perform. Keep the server read-only. Ask for the check and trace each reported fact to its tool result.
+**Mode:** Manual mode. Approve only the two permitted file edits.
+
+Describe a lookup that only the context specialist may perform. Keep the server read-only. Ask for the checks. Supply the observed MSG-08 trace from Terminal 2 yourself, or require OPEN when it is unavailable.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Run npm run check:3 and show what is red. Read the STEP 3 TODOs in 03-mcp/options.mjs and .claude/agents/customer-context-agent.md, and the Customer Context Agent node in n8n/support-triage.json. Fill in customer-context-agent.md and 03-mcp/options.mjs. Change no other file, and do not change support-mcp/server.js. Run npm run check:3 until it passes. Run npm run lesson3 -- MSG-08 once and show the trace. Then show which facts in the answer came from get_customer and get_transaction, and explain why only customer-context-agent has these tools. Stop.
+Run npm run check:3 and show what is red. Read the STEP 3 TODOs in 03-mcp/options.mjs and .claude/agents/customer-context-agent.md, and the Customer Context Agent node in n8n/support-triage.json. Fill in customer-context-agent.md and 03-mcp/options.mjs. Change no other file, and do not change support-mcp/server.js. Run npm run smoke:mcp and npm run check:3 until both pass. Do not run lesson3. Ask me for the MSG-08 trace I observed in Terminal 2. Mark the live result OPEN if I cannot supply it. Then show which facts in the observed answer came from get_customer and get_transaction, and explain why only customer-context-agent has these tools. Stop.
 ```
 
 </details>
 
-Inspect the actual output Claude Code already showed. In Terminal 2, run only commands whose results are missing.
+Run the offline checks in Claude Code. Run the live lesson once in Terminal 2.
+Give its observed output to Claude Code, or keep the live result OPEN.
+
+```text
+!npm run smoke:mcp
+!npm run check:3
+```
 
 ```sh
-npm run smoke:mcp
-npm run check:3
 npm run lesson3 -- MSG-08
 ```
 
-**Check:** `npm run check:3` passes, and the trace shows Context → Risk →
+**Visible result:** `npm run check:3` passes, and the trace shows Context → Risk →
 Reply with two tool results.
 
 **Why:** an MCP server gives an agent tools from outside the SDK. You name the
@@ -296,13 +348,30 @@ agents cannot look up or change data, because they have no tool to do so.
 
 ## SOLO 4 · Compare with n8n and collect proof
 
+**Mode:** Manual mode. Approve only `participant-output/acceptance-table.md`.
+
+Run the three live lessons in Terminal 2. Return to Claude Code after all three
+runs, then write the acceptance-table prompt.
+
+```sh
+npm run lesson3 -- MSG-01
+```
+
+```sh
+npm run lesson3 -- MSG-06
+```
+
+```sh
+npm run lesson3 -- MSG-09
+```
+
 Describe the acceptance table for MSG-01, MSG-06 and MSG-09. Include the message ID, observed priority, route, sub-agent order, facts from tools and the final Day 3 node. Keep source files unchanged. Require direct evidence per row and OPEN for anything unobserved.
 
 <details>
 <summary>Stuck? Compare your prompt with this example.</summary>
 
 ```text
-Run npm run lesson3 for MSG-01, MSG-06 and MSG-09. Read n8n/day3-review-queue.json as the final Day 3 source. Create participant-output/acceptance-table.md with one row for each message: observed priority, route, order of the sub-agents, facts that came from a tool, and the final Day 3 node that gave this behavior. Use only output from these runs. Write OPEN where you did not observe the behavior. Change no source file. Then name one difference between the final Day 3 workflow and this app. Stop.
+I ran lesson3 for MSG-01, MSG-06 and MSG-09 in Terminal 2. Do not run npm commands. Ask me for the observed output of each run. Read n8n/day3-review-queue.json as the final Day 3 source. Create participant-output/acceptance-table.md with one row for each message: observed priority, route, order of the sub-agents, facts that came from a tool, and the final Day 3 node that gave this behavior. Use only output I supply. Write OPEN where I did not observe the behavior. Change no source file. Then name one difference between the final Day 3 workflow and this app. Stop.
 ```
 
 </details>
@@ -310,11 +379,13 @@ Run npm run lesson3 for MSG-01, MSG-06 and MSG-09. Read n8n/day3-review-queue.js
 **Your variation:** choose the difference you would improve first, and say
 which file you would change.
 
-**Check:** every row points to a real run or says `OPEN`.
+**Visible result:** every row points to a real run or says `OPEN`.
 
 **Stop:** after your review. Nothing is sent or deployed.
 
 ## SOLO 5 · Match the final Day 3 route
+
+**Mode:** Manual mode. The offline check writes only temporary sample drafts.
 
 Start in the project root, the folder that contains `package.json`. The folder
 `day4-sdk-parity/` is already bundled in this repository. Use that copy.
@@ -324,13 +395,14 @@ to preserve your work and update this repository. Run the commands from the proj
 The exercise adds the final Day 3 policy, all three sub-agents, deterministic
 routing and review-draft storage. It does not change the earlier assignments.
 
-Run the offline check:
+Run the offline check in Claude Code with
+`!node day4-sdk-parity/verify.mjs`. The command below is the same shell command:
 
-```sh
-node day4-sdk-parity/verify.mjs
+```text
+!node day4-sdk-parity/verify.mjs
 ```
 
-Then run the three examples:
+Then run the three live examples in Terminal 2:
 
 ```sh
 node day4-sdk-parity/run.mjs MSG-01
@@ -342,7 +414,7 @@ Inspect `day4-sdk-parity/review-drafts/`. Each run must create one draft with
 its priority and route. The reply must not contain the internal risk note or
 promise an action that this workflow does not perform.
 
-**Check:** the offline check passes. The live runs return low, medium and high.
+**Visible result:** the offline check passes. The live runs return low, medium and high.
 Each result is validated before its review draft is saved. Nothing is sent.
 
 **Stop:** after you have compared the three drafts with the final Day 3 route.

@@ -15,8 +15,9 @@ test('participant docs give one route with a check for each build step', () => {
   }
   for (const step of [1, 2, 3]) {
     assert.ok(scripts[`check:${step}`] && scripts[`lesson${step}`], `step ${step} has a check and a lesson script`);
-    assert.match(participantPart, new RegExp(`npm run check:${step} until it passes`), `SOLO ${step} stops on its check`);
-    assert.match(participantPart, new RegExp(`npm run lesson${step} -- MSG-\\d\\d once`), `SOLO ${step} has one real run`);
+    assert.match(participantPart, new RegExp(`npm run check:${step}[\\s\\S]{0,1000}(?:pass|passes|both pass)`), `SOLO ${step} stops on its check`);
+    assert.match(participantPart, new RegExp(`Do not run lesson${step}`), `Claude Code does not start SOLO ${step}'s live run`);
+    assert.match(participantPart, new RegExp(`npm run lesson${step} -- MSG-\\d\\d`), `SOLO ${step} gives the participant one live command`);
   }
   assert.doesNotMatch(participantPart, /git (?:checkout|switch)|trainer evidence|reference folder/i, 'participants need no branch and no trainer material');
   assert.ok(read('README.md').includes(`cd aetherlink-day4-n8n-to-agent\nnpm ci\n${startCommand}`));
@@ -32,8 +33,9 @@ test('participants inspect completed runs and execute only missing evidence in T
   const sections = read('SOLO.md').split(/\n(?=##+ SOLO )/);
   for (const step of ['1', '2', '3']) {
     const section = sections.find(text => text.startsWith('#') && text.split('\n')[0].includes('SOLO ' + step + ' ·'));
-    assert.match(section, /Inspect the actual output Claude Code already showed/);
-    assert.match(section, /In Terminal 2, run only commands whose results are missing/);
+    assert.match(section, /Run the offline checks? in Claude Code/);
+    assert.match(section, /Run the live lesson once in Terminal 2/);
+    assert.match(section, /keep the live result OPEN/);
   }
   const chat = sections.find(text => text.startsWith('### SOLO 1b'));
   assert.match(chat, /You operate both chats in Terminal 2/);
@@ -46,6 +48,13 @@ test('participants inspect completed runs and execute only missing evidence in T
   const policy = sections.find(text => text.startsWith('### SOLO 1c'));
   assert.match(policy, /git hash-object --no-filters/);
   assert.match(policy, /Its hash must match the recorded hash/);
+  assert.match(policy, /Do not run lesson commands/);
+  assert.match(policy, /Before the temporary change, run both tickets in Terminal 2/);
+  assert.match(policy, /After approval, rerun the two commands above in Terminal 2/);
+  assert.match(policy, /keep the missing comparison OPEN/);
+  const acceptance = sections.find(text => text.startsWith('## SOLO 4'));
+  assert.equal([...acceptance.matchAll(/```sh\nnpm run lesson3 -- MSG-(?:01|06|09)\n```/g)].length, 3);
+  assert.match(acceptance, /Do not run npm commands/);
 });
 
 test('the sanitized n8n source defines the complete app contract', () => {
