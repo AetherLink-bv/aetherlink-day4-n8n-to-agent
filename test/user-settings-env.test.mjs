@@ -47,8 +47,8 @@ test('login settings: only the login variables of the user settings reach the le
       PATH: '/bin',
     });
     const line = describeUserSettingsEnv(settings);
-    assert.match(line, /^Login settings \(Vertex AI\): ANTHROPIC_VERTEX_PROJECT_ID, CLAUDE_CODE_USE_VERTEX, CLOUD_ML_REGION, HTTPS_PROXY from /);
-    assert.doesNotMatch(line, /wl-demo|europe-west1|proxy\.example/);
+    assert.equal(line, 'Login settings (Vertex AI): ANTHROPIC_VERTEX_PROJECT_ID, CLAUDE_CODE_USE_VERTEX, CLOUD_ML_REGION, HTTPS_PROXY');
+    assert.doesNotMatch(line, /w4-settings|wl-demo|europe-west1|proxy\.example/);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -60,10 +60,18 @@ test('login settings: a missing or broken settings file never stops a lesson', (
   try {
     const none = readUserSettingsEnv({ env: { CLAUDE_CONFIG_DIR: missing } });
     assert.deepEqual(none.env, {});
-    assert.match(describeUserSettingsEnv(none), /^Login settings: none in /);
+    assert.equal(describeUserSettingsEnv(none), 'Login settings: none');
     const bad = readUserSettingsEnv({ env: { CLAUDE_CONFIG_DIR: broken } });
     assert.deepEqual(bad.env, {});
-    assert.match(describeUserSettingsEnv(bad), /^Login settings: could not read /);
+    const description = describeUserSettingsEnv(bad);
+    assert.equal(description, 'Login settings: could not read user settings');
+    const projectedError = describeUserSettingsEnv({
+      file: '/Users/PROJECTOR-ACCOUNT/.claude/settings.json',
+      env: {},
+      error: 'Unexpected token SECRET_JSON_FRAGMENT',
+    });
+    assert.equal(projectedError, 'Login settings: could not read user settings');
+    assert.doesNotMatch(projectedError, /PROJECTOR-ACCOUNT|SECRET_JSON_FRAGMENT/);
   } finally {
     rmSync(missing, { recursive: true, force: true });
     rmSync(broken, { recursive: true, force: true });
